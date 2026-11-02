@@ -26,7 +26,7 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
 
   const current = sizeMap[size];
 
-  // 1. Emblem Only — Perfectly Centered or Standalone
+  // 1. Emblem Only — Standalone HD Mark
   if (layout === 'emblem-only') {
     return (
       <div
@@ -36,15 +36,20 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
         } ${className}`}
       >
         <img
-          src="/hadid-logo.jpg"
+          src="/hadid-emblem-light.png"
           alt="HADID حديد"
-          className="h-full w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert filter contrast-125"
+          className="h-full w-auto object-contain dark:hidden"
+        />
+        <img
+          src="/hadid-emblem-dark.png"
+          alt="HADID حديد"
+          className="h-full w-auto object-contain hidden dark:block"
         />
       </div>
     );
   }
 
-  // 2. Stacked — Vertically Centered Symmetry (Ideal for Login, Hero, Portals)
+  // 2. Stacked — Vertically Centered Symmetry (Login, Hero, Portals)
   if (layout === 'stacked') {
     return (
       <div
@@ -55,9 +60,14 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
       >
         <div className={`relative flex items-center justify-center ${current.img} group-hover:scale-105 transition-transform duration-300`}>
           <img
-            src="/hadid-logo.jpg"
+            src="/hadid-logo-light.png"
             alt="HADID حديد"
-            className="h-full w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert filter contrast-125"
+            className="h-full w-auto object-contain dark:hidden"
+          />
+          <img
+            src="/hadid-logo-dark.png"
+            alt="HADID حديد"
+            className="h-full w-auto object-contain hidden dark:block"
           />
         </div>
 
@@ -72,7 +82,7 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
               </span>
             </div>
             {showSubtitle && (
-              <span className={`text-neutral-400 font-mono tracking-[0.25em] uppercase mt-1.5 ${current.sub}`}>
+              <span className={`text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.25em] uppercase mt-1.5 ${current.sub}`}>
                 Byrsa Sanctuary • Tunis
               </span>
             )}
@@ -86,13 +96,18 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-3.5 select-none ${onClick ? 'cursor-pointer group' : ''} ${className}`}
+      className={`flex items-center gap-3 select-none ${onClick ? 'cursor-pointer group' : ''} ${className}`}
     >
       <div className={`relative flex items-center justify-center ${current.img} group-hover:scale-105 transition-transform duration-300 flex-shrink-0`}>
         <img
-          src="/hadid-logo.jpg"
+          src="/hadid-emblem-light.png"
           alt="HADID حديد"
-          className="h-full w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert filter contrast-125"
+          className="h-full w-auto object-contain dark:hidden"
+        />
+        <img
+          src="/hadid-emblem-dark.png"
+          alt="HADID حديد"
+          className="h-full w-auto object-contain hidden dark:block"
         />
       </div>
 
@@ -107,7 +122,7 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
             </span>
           </div>
           {showSubtitle && (
-            <span className={`hidden xl:inline text-neutral-400 font-mono tracking-[0.25em] uppercase mt-0.5 ${current.sub}`}>
+            <span className={`hidden xl:inline text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.25em] uppercase mt-0.5 ${current.sub}`}>
               Byrsa Sanctuary • Tunis
             </span>
           )}
