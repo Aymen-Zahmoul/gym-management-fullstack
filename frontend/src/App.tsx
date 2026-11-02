@@ -9,9 +9,11 @@ import { AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import { HadidLogo } from './components/ui/HadidLogo';
 import { getErrorMessage } from './utils/errorUtils';
 
-// Code Splitting with React.lazy to reduce initial bundle from 601 kB to < 120 kB
-const LandingPageView = lazy(() => import('./components/LandingPageView').then(m => ({ default: m.LandingPageView })));
-const LoginView = lazy(() => import('./components/LoginView').then(m => ({ default: m.LoginView })));
+// Core public views directly imported for instant zero-flash render
+import { LandingPageView } from './components/LandingPageView';
+import { LoginView } from './components/LoginView';
+
+// Back-office views code-split with React.lazy
 const DashboardView = lazy(() => import('./components/DashboardView').then(m => ({ default: m.DashboardView })));
 const MembersView = lazy(() => import('./components/MembersView').then(m => ({ default: m.MembersView })));
 const ScheduleView = lazy(() => import('./components/ScheduleView').then(m => ({ default: m.ScheduleView })));
@@ -307,8 +309,7 @@ export function App() {
 
       {/* VIEW 1: Public Responsive Landing Page */}
       {viewMode === 'landing' && (
-        <Suspense fallback={<ViewLoadingFallback />}>
-          <LandingPageView
+        <LandingPageView
             onOpenLogin={() => {
               if (currentUser) {
                 setViewMode('app');
@@ -323,19 +324,16 @@ export function App() {
             currentUser={currentUser}
             onLogout={handleLogout}
           />
-        </Suspense>
       )}
 
       {/* VIEW 2: Dedicated Authentication View (Single Page, 0 Scroll) */}
       {viewMode === 'login' && !currentUser && (
-        <Suspense fallback={<ViewLoadingFallback />}>
-          <LoginView
+        <LoginView
             onLoginSuccess={handleLoginSuccess}
             isDark={isDark}
             onToggleTheme={() => setIsDark((prev) => !prev)}
             onBackToLanding={() => setViewMode('landing')}
           />
-        </Suspense>
       )}
 
       {/* VIEW 3: Protected 3-Tier Back-Office Application */}
