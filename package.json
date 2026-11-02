@@ -1,0 +1,12 @@
+{
+  "name": "carthage-fitness-fullstack",
+  "version": "1.0.0",
+  "description": "Projet Federateur Carthage Fitness Club (ENICarthage)",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "cd backend && java -jar target/gym-management-1.0-SNAPSHOT.jar",
+    "backend:build": "cd backend && mvn clean package -DskipTests",
+    "db": "\"C:\\xampp\\mysql\\bin\\mysqld.exe\" --defaults-file=\"C:\\xampp\\mysql\\bin\\my.ini\" --console"
+  }
+}

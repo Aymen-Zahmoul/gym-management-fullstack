@@ -15,4 +15,17 @@ public class PaymentService {
     public Payment getPaymentById(int id) {
         return paymentDAO.findById(id);
     }
+
+    public Payment validatePayment(int id) {
+        Payment p = getPaymentById(id);
+        if (p == null) {
+            throw new tn.enicarthage.gym.exception.ResourceNotFoundException("Paiement introuvable : " + id);
+        }
+        paymentDAO.updateStatus(id, "PAYE");
+        return paymentDAO.findById(id);
+    }
+
+    public Payment createPayment(Payment p) {
+        return paymentDAO.create(p);
+    }
 }

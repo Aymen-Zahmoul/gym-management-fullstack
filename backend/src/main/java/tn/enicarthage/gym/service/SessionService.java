@@ -45,10 +45,22 @@ public class SessionService {
             throw new ValidationException("L'heure de fin doit etre posterieure a l'heure de debut.");
         }
 
+        String nomSalle = req.getSalle() != null ? req.getSalle().trim() : "Salle Principale";
+
+        // Verification de disponibilite de la salle
+        if (sessionDAO.isRoomOccupied(nomSalle, req.getDateHeureDebut(), req.getDateHeureFin(), 0)) {
+            throw new ValidationException("Le studio '" + nomSalle + "' est deja reserve sur ce creneau horaire.");
+        }
+
+        // Verification de disponibilite du coach
+        if (sessionDAO.isCoachOccupied(req.getCoachId(), req.getDateHeureDebut(), req.getDateHeureFin(), 0)) {
+            throw new ValidationException("Le coach " + coach.getNomComplet() + " a deja une seance planifiee sur ce creneau.");
+        }
+
         ClassSession s = new ClassSession();
         s.setClassId(req.getClassId());
         s.setCoachId(req.getCoachId());
-        s.setSalle(req.getSalle() != null ? req.getSalle().trim() : "Salle Principale");
+        s.setSalle(nomSalle);
         s.setDateHeureDebut(req.getDateHeureDebut());
         s.setDateHeureFin(req.getDateHeureFin());
         s.setStatut("PROGRAMMEE");

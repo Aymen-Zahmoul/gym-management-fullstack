@@ -97,6 +97,7 @@ public class Router {
         int subLen = segments.length - index;
 
         return switch (ressource) {
+            case "auth", "login" -> routesAuth(methode, segments, index, exchange);
             case "dashboard" -> routesDashboard(methode);
             case "gym" -> routesGym(methode, segments, index);
             case "members" -> routesMembers(methode, segments, index, exchange);
@@ -106,9 +107,22 @@ public class Router {
             case "classes" -> routesClasses(methode, segments, index, exchange);
             case "sessions" -> routesSessions(methode, segments, index, exchange);
             case "bookings" -> routesBookings(methode, segments, index, exchange);
-            case "payments" -> routesPayments(methode, segments, index);
+            case "payments" -> routesPayments(methode, segments, index, exchange);
             default -> throw new ResourceNotFoundException("Ressource inconnue : /" + ressource);
         };
+    }
+
+    // 0. Authentification / Login
+    private Reponse routesAuth(String methode, String[] segments, int offset, HttpExchange exchange) throws IOException {
+        if ("POST".equalsIgnoreCase(methode)) {
+            LoginRequest req = lireCorps(exchange, LoginRequest.class);
+            if (req == null) {
+                throw new ValidationException("Corps de la requete JSON invalide.");
+            }
+            MemberResponse user = userController.login(req.getEmail(), req.getMotDePasse());
+            return new Reponse(200, gson.toJson(user));
+        }
+        throw new IllegalArgumentException("Methode " + methode + " non supportee pour /auth");
     }
 
     // 1. Dashboard
@@ -281,13 +295,22 @@ public class Router {
     }
 
     // 10. Payments
-    private Reponse routesPayments(String methode, String[] segments, int offset) {
+    private Reponse routesPayments(String methode, String[] segments, int offset, HttpExchange exchange) throws IOException {
         int len = segments.length - offset;
-        if (len == 1 && "GET".equalsIgnoreCase(methode)) {
-            return new Reponse(200, gson.toJson(paymentController.lister()));
-        } else if (len == 2 && "GET".equalsIgnoreCase(methode)) {
+        if (len == 1) {
+            if ("GET".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(paymentController.lister()));
+            } else if ("POST".equalsIgnoreCase(methode)) {
+                tn.enicarthage.gym.model.Payment p = lireCorps(exchange, tn.enicarthage.gym.model.Payment.class);
+                return new Reponse(201, gson.toJson(paymentController.creer(p)));
+            }
+        } else if (len == 2) {
             int id = entier(segments[offset + 1]);
-            return new Reponse(200, gson.toJson(paymentController.obtenir(id)));
+            if ("GET".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(paymentController.obtenir(id)));
+            } else if ("PUT".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(paymentController.valider(id)));
+            }
         }
         throw new ResourceNotFoundException("Route introuvable");
     }

@@ -11,6 +11,11 @@ public class User {
     private String telephone;
     private String role; // ADMIN, COACH, MEMBER
     private String statut; // ACTIF, INACTIF, SUSPENDU
+    private String specialite;
+    private String ville;
+    private Double tarifHoraire;
+    private String bio;
+    private String disponibilite;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -51,6 +56,21 @@ public class User {
 
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
+
+    public String getSpecialite() { return specialite; }
+    public void setSpecialite(String specialite) { this.specialite = specialite; }
+
+    public String getVille() { return ville; }
+    public void setVille(String ville) { this.ville = ville; }
+
+    public Double getTarifHoraire() { return tarifHoraire; }
+    public void setTarifHoraire(Double tarifHoraire) { this.tarifHoraire = tarifHoraire; }
+
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+
+    public String getDisponibilite() { return disponibilite; }
+    public void setDisponibilite(String disponibilite) { this.disponibilite = disponibilite; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

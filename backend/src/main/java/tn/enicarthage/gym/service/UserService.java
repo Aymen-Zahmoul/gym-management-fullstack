@@ -2,6 +2,7 @@ package tn.enicarthage.gym.service;
 
 import tn.enicarthage.gym.dao.MembershipDAO;
 import tn.enicarthage.gym.dao.MembershipPlanDAO;
+import tn.enicarthage.gym.dao.PaymentDAO;
 import tn.enicarthage.gym.dao.UserDAO;
 import tn.enicarthage.gym.dto.MemberRequest;
 import tn.enicarthage.gym.dto.MemberResponse;
@@ -9,6 +10,7 @@ import tn.enicarthage.gym.exception.ResourceNotFoundException;
 import tn.enicarthage.gym.exception.ValidationException;
 import tn.enicarthage.gym.model.Membership;
 import tn.enicarthage.gym.model.MembershipPlan;
+import tn.enicarthage.gym.model.Payment;
 import tn.enicarthage.gym.model.User;
 
 import java.time.LocalDate;
@@ -19,10 +21,49 @@ public class UserService {
     private final UserDAO userDAO = new UserDAO();
     private final MembershipDAO membershipDAO = new MembershipDAO();
     private final MembershipPlanDAO planDAO = new MembershipPlanDAO();
+    private final PaymentDAO paymentDAO = new PaymentDAO();
+
+    public static String hashPassword(String password) {
+        if (password == null) return "";
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            return password;
+        }
+    }
+
+    public MemberResponse authenticate(String email, String motDePasse) {
+        if (email == null || email.trim().isEmpty() || motDePasse == null || motDePasse.trim().isEmpty()) {
+            throw new ValidationException("L'adresse email et le mot de passe sont obligatoires.");
+        }
+        User u = userDAO.findByEmail(email.trim().toLowerCase());
+        if (u == null) {
+            throw new ValidationException("Identifiants incorrects. Veuillez verifier votre email et mot de passe.");
+        }
+
+        String hashedInput = hashPassword(motDePasse);
+        boolean passwordMatches = motDePasse.equals(u.getMotDePasse()) || hashedInput.equalsIgnoreCase(u.getMotDePasse());
+        if (!passwordMatches) {
+            throw new ValidationException("Identifiants incorrects. Veuillez verifier votre email et mot de passe.");
+        }
+        if (!"ACTIF".equalsIgnoreCase(u.getStatut())) {
+            throw new ValidationException("Ce compte est desactive. Contactez l'administration.");
+        }
+        return toResponse(u);
+    }
 
     public List<MemberResponse> getAllMembers() {
         List<User> users = userDAO.findByRole("MEMBER");
         List<Membership> allMemberships = membershipDAO.findAll();
+        List<Payment> allPayments = paymentDAO.findAll();
         List<MemberResponse> responses = new ArrayList<>();
 
         for (User u : users) {
@@ -33,6 +74,25 @@ public class UserService {
                     break;
                 }
             }
+
+            // Attribuer le statut de paiement
+            Payment latestUserPayment = null;
+            for (Payment p : allPayments) {
+                if (p.getUserId() == u.getId()) {
+                    latestUserPayment = p;
+                    break; // allPayments est deja trie par date_paiement DESC
+                }
+            }
+
+            if (latestUserPayment != null) {
+                resp.setPaymentStatut(latestUserPayment.getStatut());
+                if (latestUserPayment.getMontant() != null) {
+                    resp.setLastPaymentAmount(latestUserPayment.getMontant().doubleValue());
+                }
+            } else {
+                resp.setPaymentStatut(resp.getActivePlanName() != null ? "NON_PAYE" : "AUCUN");
+            }
+
             responses.add(resp);
         }
         return responses;
@@ -69,7 +129,8 @@ public class UserService {
         u.setGymId(1);
         u.setNomComplet(req.getNomComplet().trim());
         u.setEmail(req.getEmail().trim().toLowerCase());
-        u.setMotDePasse(req.getMotDePasse() != null && !req.getMotDePasse().isEmpty() ? req.getMotDePasse() : "pass123");
+        String rawPass = req.getMotDePasse() != null && !req.getMotDePasse().isEmpty() ? req.getMotDePasse() : "pass123";
+        u.setMotDePasse(hashPassword(rawPass));
         u.setTelephone(req.getTelephone());
         u.setRole(req.getRole() != null ? req.getRole() : "MEMBER");
         u.setStatut(req.getStatut() != null ? req.getStatut() : "ACTIF");
