@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   UserPlus,
@@ -26,6 +26,7 @@ import { SpotlightCard } from './ui/SpotlightCard';
 import { ShinyButton } from './ui/ShinyButton';
 import { useAnimeEntrance } from '../utils/animeAnimations';
 import { api } from '../services/api';
+import { getErrorMessage } from '../utils/errorUtils';
 
 interface MembersViewProps {
   members: Member[];
@@ -59,6 +60,18 @@ export const MembersView: React.FC<MembersViewProps> = ({
     telephone: '',
     initialPlanId: plans.length > 0 ? plans[0].id : 1,
   });
+
+  useEffect(() => {
+    if (!isModalOpen && !settleModalMember) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsModalOpen(false);
+        setSettleModalMember(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen, settleModalMember]);
 
   // Calculate counters
   const paidCount = members.filter((m) => m.paymentStatut === 'PAYE').length;
@@ -166,8 +179,8 @@ export const MembersView: React.FC<MembersViewProps> = ({
       });
       setSettleModalMember(null);
       if (onRefreshData) await onRefreshData();
-    } catch (err: any) {
-      alert("Erreur lors de l'encaissement : " + err.message);
+    } catch (err: unknown) {
+      alert("Erreur lors de l'encaissement : " + getErrorMessage(err));
     } finally {
       setSettleLoading(false);
     }
@@ -379,7 +392,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
                         <div className="font-heading font-black text-neutral-900 dark:text-white text-base uppercase tracking-tight">
                           {m.nomComplet}
                         </div>
-                        <div className="text-[11px] font-mono text-neutral-400 flex items-center gap-2">
+                        <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 flex items-center gap-2">
                           <span>CFT-{String(m.id).padStart(4, '0')}</span>
                           {m.statut === 'SUSPENDU' && (
                             <span className="text-[9px] font-heading font-bold text-amber-500 uppercase px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30">
@@ -433,7 +446,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
                     <span>{m.telephone || 'Non renseigné'}</span>
                   </div>
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-[11px] text-neutral-400 font-light">Forfait Actif :</span>
+                    <span className="text-[11px] text-neutral-500 dark:text-neutral-400 font-light">Forfait Actif :</span>
                     <span className="font-heading font-bold text-xs uppercase text-neutral-900 dark:text-white">
                       {m.activePlanName || 'Aucun abonnement'}
                     </span>
@@ -442,7 +455,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
 
                 {/* Card Footer: Date & Quick Actions */}
                 <div className="pt-4 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-neutral-400">
+                  <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
                     Inscrit le {m.createdAt ? m.createdAt.slice(0, 10) : '2026-11-01'}
                   </span>
 
@@ -488,22 +501,22 @@ export const MembersView: React.FC<MembersViewProps> = ({
                       <div className="font-heading font-bold text-sm text-neutral-900 dark:text-white uppercase tracking-tight">
                         {m.nomComplet}
                       </div>
-                      <div className="text-[10px] text-neutral-400 font-mono">
+                      <div className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">
                         CFT-{String(m.id).padStart(4, '0')}
                       </div>
                     </td>
                     <td className="py-4 px-4">
                       <div className="text-neutral-900 dark:text-white font-medium">{m.email}</div>
-                      <div className="text-[11px] text-neutral-400">{m.telephone || '—'}</div>
+                      <div className="text-[11px] text-neutral-500 dark:text-neutral-400">{m.telephone || '—'}</div>
                     </td>
                     <td className="py-4 px-4">{getStatusBadge(m)}</td>
                     <td className="py-4 px-4 font-heading font-bold uppercase text-xs text-neutral-800 dark:text-neutral-200">
-                      {m.activePlanName || <span className="text-neutral-400 italic">Aucun</span>}
+                      {m.activePlanName || <span className="text-neutral-500 dark:text-neutral-400 italic">Aucun</span>}
                     </td>
                     <td className="py-4 px-4 font-mono font-bold text-neutral-900 dark:text-white">
                       {m.lastPaymentAmount ? `${m.lastPaymentAmount.toFixed(2)} TND` : '—'}
                     </td>
-                    <td className="py-4 px-4 font-mono text-[11px] text-neutral-400">
+                    <td className="py-4 px-4 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">
                       {m.createdAt ? m.createdAt.slice(0, 10) : '2026-11-01'}
                     </td>
                     {isAdmin && (
@@ -541,20 +554,29 @@ export const MembersView: React.FC<MembersViewProps> = ({
 
       {/* Settle / Record Payment Modal */}
       {settleModalMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-settle-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSettleModalMember(null);
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+        >
           <div className="w-full max-w-md rounded-3xl bg-white dark:bg-[#111215] border border-neutral-200 dark:border-white/10 p-7 shadow-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-4">
               <div>
                 <span className="text-[10px] uppercase font-heading font-bold tracking-[0.2em] text-[#c87a32]">
                   Caisse & Comptabilité
                 </span>
-                <h3 className="text-xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight">
+                <h3 id="modal-settle-title" className="text-xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight">
                   Encaisser la Cotisation
                 </h3>
               </div>
               <button
                 onClick={() => setSettleModalMember(null)}
-                className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10"
+                aria-label="Fermer la fenêtre d'encaissement"
+                className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -644,20 +666,29 @@ export const MembersView: React.FC<MembersViewProps> = ({
 
       {/* Add Member Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-addmember-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsModalOpen(false);
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+        >
           <div className="w-full max-w-md rounded-3xl bg-white dark:bg-[#111215] border border-neutral-200 dark:border-white/10 p-7 shadow-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-4">
               <div>
                 <span className="text-[10px] uppercase font-heading font-bold tracking-[0.2em] text-[#c5a880]">
                   Inscriptions
                 </span>
-                <h3 className="text-xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight">
+                <h3 id="modal-addmember-title" className="text-xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight">
                   Nouvel Adhérent
                 </h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10"
+                aria-label="Fermer la fenêtre d'inscription"
+                className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -665,7 +696,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
+                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">
                   Nom Complet
                 </label>
                 <input
@@ -679,7 +710,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
+                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">
                   Email de Contact
                 </label>
                 <input
@@ -693,7 +724,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
+                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">
                   Téléphone Portable
                 </label>
                 <input
@@ -706,7 +737,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-400 mb-1.5">
+                <label className="block text-[11px] font-heading font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">
                   Forfait Initial
                 </label>
                 <select

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Search, CheckCircle2, ShieldCheck, UserCheck } from 'lucide-react';
 import { Member } from '../../types';
 import { ShinyButton } from './ShinyButton';
@@ -13,6 +13,17 @@ export const QuickCheckInModal: React.FC<QuickCheckInModalProps> = ({ isOpen, on
   const [query, setQuery] = useState('');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [checkInSuccess, setCheckInSuccess] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -37,26 +48,35 @@ export const QuickCheckInModal: React.FC<QuickCheckInModalProps> = ({ isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-white dark:bg-[#111215] border border-neutral-200/90 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-checkin-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200"
+    >
+      <div className="relative w-full max-w-lg bg-white dark:bg-[#111215] border border-neutral-200/90 dark:border-white/10 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-neutral-100 dark:border-white/[0.06]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-white/[0.05] border border-neutral-200 dark:border-white/10 flex items-center justify-center text-neutral-900 dark:text-white">
+            <div className="w-10 h-10 rounded-2xl bg-bronze/10 border border-bronze/30 flex items-center justify-center text-bronze font-bold">
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400">Contrôle d'Accès</span>
-              <h3 className="text-lg font-black text-neutral-900 dark:text-white uppercase tracking-tight">
+              <h3 id="modal-checkin-title" className="text-lg font-black text-neutral-900 dark:text-white uppercase tracking-tight">
                 Borne de Pointage NFC / RFID
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white text-sm"
+            aria-label="Fermer la boîte de dialogue"
+            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
 

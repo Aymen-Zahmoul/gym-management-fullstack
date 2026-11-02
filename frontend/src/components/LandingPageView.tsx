@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dumbbell,
@@ -17,6 +17,8 @@ import {
   Sun,
   Moon,
   LogIn,
+  LogOut,
+  User,
   QrCode,
   X,
   Sparkles,
@@ -25,7 +27,7 @@ import {
   Droplets,
   Layers,
 } from 'lucide-react';
-import type { MembershipPlan, ClassSession } from '../types';
+import type { MembershipPlan, ClassSession, Member } from '../types';
 import { SpotlightCard } from './ui/SpotlightCard';
 import { ShinyButton } from './ui/ShinyButton';
 import { HadidLogo } from './ui/HadidLogo';
@@ -37,6 +39,8 @@ interface LandingPageViewProps {
   onToggleTheme: () => void;
   plans: MembershipPlan[];
   sessions: ClassSession[];
+  currentUser?: Member | null;
+  onLogout?: () => void;
 }
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({
@@ -45,6 +49,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
   onToggleTheme,
   plans,
   sessions,
+  currentUser,
+  onLogout,
 }) => {
   // Interactive BMI Calculator State (Clinical Wellness Style)
   const [weight, setWeight] = useState<number>(76);
@@ -155,6 +161,15 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
   const [preferredSpace, setPreferredSpace] = useState('Plateau Force & Haltérophilie');
   const [tourBooked, setTourBooked] = useState(false);
 
+  useEffect(() => {
+    if (!isTourModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsTourModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isTourModalOpen]);
+
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const faqs = [
@@ -195,8 +210,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             <a href="#standards" className="hover:text-[#c5a880] transition-colors">Standards</a>
           </nav>
 
-          {/* Actions: Theme Toggle + Member Portal Access */}
-          <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+          {/* Actions: Theme Toggle + Member Portal Access / Logout */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <button
               onClick={onToggleTheme}
               aria-label="Changer de thème"
@@ -206,13 +221,36 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               {isDark ? <Sun className="w-4 h-4 text-[#c5a880]" /> : <Moon className="w-4 h-4 text-neutral-900" />}
             </button>
 
-            <button
-              onClick={onOpenLogin}
-              className="px-4 sm:px-5 py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
-            >
-              <LogIn className="w-3.5 h-3.5 text-[#c5a880] dark:text-inherit" />
-              <span>Espace Membre</span>
-            </button>
+            {currentUser ? (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onOpenLogin}
+                  className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                >
+                  <User className="w-3.5 h-3.5 text-[#c5a880] dark:text-neutral-950" />
+                  <span className="hidden sm:inline">{currentUser.nomComplet.split(' ')[0]} ({currentUser.role})</span>
+                  <span className="sm:hidden">Espace</span>
+                </button>
+                {onLogout && (
+                  <button
+                    onClick={onLogout}
+                    title="Se Déconnecter"
+                    className="p-2 sm:p-2.5 rounded-full border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 transition-all cursor-pointer active:scale-95 flex items-center gap-1 text-[10px] font-bold uppercase"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Quitter</span>
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={onOpenLogin}
+                className="px-4 sm:px-5 py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+              >
+                <LogIn className="w-3.5 h-3.5 text-[#c5a880] dark:text-inherit" />
+                <span>Espace Membre</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -820,10 +858,18 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
         </div>
       </footer>
 
-      {/* 10. Guest Pass / Private Tour Modal (Responsive, Anti-Collision) */}
+      {/* 10. Guest Pass / Private Tour Modal (Responsive, Anti-Collision, A11y) */}
       <AnimatePresence>
         {isTourModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-tour-title"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setIsTourModalOpen(false);
+            }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
             <motion.div
               initial={{ scale: 0.94, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -832,7 +878,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             >
               <button
                 onClick={() => setIsTourModalOpen(false)}
-                className="absolute top-6 right-6 text-neutral-400 hover:text-black dark:hover:text-white cursor-pointer"
+                aria-label="Fermer la visite privée"
+                className="absolute top-6 right-6 p-2 rounded-xl text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -843,7 +890,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
                     <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#c5a880]">
                       Pass Découverte 24H • Byrsa
                     </span>
-                    <h3 className="text-2xl sm:text-3xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
+                    <h3 id="modal-tour-title" className="text-2xl sm:text-3xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
                       Visite Privée du Club
                     </h3>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">

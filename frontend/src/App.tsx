@@ -1,21 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
-import { LandingPageView } from './components/LandingPageView';
-import { LoginView } from './components/LoginView';
-import { DashboardView } from './components/DashboardView';
-import { MembersView } from './components/MembersView';
-import { ScheduleView } from './components/ScheduleView';
-import { PlansView } from './components/PlansView';
-import { LedgerView } from './components/LedgerView';
-import { MemberSpaceView } from './components/MemberSpaceView';
-import { CoachesCatalogueView } from './components/CoachesCatalogueView';
 import { GridBackground } from './components/ui/GridBackground';
 import { QuickCheckInModal } from './components/ui/QuickCheckInModal';
 import { api } from './services/api';
 import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Payment, Coach } from './types';
 import { AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import { HadidLogo } from './components/ui/HadidLogo';
+import { getErrorMessage } from './utils/errorUtils';
+
+// Code Splitting with React.lazy to reduce initial bundle from 601 kB to < 120 kB
+const LandingPageView = lazy(() => import('./components/LandingPageView').then(m => ({ default: m.LandingPageView })));
+const LoginView = lazy(() => import('./components/LoginView').then(m => ({ default: m.LoginView })));
+const DashboardView = lazy(() => import('./components/DashboardView').then(m => ({ default: m.DashboardView })));
+const MembersView = lazy(() => import('./components/MembersView').then(m => ({ default: m.MembersView })));
+const ScheduleView = lazy(() => import('./components/ScheduleView').then(m => ({ default: m.ScheduleView })));
+const PlansView = lazy(() => import('./components/PlansView').then(m => ({ default: m.PlansView })));
+const LedgerView = lazy(() => import('./components/LedgerView').then(m => ({ default: m.LedgerView })));
+const MemberSpaceView = lazy(() => import('./components/MemberSpaceView').then(m => ({ default: m.MemberSpaceView })));
+const CoachesCatalogueView = lazy(() => import('./components/CoachesCatalogueView').then(m => ({ default: m.CoachesCatalogueView })));
+
+const ViewLoadingFallback = () => (
+  <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3 py-16 animate-pulse select-none">
+    <div className="w-12 h-12 rounded-2xl bg-bronze/10 border border-bronze/30 flex items-center justify-center text-bronze font-black text-sm shadow-inner">
+      HD
+    </div>
+    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+      <RefreshCw className="w-3.5 h-3.5 animate-spin text-bronze" />
+      <span>Sanctuaire HADID • Chargement...</span>
+    </div>
+  </div>
+);
 
 export function App() {
   // Theme Management (Light / Dark mode)
@@ -109,8 +124,8 @@ export function App() {
       setSessions(sessionsData);
       setPayments(paymentsData);
       setCoaches(coachesData);
-    } catch (err: any) {
-      showToast("Impossible de joindre le serveur Java : " + err.message, 'error');
+    } catch (err: unknown) {
+      showToast("Impossible de joindre le serveur Java : " + getErrorMessage(err), 'error');
     } finally {
       setLoading(false);
     }
@@ -164,8 +179,9 @@ export function App() {
       await api.createMember(data);
       showToast(`Adhérent ${data.nomComplet} inscrit avec succès !`, 'success');
       loadAllData();
-    } catch (err: any) {
-      showToast(err.message, 'error');
+    } catch (err: unknown) {
+      const msg = getErrorMessage(err);
+      showToast(msg, 'error');
       throw err;
     }
   };
@@ -175,8 +191,8 @@ export function App() {
       await api.deleteMember(id);
       showToast('Adhérent supprimé.', 'success');
       loadAllData();
-    } catch (err: any) {
-      showToast(err.message, 'error');
+    } catch (err: unknown) {
+      showToast(getErrorMessage(err), 'error');
     }
   };
 
@@ -185,8 +201,9 @@ export function App() {
       await api.createBooking(sessionId, memberId);
       showToast('Réservation validée et confirmée !', 'success');
       loadAllData();
-    } catch (err: any) {
-      showToast(err.message, 'error');
+    } catch (err: unknown) {
+      const msg = getErrorMessage(err);
+      showToast(msg, 'error');
       throw err;
     }
   };
@@ -196,8 +213,9 @@ export function App() {
       await api.createSession(data);
       showToast('Nouvelle séance ajoutée au planning !', 'success');
       loadAllData();
-    } catch (err: any) {
-      showToast(err.message, 'error');
+    } catch (err: unknown) {
+      const msg = getErrorMessage(err);
+      showToast(msg, 'error');
       throw err;
     }
   };
@@ -226,29 +244,35 @@ export function App() {
 
       {/* VIEW 1: Public Responsive Landing Page */}
       {viewMode === 'landing' && (
-        <LandingPageView
-          onOpenLogin={() => {
-            if (currentUser) {
-              setViewMode('app');
-            } else {
-              setViewMode('login');
-            }
-          }}
-          isDark={isDark}
-          onToggleTheme={() => setIsDark((prev) => !prev)}
-          plans={plans}
-          sessions={sessions}
-        />
+        <Suspense fallback={<ViewLoadingFallback />}>
+          <LandingPageView
+            onOpenLogin={() => {
+              if (currentUser) {
+                setViewMode('app');
+              } else {
+                setViewMode('login');
+              }
+            }}
+            isDark={isDark}
+            onToggleTheme={() => setIsDark((prev) => !prev)}
+            plans={plans}
+            sessions={sessions}
+            currentUser={currentUser}
+            onLogout={handleLogout}
+          />
+        </Suspense>
       )}
 
-      {/* VIEW 2: Dedicated Authentication View */}
+      {/* VIEW 2: Dedicated Authentication View (Single Page, 0 Scroll) */}
       {viewMode === 'login' && !currentUser && (
-        <LoginView
-          onLoginSuccess={handleLoginSuccess}
-          isDark={isDark}
-          onToggleTheme={() => setIsDark((prev) => !prev)}
-          onBackToLanding={() => setViewMode('landing')}
-        />
+        <Suspense fallback={<ViewLoadingFallback />}>
+          <LoginView
+            onLoginSuccess={handleLoginSuccess}
+            isDark={isDark}
+            onToggleTheme={() => setIsDark((prev) => !prev)}
+            onBackToLanding={() => setViewMode('landing')}
+          />
+        </Suspense>
       )}
 
       {/* VIEW 3: Protected 3-Tier Back-Office Application */}
@@ -274,86 +298,88 @@ export function App() {
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Chargement des données depuis l'API Java...</p>
               </div>
             ) : (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.22, ease: 'easeOut' }}
-                >
-                  {/* ADMIN View: Dashboard */}
-                  {activeTab === 'dashboard' && currentUser.role === 'ADMIN' && (
-                    <DashboardView
-                      stats={stats}
-                      sessions={sessions}
-                      members={members}
-                      plans={plans}
-                      onNavigate={setActiveTab}
-                      onOpenBookingModal={(s) => setSelectedSessionForBooking(s)}
-                      onOpenQuickCheckIn={() => setIsQuickCheckInOpen(true)}
-                    />
-                  )}
+              <Suspense fallback={<ViewLoadingFallback />}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                  >
+                    {/* ADMIN View: Dashboard */}
+                    {activeTab === 'dashboard' && currentUser.role === 'ADMIN' && (
+                      <DashboardView
+                        stats={stats}
+                        sessions={sessions}
+                        members={members}
+                        plans={plans}
+                        onNavigate={setActiveTab}
+                        onOpenBookingModal={(s) => setSelectedSessionForBooking(s)}
+                        onOpenQuickCheckIn={() => setIsQuickCheckInOpen(true)}
+                      />
+                    )}
 
-                  {/* ADMIN & COACH View: Members Directory */}
-                  {activeTab === 'members' && (currentUser.role === 'ADMIN' || currentUser.role === 'COACH') && (
-                    <MembersView
-                      members={members}
-                      plans={plans}
-                      onCreateMember={handleCreateMember}
-                      onDeleteMember={handleDeleteMember}
-                      currentUser={currentUser}
-                      onRefreshData={loadAllData}
-                    />
-                  )}
+                    {/* ADMIN & COACH View: Members Directory */}
+                    {activeTab === 'members' && (currentUser.role === 'ADMIN' || currentUser.role === 'COACH') && (
+                      <MembersView
+                        members={members}
+                        plans={plans}
+                        onCreateMember={handleCreateMember}
+                        onDeleteMember={handleDeleteMember}
+                        currentUser={currentUser}
+                        onRefreshData={loadAllData}
+                      />
+                    )}
 
-                  {/* ALL ROLES View: Schedule & Sessions */}
-                  {activeTab === 'schedule' && (
-                    <ScheduleView
-                      sessions={sessions}
-                      members={members}
-                      classes={classes}
-                      selectedSessionForBooking={selectedSessionForBooking}
-                      onCloseBookingModal={() => setSelectedSessionForBooking(null)}
-                      onOpenBookingModal={(s) => setSelectedSessionForBooking(s)}
-                      onBookSession={handleBookSession}
-                      onCreateSession={handleCreateSession}
-                      currentUser={currentUser}
-                    />
-                  )}
+                    {/* ALL ROLES View: Schedule & Sessions */}
+                    {activeTab === 'schedule' && (
+                      <ScheduleView
+                        sessions={sessions}
+                        members={members}
+                        classes={classes}
+                        selectedSessionForBooking={selectedSessionForBooking}
+                        onCloseBookingModal={() => setSelectedSessionForBooking(null)}
+                        onOpenBookingModal={(s) => setSelectedSessionForBooking(s)}
+                        onBookSession={handleBookSession}
+                        onCreateSession={handleCreateSession}
+                        currentUser={currentUser}
+                      />
+                    )}
 
-                  {/* ADMIN View: Back-Office Plan Administration */}
-                  {activeTab === 'plans' && currentUser.role === 'ADMIN' && (
-                    <PlansView plans={plans} members={members} />
-                  )}
+                    {/* ADMIN View: Back-Office Plan Administration */}
+                    {activeTab === 'plans' && currentUser.role === 'ADMIN' && (
+                      <PlansView plans={plans} members={members} />
+                    )}
 
-                  {/* ADMIN View: Financial Ledger & Cashier */}
-                  {activeTab === 'ledger' && currentUser.role === 'ADMIN' && (
-                    <LedgerView payments={payments} />
-                  )}
+                    {/* ADMIN View: Financial Ledger & Cashier */}
+                    {activeTab === 'ledger' && currentUser.role === 'ADMIN' && (
+                      <LedgerView payments={payments} />
+                    )}
 
-                  {/* ALL ROLES View: Coaches Directory by City & Sport */}
-                  {activeTab === 'coaches' && (
-                    <CoachesCatalogueView
-                      coaches={coaches}
-                      currentUser={currentUser}
-                      onNavigateToSchedule={() => setActiveTab('schedule')}
-                    />
-                  )}
+                    {/* ALL ROLES View: Coaches Directory by City & Sport */}
+                    {activeTab === 'coaches' && (
+                      <CoachesCatalogueView
+                        coaches={coaches}
+                        currentUser={currentUser}
+                        onNavigateToSchedule={() => setActiveTab('schedule')}
+                      />
+                    )}
 
-                  {/* MEMBER Dedicated View: Digital Card & Subscription Space */}
-                  {activeTab === 'my-space' && currentUser.role === 'MEMBER' && (
-                    <MemberSpaceView
-                      currentUser={currentUser}
-                      plans={plans}
-                      sessions={sessions}
-                      onNavigateToSchedule={() => setActiveTab('schedule')}
-                      onNavigateToCoaches={() => setActiveTab('coaches')}
-                      onRefreshData={loadAllData}
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
+                    {/* MEMBER Dedicated View: Digital Card & Subscription Space */}
+                    {activeTab === 'my-space' && currentUser.role === 'MEMBER' && (
+                      <MemberSpaceView
+                        currentUser={currentUser}
+                        plans={plans}
+                        sessions={sessions}
+                        onNavigateToSchedule={() => setActiveTab('schedule')}
+                        onNavigateToCoaches={() => setActiveTab('coaches')}
+                        onRefreshData={loadAllData}
+                      />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </Suspense>
             )}
           </main>
 

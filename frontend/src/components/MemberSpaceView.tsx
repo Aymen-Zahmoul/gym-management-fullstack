@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Award,
   Calendar,
@@ -23,6 +23,7 @@ import { ShinyButton } from './ui/ShinyButton';
 import { useAnimeEntrance } from '../utils/animeAnimations';
 import { HadidLogo } from './ui/HadidLogo';
 import { api } from '../services/api';
+import { getErrorMessage } from '../utils/errorUtils';
 
 interface MemberSpaceViewProps {
   currentUser: Member;
@@ -55,6 +56,15 @@ export const MemberSpaceView: React.FC<MemberSpaceViewProps> = ({
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+  useEffect(() => {
+    if (!isPaymentModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsPaymentModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPaymentModalOpen]);
+
   const chosenPlan = plans.find((p) => p.id === selectedPlanId) || userPlan;
 
   const handlePaySubscription = async (e: React.FormEvent) => {
@@ -78,8 +88,8 @@ export const MemberSpaceView: React.FC<MemberSpaceViewProps> = ({
         setPaymentSuccess(false);
         setIsPaymentModalOpen(false);
       }, 2500);
-    } catch (err: any) {
-      alert('Erreur lors du paiement : ' + err.message);
+    } catch (err: unknown) {
+      alert('Erreur lors du paiement : ' + getErrorMessage(err));
     } finally {
       setPaymentLoading(false);
     }
@@ -328,20 +338,29 @@ export const MemberSpaceView: React.FC<MemberSpaceViewProps> = ({
 
       {/* Member Online Subscription Payment Modal */}
       {isPaymentModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-payment-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsPaymentModalOpen(false);
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+        >
           <div className="w-full max-w-lg rounded-3xl bg-white dark:bg-[#111215] border border-neutral-200 dark:border-white/10 p-7 sm:p-8 shadow-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-4">
               <div>
                 <span className="text-[10px] uppercase font-heading font-bold tracking-[0.2em] text-[#c5a880]">
                   Règlement Sécurisé • HADID Byrsa
                 </span>
-                <h3 className="text-xl sm:text-2xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight">
+                <h3 id="modal-payment-title" className="text-xl sm:text-2xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight">
                   Payer Mon Abonnement
                 </h3>
               </div>
               <button
                 onClick={() => setIsPaymentModalOpen(false)}
-                className="p-1 rounded-lg text-neutral-400 hover:text-white"
+                aria-label="Fermer la fenêtre de règlement"
+                className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>

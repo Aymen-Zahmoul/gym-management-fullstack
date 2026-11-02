@@ -74,8 +74,9 @@ public class Router {
         } catch (ValidationException | IllegalArgumentException e) {
             envoyer(exchange, 400, messageErreur(e.getMessage()));
         } catch (Exception e) {
+            System.err.println("[ERREUR SERVEUR INTERNE] " + e.getMessage());
             e.printStackTrace();
-            envoyer(exchange, 500, messageErreur("Erreur interne du serveur : " + e.getMessage()));
+            envoyer(exchange, 500, messageErreur("Une erreur technique est survenue. L'incident a été consigné sur le serveur."));
         }
     }
 

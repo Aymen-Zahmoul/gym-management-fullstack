@@ -156,7 +156,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Users className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-400">
+          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
             <span>HADID Byrsa</span>
             <span className="flex items-center gap-1.5 font-medium text-[#c5a880]">
               <ShieldCheck className="w-3.5 h-3.5" /> Synchronisé MySQL
@@ -182,7 +182,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Banknote className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-400">
+          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
             <span>Journal de caisse</span>
             <span className="flex items-center gap-1.5 font-medium text-[#758a7b] dark:text-[#a3b8a9]">
               <TrendingUp className="w-3.5 h-3.5" /> Clôturé
@@ -208,7 +208,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <AlertTriangle className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-400">
+          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
             <span>Régularisation</span>
             <button
               onClick={() => onNavigate('members')}
@@ -237,7 +237,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Calendar className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-400">
+          <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
             <span>Taux de présence</span>
             <span className="flex items-center gap-1.5 font-medium text-[#c87a32]">
               <Activity className="w-3.5 h-3.5" /> {occupancyPercent}% rempli

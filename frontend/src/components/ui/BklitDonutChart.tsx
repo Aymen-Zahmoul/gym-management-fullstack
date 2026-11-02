@@ -53,7 +53,7 @@ export const BklitDonutChart: React.FC<BklitDonutChartProps> = ({
           {label ?? `${percentage}%`}
         </span>
         {subLabel && (
-          <span className="text-[9px] font-mono uppercase tracking-widest text-neutral-400 mt-0.5">
+          <span className="text-[9px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mt-0.5">
             {subLabel}
           </span>
         )}

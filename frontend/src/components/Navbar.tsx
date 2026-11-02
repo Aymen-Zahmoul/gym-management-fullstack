@@ -161,9 +161,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <button
                     onClick={onLogout}
                     title="Se Déconnecter"
-                    className="p-2 rounded-xl text-neutral-400 hover:text-amber-500 hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-neutral-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20 transition-all cursor-pointer text-xs font-semibold"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-4 h-4 text-amber-500" />
+                    <span className="hidden xl:inline">Quitter</span>
                   </button>
                 )}
               </div>
@@ -173,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile nav */}
-      <div className="md:hidden flex overflow-x-auto border-t border-neutral-200/90 dark:border-white/[0.08] px-4 py-3 gap-2 bg-[#fbfbfa] dark:bg-[#0c0d10]">
+      <div className="md:hidden flex items-center overflow-x-auto border-t border-neutral-200/90 dark:border-white/[0.08] px-4 py-2.5 gap-2 bg-[#fbfbfa] dark:bg-[#0c0d10]">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -181,7 +182,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${
                 isActive
                   ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold'
                   : 'text-neutral-600 dark:text-neutral-400'
@@ -192,6 +193,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           );
         })}
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            title="Se Déconnecter"
+            className="flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-semibold uppercase tracking-wider whitespace-nowrap text-amber-600 dark:text-amber-400 border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 cursor-pointer ml-auto"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Déconnexion</span>
+          </button>
+        )}
       </div>
     </header>
   );

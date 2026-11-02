@@ -92,14 +92,14 @@ export const BklitPeakHourHeatmap: React.FC = () => {
     <div className="space-y-5">
       <div className="flex items-center justify-between text-xs">
         <div>
-          <span className="text-[10px] uppercase font-bold tracking-[0.18em] text-neutral-400 block">
+          <span className="text-[10px] uppercase font-bold tracking-[0.18em] text-neutral-500 dark:text-neutral-400 block">
             Matrice d'Affluence
           </span>
           <h3 className="text-base font-bold text-neutral-900 dark:text-white uppercase tracking-tight mt-0.5">
             Densité d'Occupation Hebdomadaire
           </h3>
         </div>
-        <div className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-400">
+        <div className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
           <span>Calme</span>
           <span className="w-2.5 h-2.5 rounded-sm bg-neutral-100 dark:bg-white/[0.04]" />
           <span className="w-2.5 h-2.5 rounded-sm bg-neutral-200 dark:bg-white/[0.15]" />
@@ -113,7 +113,7 @@ export const BklitPeakHourHeatmap: React.FC = () => {
       <div className="overflow-x-auto pb-1">
         <div className="min-w-[420px]">
           {/* Header hours */}
-          <div className="grid grid-cols-8 gap-1.5 mb-1.5 text-center text-[10px] font-mono text-neutral-400">
+          <div className="grid grid-cols-8 gap-1.5 mb-1.5 text-center text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
             <div />
             {hours.map((h) => (
               <div key={h}>{h}</div>
@@ -160,8 +160,8 @@ export const BklitPeakHourHeatmap: React.FC = () => {
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 text-neutral-400 text-[11px] font-light">
-            <Info className="w-3.5 h-3.5 text-neutral-400" />
+          <div className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400 text-[11px] font-light">
+            <Info className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
             <span>Survolez une cellule pour consulter la télémétrie horaire des studios.</span>
           </div>
         )}

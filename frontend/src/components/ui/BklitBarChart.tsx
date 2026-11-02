@@ -11,7 +11,7 @@ export const BklitBarChart: React.FC<BklitBarChartProps> = ({ data }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between text-xs text-neutral-500 font-light">
-        <span className="text-[11px] uppercase tracking-wider text-neutral-400">
+        <span className="text-[11px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
           Inscriptions en Direct vs Plafond Studio
         </span>
         <div className="flex items-center gap-3">
@@ -58,7 +58,7 @@ export const BklitBarChart: React.FC<BklitBarChartProps> = ({ data }) => {
               {/* Day label */}
               <span
                 className={`text-[10px] font-mono uppercase tracking-wider transition-colors ${
-                  isHovered ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-400'
+                  isHovered ? 'text-neutral-900 dark:text-white font-bold' : 'text-neutral-500 dark:text-neutral-400'
                 }`}
               >
                 {item.day}
