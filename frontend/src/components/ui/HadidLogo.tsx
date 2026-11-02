@@ -18,10 +18,10 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
   onClick,
 }) => {
   const sizeMap = {
-    sm: { img: 'h-7 sm:h-8', text: 'text-xs sm:text-sm', sub: 'text-[8px]' },
-    md: { img: 'h-8 sm:h-9', text: 'text-sm sm:text-base', sub: 'text-[9px]' },
-    lg: { img: 'h-12 sm:h-14', text: 'text-lg sm:text-xl', sub: 'text-[11px]' },
-    xl: { img: 'h-20 sm:h-24', text: 'text-2xl sm:text-3xl', sub: 'text-xs' },
+    sm: { img: 'h-7 sm:h-8', textImg: 'h-4 sm:h-4.5', sub: 'text-[8px]' },
+    md: { img: 'h-8 sm:h-9', textImg: 'h-4.5 sm:h-5', sub: 'text-[9px]' },
+    lg: { img: 'h-12 sm:h-14', textImg: 'h-6 sm:h-7', sub: 'text-[11px]' },
+    xl: { img: 'h-20 sm:h-24', textImg: 'h-10 sm:h-12', sub: 'text-xs' },
   };
 
   const current = sizeMap[size];
@@ -71,22 +71,10 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
           />
         </div>
 
-        {showText && (
-          <div className="mt-3 flex flex-col items-center text-center">
-            <div className="flex items-baseline justify-center gap-2">
-              <span className={`font-black tracking-[0.24em] uppercase text-neutral-950 dark:text-white leading-none ${current.text}`}>
-                HADID
-              </span>
-              <span className="text-bronze font-semibold text-xs sm:text-sm tracking-wider font-sans">
-                حديد
-              </span>
-            </div>
-            {showSubtitle && (
-              <span className={`text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.25em] uppercase mt-1.5 ${current.sub}`}>
-                Byrsa Sanctuary • Tunis
-              </span>
-            )}
-          </div>
+        {showText && showSubtitle && (
+          <span className={`text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.25em] uppercase mt-2 ${current.sub}`}>
+            Byrsa Sanctuary • Tunis
+          </span>
         )}
       </div>
     );
@@ -96,7 +84,9 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-3 select-none ${onClick ? 'cursor-pointer group' : ''} ${className}`}
+      className={`flex items-center gap-2.5 sm:gap-3 select-none ${
+        onClick ? 'cursor-pointer group' : ''
+      } ${className}`}
     >
       <div className={`relative flex items-center justify-center ${current.img} group-hover:scale-105 transition-transform duration-300 flex-shrink-0`}>
         <img
@@ -112,17 +102,21 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
       </div>
 
       {showText && (
-        <div className="flex flex-col">
-          <div className="flex items-baseline gap-2">
-            <span className={`font-black tracking-[0.24em] uppercase text-neutral-950 dark:text-white leading-none ${current.text}`}>
-              HADID
-            </span>
-            <span className="text-bronze font-semibold text-xs sm:text-sm tracking-wider font-sans">
-              حديد
-            </span>
+        <div className="flex flex-col justify-center">
+          <div className={`flex items-center ${current.textImg}`}>
+            <img
+              src="/hadid-wordmark-light.png"
+              alt="HADID حديد"
+              className="h-full w-auto object-contain dark:hidden"
+            />
+            <img
+              src="/hadid-wordmark-dark.png"
+              alt="HADID حديد"
+              className="h-full w-auto object-contain hidden dark:block"
+            />
           </div>
           {showSubtitle && (
-            <span className={`hidden xl:inline text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.25em] uppercase mt-0.5 ${current.sub}`}>
+            <span className={`hidden xl:inline text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.22em] uppercase mt-0.5 ${current.sub}`}>
               Byrsa Sanctuary • Tunis
             </span>
           )}

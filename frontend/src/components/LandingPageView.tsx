@@ -657,6 +657,16 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             </p>
           </div>
 
+          {/* Official Membership Registration Rule Banner */}
+          <div className="max-w-2xl mx-auto mb-10 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-center space-y-1">
+            <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">
+              Règle d'Adhésion Officielle HADID Byrsa
+            </span>
+            <p className="text-xs text-neutral-700 dark:text-neutral-300 font-light leading-relaxed">
+              L'enregistrement initial d'un membre s'effectue via la procédure officielle du club avec intervention administrative. La souscription et le règlement en ligne sont strictement réservés aux adhérents déjà immatriculés.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
             {plans.map((p, idx) => {
               const isRecommended = idx === 1 || p.nom.toLowerCase().includes('trimestriel') || p.nom.toLowerCase().includes('vip');
@@ -724,8 +734,11 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
                           : 'bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white'
                       }`}
                     >
-                      Souscrire à cette formule
+                      {currentUser ? 'Renouveler ma formule (Espace Membre)' : 'Souscrire (Réservé aux Membres)'}
                     </button>
+                    <p className="text-[10px] text-neutral-400 text-center mt-2 font-mono">
+                      {currentUser ? 'Débit immédiat sur votre compte' : 'Connexion adhérent requise'}
+                    </p>
                   </div>
                 </div>
               );

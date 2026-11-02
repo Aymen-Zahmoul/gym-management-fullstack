@@ -71,14 +71,8 @@ export const MemberSpaceView: React.FC<MemberSpaceViewProps> = ({
     e.preventDefault();
     try {
       setPaymentLoading(true);
-      const amount = chosenPlan ? chosenPlan.prix : 240.0;
-      await api.createPayment({
-        userId: currentUser.id,
-        montant: amount,
-        modePaiement: paymentMethod,
-        statut: 'PAYE',
-        reference: `ONLINE-PAY-${currentUser.id}-${Date.now().toString().slice(-4)}`,
-      });
+      // Synchronisation formelle backend : validation de la cotisation et mise à jour validité
+      await api.subscribeMembership(currentUser.id, selectedPlanId, paymentMethod);
 
       setPaymentSuccess(true);
       if (onRefreshData) {
