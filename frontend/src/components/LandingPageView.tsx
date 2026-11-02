@@ -302,9 +302,9 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </section>
 
       {/* 3. Specialized Spaces / Studios */}
-      <section id="spaces" className="py-24 sm:py-32 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+      <section id="spaces" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-3xl space-y-3">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
               Quatre Studios Dédiés. Zéro Compromis.
             </h2>
@@ -314,7 +314,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
           </div>
 
           {/* Tab Switcher */}
-          <div className="flex sm:justify-center overflow-x-auto gap-2 pb-2 no-scrollbar border-b border-neutral-200/80 dark:border-white/[0.08]">
+          <div className="flex overflow-x-auto gap-2 pb-2 no-scrollbar border-b border-neutral-200/80 dark:border-white/[0.08]">
             {clubSpaces.map((space, idx) => (
               <button
                 key={space.id}
@@ -424,9 +424,9 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </section>
 
       {/* 4. Clinical Metabolic & Performance Assessment (No Layout Collisions) */}
-      <section id="assessment" className="py-24 sm:py-32 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+      <section id="assessment" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-5xl mx-auto space-y-3">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
               Évaluez Votre Indice & Objectif Sportif
             </h2>
@@ -526,8 +526,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </section>
 
       {/* 5. Live Class Schedule Sneak-Peek */}
-      <section id="schedule" className="py-24 sm:py-32 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section id="schedule" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="max-w-3xl space-y-3">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
@@ -608,8 +608,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </section>
 
       {/* 6. Membership Tiers & Official Investment (Pricing, No Collision) */}
-      <section id="memberships" className="py-24 sm:py-32 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+      <section id="memberships" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
               Investissez Dans Vos Standards.
@@ -697,8 +697,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </section>
 
       {/* 7. The Carthage Standards (Pure Air, Acoustic, Recovery) */}
-      <section id="standards" className="py-24 sm:py-32 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section id="standards" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
               Une Attention Inégalée aux Détails.
@@ -749,8 +749,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </section>
 
       {/* 8. FAQ Accordion (No Icon Collisions) */}
-      <section className="py-24 sm:py-32 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <section className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
               Questions Fréquentes
