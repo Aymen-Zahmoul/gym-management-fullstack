@@ -48,6 +48,8 @@ public class Router {
     private final SessionController sessionController = new SessionController();
     private final BookingController bookingController = new BookingController();
     private final PaymentController paymentController = new PaymentController();
+    private final CoachCollaborationController coachCollaborationController = new CoachCollaborationController();
+    private final SchedulingRequestController schedulingRequestController = new SchedulingRequestController();
 
     public void dispatcher(HttpExchange exchange) throws IOException {
         String methode = exchange.getRequestMethod();
@@ -109,6 +111,8 @@ public class Router {
             case "sessions" -> routesSessions(methode, segments, index, exchange);
             case "bookings" -> routesBookings(methode, segments, index, exchange);
             case "payments" -> routesPayments(methode, segments, index, exchange);
+            case "coach-collaborations", "coach-requests" -> routesCoachCollaborations(methode, segments, index, exchange);
+            case "scheduling-requests", "schedule-requests" -> routesSchedulingRequests(methode, segments, index, exchange);
             default -> throw new ResourceNotFoundException("Ressource inconnue : /" + ressource);
         };
     }
@@ -362,4 +366,81 @@ public class Router {
             exchange.close();
         }
     }
+
+    // 11. Demandes d'affiliation Coach
+    private Reponse routesCoachCollaborations(String methode, String[] segments, int offset, HttpExchange exchange) throws IOException {
+        int len = segments.length - offset;
+        if (len == 1) {
+            if ("GET".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(coachCollaborationController.lister()));
+            } else if ("POST".equalsIgnoreCase(methode)) {
+                CoachRegisterRequest req = lireCorps(exchange, CoachRegisterRequest.class);
+                return new Reponse(201, gson.toJson(coachCollaborationController.inscrireCoach(req)));
+            }
+        } else if (len == 2) {
+            int id = entier(segments[offset + 1]);
+            if ("GET".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(coachCollaborationController.obtenir(id)));
+            }
+        } else if (len == 3) {
+            int id = entier(segments[offset + 1]);
+            String action = segments[offset + 2].toLowerCase();
+            if ("PUT".equalsIgnoreCase(methode) || "POST".equalsIgnoreCase(methode)) {
+                if ("approve".equals(action)) {
+                    return new Reponse(200, gson.toJson(coachCollaborationController.approuver(id)));
+                } else if ("reject".equals(action)) {
+                    record RejectBody(String motif) {}
+                    RejectBody body = lireCorpsFacultatif(exchange, RejectBody.class);
+                    String motif = body != null ? body.motif() : "Refuse par l'administration";
+                    return new Reponse(200, gson.toJson(coachCollaborationController.rejeter(id, motif)));
+                }
+            }
+        }
+        throw new ResourceNotFoundException("Route introuvable pour /coach-collaborations");
+    }
+
+    // 12. Demandes de creneaux de cours / planning
+    private Reponse routesSchedulingRequests(String methode, String[] segments, int offset, HttpExchange exchange) throws IOException {
+        int len = segments.length - offset;
+        if (len == 1) {
+            if ("GET".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(schedulingRequestController.lister()));
+            } else if ("POST".equalsIgnoreCase(methode)) {
+                tn.enicarthage.gym.model.SchedulingRequest req = lireCorps(exchange, tn.enicarthage.gym.model.SchedulingRequest.class);
+                return new Reponse(201, gson.toJson(schedulingRequestController.creer(req)));
+            }
+        } else if (len == 2) {
+            int id = entier(segments[offset + 1]);
+            if ("GET".equalsIgnoreCase(methode)) {
+                return new Reponse(200, gson.toJson(schedulingRequestController.obtenir(id)));
+            }
+        } else if (len == 3) {
+            int id = entier(segments[offset + 1]);
+            String action = segments[offset + 2].toLowerCase();
+            if ("GET".equalsIgnoreCase(methode) && "conflicts".equals(action)) {
+                return new Reponse(200, gson.toJson(schedulingRequestController.verifierConflits(id)));
+            } else if ("PUT".equalsIgnoreCase(methode) || "POST".equalsIgnoreCase(methode)) {
+                if ("approve".equals(action)) {
+                    return new Reponse(200, gson.toJson(schedulingRequestController.approuver(id)));
+                } else if ("reject".equals(action)) {
+                    record RejectBody(String motif) {}
+                    RejectBody body = lireCorpsFacultatif(exchange, RejectBody.class);
+                    String motif = body != null ? body.motif() : "Creneau non valide";
+                    return new Reponse(200, gson.toJson(schedulingRequestController.rejeter(id, motif)));
+                }
+            }
+        }
+        throw new ResourceNotFoundException("Route introuvable pour /scheduling-requests");
+    }
+
+    private <T> T lireCorpsFacultatif(HttpExchange exchange, Class<T> clazz) {
+        try (InputStream is = exchange.getRequestBody()) {
+            String json = new String(is.readAllBytes(), StandardCharsets.UTF_8).trim();
+            if (json.isEmpty()) return null;
+            return gson.fromJson(json, clazz);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
