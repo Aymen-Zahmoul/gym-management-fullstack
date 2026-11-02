@@ -80,11 +80,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 bg-[#fbfbfa]/95 dark:bg-[#0c0d10]/95 backdrop-blur-xl border-b border-neutral-200/90 dark:border-white/[0.08] transition-colors duration-300">
-      <div className="w-full px-6 sm:px-10 lg:px-12">
-        <div className="flex items-center justify-between h-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
           {/* Main Brand with Borderless Hadid Logo in the Corner */}
           <div className="flex-shrink-0">
-            <HadidLogo size="lg" onClick={handleBrandClick} />
+            <HadidLogo size="md" onClick={handleBrandClick} />
           </div>
 
           {/* Navigation Links with Clean Sliding Pill & Generous Spacing */}

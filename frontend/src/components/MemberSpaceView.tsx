@@ -170,9 +170,9 @@ export const MemberSpaceView: React.FC<MemberSpaceViewProps> = ({
           <div>
             <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-4 mb-5">
               <div className="flex items-center gap-2.5">
-                <HadidLogo size="sm" showSubtitle={false} />
+                <HadidLogo size="sm" layout="emblem-only" />
                 <span className="font-heading font-black text-xs tracking-[0.18em] text-neutral-900 dark:text-white uppercase">
-                  Pass RFID
+                  Pass RFID Titulaire
                 </span>
               </div>
               <span
