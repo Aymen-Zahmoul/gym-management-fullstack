@@ -3,6 +3,7 @@ package tn.enicarthage.gym.dao;
 import tn.enicarthage.gym.config.DatabaseConnection;
 import tn.enicarthage.gym.model.User;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +139,15 @@ public class UserDAO {
         u.setTelephone(rs.getString("telephone"));
         u.setRole(rs.getString("role"));
         u.setStatut(rs.getString("statut"));
+        try {
+            u.setSpecialite(rs.getString("specialite"));
+            u.setVille(rs.getString("ville"));
+            BigDecimal th = rs.getBigDecimal("tarif_horaire");
+            if (th != null) u.setTarifHoraire(th.doubleValue());
+            u.setBio(rs.getString("bio"));
+            u.setDisponibilite(rs.getString("disponibilite"));
+        } catch (SQLException ignored) {
+        }
         Timestamp ca = rs.getTimestamp("created_at");
         if (ca != null) u.setCreatedAt(ca.toLocalDateTime());
         Timestamp ua = rs.getTimestamp("updated_at");

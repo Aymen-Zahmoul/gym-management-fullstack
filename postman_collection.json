@@ -1,0 +1,314 @@
+{
+  "info": {
+    "name": "Carthage Fitness Club - API REST Java Pur",
+    "_postman_id": "carthage-gym-api-v1",
+    "description": "Collection de tests Postman pour le projet fédérateur Java Web Builder (ENICarthage - Mme Jihen ABBASSI).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Dashboard & KPIs",
+      "item": [
+        {
+          "name": "Obtenir les statistiques globales",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/dashboard",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "dashboard"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Adhérents (Members)",
+      "item": [
+        {
+          "name": "Lister tous les adhérents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/members",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "members"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir un adhérent par ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/members/5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "members", "5"]
+            }
+          }
+        },
+        {
+          "name": "Inscrire un nouvel adhérent (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomComplet\": \"Tarek Dridi\",\n  \"email\": \"tarek.dridi@gmail.com\",\n  \"telephone\": \"+216 55 123 789\",\n  \"initialPlanId\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/members",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "members"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un adhérent (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomComplet\": \"Tarek Dridi Modifié\",\n  \"telephone\": \"+216 55 999 888\",\n  \"statut\": \"ACTIF\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/members/5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "members", "5"]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un adhérent (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/members/10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "members", "10"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Coachs",
+      "item": [
+        {
+          "name": "Lister les coachs certifiés",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/coaches",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "coaches"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Formules d'abonnement (Plans)",
+      "item": [
+        {
+          "name": "Lister les forfaits disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/plans",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "plans"]
+            }
+          }
+        },
+        {
+          "name": "Créer un nouveau forfait (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Pass Semestriel Performance\",\n  \"description\": \"Accès 6 mois avec coaching personnalisé\",\n  \"prix\": 420.00,\n  \"dureeMois\": 6,\n  \"accesCoursIllimite\": true,\n  \"estActif\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/plans",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "plans"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Séances & Cours",
+      "item": [
+        {
+          "name": "Lister toutes les séances du planning",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/sessions",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "sessions"]
+            }
+          }
+        },
+        {
+          "name": "Lister les cours collectifs (Disciplines)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/classes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "classes"]
+            }
+          }
+        },
+        {
+          "name": "Programmer une nouvelle séance (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"classId\": 1,\n  \"coachId\": 2,\n  \"salle\": \"Ring & Dojo A\",\n  \"dateHeureDebut\": \"2026-11-05T18:00:00\",\n  \"dateHeureFin\": \"2026-11-05T19:15:00\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/sessions",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "sessions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Réservations (Bookings)",
+      "item": [
+        {
+          "name": "Lister toutes les réservations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Réserver une place (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": 1,\n  \"memberId\": 6\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Annuler une réservation (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "bookings", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Caisse & Paiements",
+      "item": [
+        {
+          "name": "Lister l'historique des règlements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/payments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "payments"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

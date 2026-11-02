@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HADID Gym Club | Club Privé d'Élite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('gym_theme');
+          var isDark = saved ? saved === 'dark' : true;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#0B0C0E';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.backgroundColor = '#FAF9F5';
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-[#FAF9F5] dark:bg-[#0B0C0E] text-neutral-900 dark:text-[#f4ede4] antialiased selection:bg-[#c5a880]/30 selection:text-[#c5a880]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

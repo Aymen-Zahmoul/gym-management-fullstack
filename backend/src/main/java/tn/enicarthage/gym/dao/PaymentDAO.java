@@ -75,6 +75,19 @@ public class PaymentDAO {
         }
     }
 
+    public void updateStatus(int id, String status) {
+        String sql = "UPDATE payment SET statut = ?, updated_at = NOW() WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur DAO Payment.updateStatus : " + e.getMessage(), e);
+        }
+    }
+
     private Payment mapRow(ResultSet rs) throws SQLException {
         Payment p = new Payment();
         p.setId(rs.getInt("id"));

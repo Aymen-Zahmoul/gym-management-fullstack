@@ -87,6 +87,48 @@ public class SessionDAO {
         }
     }
 
+    public boolean isRoomOccupied(String salle, java.time.LocalDateTime debut, java.time.LocalDateTime fin, int excludeSessionId) {
+        String sql = "SELECT COUNT(*) FROM class_session "
+                   + "WHERE salle = ? AND statut != 'ANNULEE' AND id != ? "
+                   + "AND date_heure_debut < ? AND date_heure_fin > ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, salle);
+            stmt.setInt(2, excludeSessionId);
+            stmt.setTimestamp(3, Timestamp.valueOf(fin));
+            stmt.setTimestamp(4, Timestamp.valueOf(debut));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isCoachOccupied(int coachId, java.time.LocalDateTime debut, java.time.LocalDateTime fin, int excludeSessionId) {
+        String sql = "SELECT COUNT(*) FROM class_session "
+                   + "WHERE coach_id = ? AND statut != 'ANNULEE' AND id != ? "
+                   + "AND date_heure_debut < ? AND date_heure_fin > ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, coachId);
+            stmt.setInt(2, excludeSessionId);
+            stmt.setTimestamp(3, Timestamp.valueOf(fin));
+            stmt.setTimestamp(4, Timestamp.valueOf(debut));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private ClassSession mapRow(ResultSet rs) throws SQLException {
         ClassSession s = new ClassSession();
         s.setId(rs.getInt("id"));
