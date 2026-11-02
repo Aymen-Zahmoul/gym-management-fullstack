@@ -114,6 +114,42 @@ CREATE TABLE payment (
     CONSTRAINT fk_payment_membership FOREIGN KEY (membership_id) REFERENCES membership(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+CREATE TABLE coach_collaboration_request (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    coach_id INT NOT NULL,
+    gym_id INT NOT NULL DEFAULT 1,
+    specialites VARCHAR(255) NOT NULL,
+    bio TEXT,
+    annees_experience INT DEFAULT 1,
+    statut ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    motif_rejet TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_collab_coach FOREIGN KEY (coach_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_collab_gym FOREIGN KEY (gym_id) REFERENCES gym(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE scheduling_request (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    coach_id INT NOT NULL,
+    gym_id INT NOT NULL DEFAULT 1,
+    activite VARCHAR(120) NOT NULL,
+    class_id INT NULL,
+    jours_semaine VARCHAR(100) NOT NULL,
+    heure_debut TIME NOT NULL,
+    heure_fin TIME NOT NULL,
+    date_debut DATE NOT NULL,
+    date_fin DATE NOT NULL,
+    salle VARCHAR(80) NOT NULL DEFAULT 'Salle Principale',
+    remarques TEXT,
+    statut ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    motif_rejet TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_sched_coach FOREIGN KEY (coach_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_sched_gym FOREIGN KEY (gym_id) REFERENCES gym(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- DONNÉES INITIALES
 INSERT INTO gym (id, nom, adresse, telephone, email, site_web) VALUES
 (1, 'Carthage Fitness Club', 'Avenue Habib Bourguiba, Carthage, Tunis', '+216 71 890 123', 'contact@carthagefitness.tn', 'https://carthagefitness.tn');

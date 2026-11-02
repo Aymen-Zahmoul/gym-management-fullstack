@@ -22,6 +22,7 @@ public class UserService {
     private final MembershipDAO membershipDAO = new MembershipDAO();
     private final MembershipPlanDAO planDAO = new MembershipPlanDAO();
     private final PaymentDAO paymentDAO = new PaymentDAO();
+    private final tn.enicarthage.gym.dao.CoachCollaborationRequestDAO collabDAO = new tn.enicarthage.gym.dao.CoachCollaborationRequestDAO();
 
     public static String hashPassword(String password) {
         if (password == null) return "";
@@ -55,7 +56,19 @@ public class UserService {
             throw new ValidationException("Identifiants incorrects. Veuillez verifier votre email et mot de passe.");
         }
         if (!"ACTIF".equalsIgnoreCase(u.getStatut())) {
-            throw new ValidationException("Ce compte est desactive. Contactez l'administration.");
+            if ("COACH".equalsIgnoreCase(u.getRole())) {
+                List<tn.enicarthage.gym.model.CoachCollaborationRequest> collabs = collabDAO.findByCoachId(u.getId());
+                if (!collabs.isEmpty()) {
+                    String st = collabs.get(0).getStatut();
+                    if ("PENDING".equalsIgnoreCase(st)) {
+                        throw new ValidationException("Votre demande de collaboration avec le club HADID est en cours d'examen par l'administration. Vous aurez acces des son approbation.");
+                    } else if ("REJECTED".equalsIgnoreCase(st)) {
+                        String motif = collabs.get(0).getMotifRejet();
+                        throw new ValidationException("Votre demande de collaboration n'a pas ete retenue par l'administration" + (motif != null ? " : " + motif : "."));
+                    }
+                }
+            }
+            throw new ValidationException("Ce compte est desactive ou en attente. Contactez l'administration.");
         }
         return toResponse(u);
     }
