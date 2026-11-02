@@ -193,25 +193,25 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
 
   return (
     <GridBackground className="min-h-screen bg-[#fbfbfa] dark:bg-[#0c0d10] text-neutral-900 dark:text-neutral-100 font-sans selection:bg-[#c5a880]/30 selection:text-[#c5a880]">
-      {/* 1. Header Navigation: Perfectly Centered, Spacious Logo, High-Visibility Logout */}
+      {/* 1. Header Navigation: Zero Collision, Natural Flow, Pinned Centered Navigation */}
       <header className="sticky top-0 z-40 border-b border-neutral-200/80 dark:border-white/[0.08] bg-[#fbfbfa]/90 dark:bg-[#0c0d10]/90 backdrop-blur-xl transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
-          {/* Hadid Official Brand with generous breathing room */}
-          <div className="flex items-center flex-shrink-0 z-10 pl-1 sm:pl-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+          {/* Left: Hadid Official Brand with generous breathing room */}
+          <div className="flex items-center flex-shrink-0">
             <HadidLogo size="md" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
           </div>
 
-          {/* Clean Navigation Links — Pinned EXACTLY in the Center */}
-          <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-7 xl:gap-9 text-[11px] font-heading font-bold uppercase tracking-[0.16em] text-neutral-600 dark:text-neutral-300 pointer-events-auto">
-            <a href="#spaces" className="hover:text-[#c5a880] transition-colors">Studios</a>
-            <a href="#assessment" className="hover:text-[#c5a880] transition-colors">Bilan Santé</a>
-            <a href="#schedule" className="hover:text-[#c5a880] transition-colors">Planning</a>
-            <a href="#memberships" className="hover:text-[#c5a880] transition-colors">Formules</a>
-            <a href="#standards" className="hover:text-[#c5a880] transition-colors">Standards</a>
+          {/* Center: Clean Navigation Links in Normal Flow (Zero Collision Guaranteed) */}
+          <nav className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-6 xl:gap-9 text-[11px] font-heading font-bold uppercase tracking-[0.16em] text-neutral-600 dark:text-neutral-300">
+            <a href="#spaces" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Studios</a>
+            <a href="#assessment" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Bilan Santé</a>
+            <a href="#schedule" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Planning</a>
+            <a href="#memberships" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Formules</a>
+            <a href="#standards" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Standards</a>
           </nav>
 
-          {/* Actions: Theme Toggle + Member Portal Access / Logout */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 z-10">
+          {/* Right: Actions (Theme Toggle + Member Portal Access / Logout) */}
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
             <button
               onClick={onToggleTheme}
               aria-label="Changer de thème"
@@ -225,7 +225,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={onOpenLogin}
-                  className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                  className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 flex-shrink-0"
                 >
                   <User className="w-3.5 h-3.5 text-[#c5a880] dark:text-neutral-950" />
                   <span className="hidden sm:inline">Mon Espace ({currentUser.role})</span>
