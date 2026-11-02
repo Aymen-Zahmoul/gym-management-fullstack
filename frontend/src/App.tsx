@@ -4,7 +4,7 @@ import { Navbar } from './components/Navbar';
 import { GridBackground } from './components/ui/GridBackground';
 import { QuickCheckInModal } from './components/ui/QuickCheckInModal';
 import { api } from './services/api';
-import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Payment, Coach } from './types';
+import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Payment, Coach, SchedulingRequest, CoachCollaborationRequest } from './types';
 import { AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import { HadidLogo } from './components/ui/HadidLogo';
 import { getErrorMessage } from './utils/errorUtils';
@@ -19,6 +19,7 @@ const PlansView = lazy(() => import('./components/PlansView').then(m => ({ defau
 const LedgerView = lazy(() => import('./components/LedgerView').then(m => ({ default: m.LedgerView })));
 const MemberSpaceView = lazy(() => import('./components/MemberSpaceView').then(m => ({ default: m.MemberSpaceView })));
 const CoachesCatalogueView = lazy(() => import('./components/CoachesCatalogueView').then(m => ({ default: m.CoachesCatalogueView })));
+const RequestsManagementView = lazy(() => import('./components/RequestsManagementView').then(m => ({ default: m.RequestsManagementView })));
 
 const ViewLoadingFallback = () => (
   <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3 py-16 animate-pulse select-none">
@@ -91,6 +92,8 @@ export function App() {
   const [sessions, setSessions] = useState<ClassSession[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [schedulingRequests, setSchedulingRequests] = useState<SchedulingRequest[]>([]);
+  const [coachRequests, setCoachRequests] = useState<CoachCollaborationRequest[]>([]);
 
   // Modals state
   const [selectedSessionForBooking, setSelectedSessionForBooking] = useState<ClassSession | null>(null);
@@ -104,7 +107,7 @@ export function App() {
   const loadAllData = async () => {
     try {
       setLoading(true);
-      const [statsData, membersData, plansData, classesData, sessionsData, paymentsData, coachesData] = await Promise.all([
+      const [statsData, membersData, plansData, classesData, sessionsData, paymentsData, coachesData, schedData, coachReqData] = await Promise.all([
         api.getStats().catch(() => null),
         api.getMembers().catch(() => []),
         api.getPlans().catch(() => []),
@@ -112,6 +115,8 @@ export function App() {
         api.getSessions().catch(() => []),
         api.getPayments().catch(() => []),
         api.getCoaches().catch(() => []),
+        api.getSchedulingRequests().catch(() => []),
+        api.getCoachCollaborations().catch(() => []),
       ]);
 
       setStats(statsData);
@@ -121,6 +126,8 @@ export function App() {
       setSessions(sessionsData);
       setPayments(paymentsData);
       setCoaches(coachesData);
+      setSchedulingRequests(schedData);
+      setCoachRequests(coachReqData);
     } catch (err: unknown) {
       showToast("Impossible de joindre le serveur Java : " + getErrorMessage(err), 'error');
     } finally {
@@ -217,6 +224,65 @@ export function App() {
     }
   };
 
+  const handleRequestSchedule = async (data: Partial<SchedulingRequest>) => {
+    try {
+      await api.createSchedulingRequest(data);
+      showToast('Demande de créneau transmise à l\'administration !', 'success');
+      loadAllData();
+    } catch (err: unknown) {
+      showToast(getErrorMessage(err), 'error');
+      throw err;
+    }
+  };
+
+  const handleApproveScheduling = async (id: number) => {
+    try {
+      await api.approveSchedulingRequest(id);
+      showToast('Demande approuvée : séances ajoutées au calendrier !', 'success');
+      loadAllData();
+    } catch (err: unknown) {
+      showToast(getErrorMessage(err), 'error');
+      throw err;
+    }
+  };
+
+  const handleRejectScheduling = async (id: number, motif?: string) => {
+    try {
+      await api.rejectSchedulingRequest(id, motif);
+      showToast('Demande de créneau refusée.', 'success');
+      loadAllData();
+    } catch (err: unknown) {
+      showToast(getErrorMessage(err), 'error');
+      throw err;
+    }
+  };
+
+  const handleApproveCoach = async (id: number) => {
+    try {
+      await api.approveCoachCollaboration(id);
+      showToast('Collaboration acceptée : coach affilié au club HADID !', 'success');
+      loadAllData();
+    } catch (err: unknown) {
+      showToast(getErrorMessage(err), 'error');
+      throw err;
+    }
+  };
+
+  const handleRejectCoach = async (id: number, motif?: string) => {
+    try {
+      await api.rejectCoachCollaboration(id, motif);
+      showToast('Dossier de candidature coach décliné.', 'success');
+      loadAllData();
+    } catch (err: unknown) {
+      showToast(getErrorMessage(err), 'error');
+      throw err;
+    }
+  };
+
+  const handleCheckConflicts = async (id: number) => {
+    return await api.getSchedulingRequestConflicts(id);
+  };
+
   return (
     <GridBackground className="min-h-screen bg-[#fbfbfa] dark:bg-[#0c0d10] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-300">
       {/* Toast Notification */}
@@ -285,6 +351,10 @@ export function App() {
             currentUser={currentUser}
             onLogout={handleLogout}
             onOpenLanding={() => setViewMode('landing')}
+            pendingRequestsCount={
+              schedulingRequests.filter((r) => r.statut === 'PENDING').length +
+              coachRequests.filter((r) => r.statut === 'PENDING').length
+            }
           />
 
           {/* Main Container */}
@@ -340,7 +410,27 @@ export function App() {
                         onOpenBookingModal={(s) => setSelectedSessionForBooking(s)}
                         onBookSession={handleBookSession}
                         onCreateSession={handleCreateSession}
+                        onRequestSchedule={handleRequestSchedule}
+                        schedulingRequests={
+                          currentUser.role === 'COACH'
+                            ? schedulingRequests.filter((r) => r.coachId === currentUser.id)
+                            : schedulingRequests
+                        }
                         currentUser={currentUser}
+                      />
+                    )}
+
+                    {/* ADMIN Dedicated View: Coach Collaborations & Scheduling Requests Approval */}
+                    {activeTab === 'requests' && currentUser.role === 'ADMIN' && (
+                      <RequestsManagementView
+                        schedulingRequests={schedulingRequests}
+                        coachRequests={coachRequests}
+                        onApproveScheduling={handleApproveScheduling}
+                        onRejectScheduling={handleRejectScheduling}
+                        onApproveCoach={handleApproveCoach}
+                        onRejectCoach={handleRejectCoach}
+                        onCheckConflicts={handleCheckConflicts}
+                        onRefreshData={loadAllData}
                       />
                     )}
 

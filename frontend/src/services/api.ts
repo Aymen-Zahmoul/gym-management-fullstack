@@ -1,4 +1,4 @@
-import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Booking, Payment, Coach } from '../types';
+import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Booking, Payment, Coach, CoachCollaborationRequest, SchedulingRequest } from '../types';
 
 const API_BASE = (import.meta.env.VITE_API_URL as string) || 'http://localhost:8081/api';
 
@@ -95,5 +95,57 @@ export const api = {
     fetchJSON<Payment>(`${API_BASE}/payments`, {
       method: 'POST',
       body: JSON.stringify(data),
+    }),
+
+  // 7. Memberships Subscription (Official Online Payment & Renewal)
+  subscribeMembership: (userId: number, planId: number, modePaiement?: string) =>
+    fetchJSON<{ id: number; userId: number; planId: number; dateDebut: string; dateFin: string; statut: string }>(`${API_BASE}/memberships`, {
+      method: 'POST',
+      body: JSON.stringify({ userId, planId, modePaiement: modePaiement || 'CARTE_BANCAIRE' }),
+    }),
+
+  // 8. Coach Collaboration Requests
+  getCoachCollaborations: () => fetchJSON<CoachCollaborationRequest[]>(`${API_BASE}/coach-collaborations`),
+  registerCoach: (data: {
+    nomComplet: string;
+    email: string;
+    motDePasse: string;
+    telephone?: string;
+    specialites: string;
+    bio?: string;
+    anneesExperience?: number;
+    gymId?: number;
+  }) =>
+    fetchJSON<CoachCollaborationRequest>(`${API_BASE}/coach-collaborations`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  approveCoachCollaboration: (id: number) =>
+    fetchJSON<CoachCollaborationRequest>(`${API_BASE}/coach-collaborations/${id}/approve`, {
+      method: 'PUT',
+    }),
+  rejectCoachCollaboration: (id: number, motif?: string) =>
+    fetchJSON<CoachCollaborationRequest>(`${API_BASE}/coach-collaborations/${id}/reject`, {
+      method: 'PUT',
+      body: JSON.stringify({ motif }),
+    }),
+
+  // 9. Coach Scheduling Requests & Approvals
+  getSchedulingRequests: () => fetchJSON<SchedulingRequest[]>(`${API_BASE}/scheduling-requests`),
+  createSchedulingRequest: (data: Partial<SchedulingRequest>) =>
+    fetchJSON<SchedulingRequest>(`${API_BASE}/scheduling-requests`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getSchedulingRequestConflicts: (id: number) =>
+    fetchJSON<ClassSession[]>(`${API_BASE}/scheduling-requests/${id}/conflicts`),
+  approveSchedulingRequest: (id: number) =>
+    fetchJSON<SchedulingRequest>(`${API_BASE}/scheduling-requests/${id}/approve`, {
+      method: 'PUT',
+    }),
+  rejectSchedulingRequest: (id: number, motif?: string) =>
+    fetchJSON<SchedulingRequest>(`${API_BASE}/scheduling-requests/${id}/reject`, {
+      method: 'PUT',
+      body: JSON.stringify({ motif }),
     }),
 };

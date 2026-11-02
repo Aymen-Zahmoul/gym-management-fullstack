@@ -100,3 +100,45 @@ export interface Payment {
   reference: string;
   userName?: string;
 }
+
+
+export interface CoachCollaborationRequest {
+  id: number;
+  coachId: number;
+  gymId: number;
+  specialites: string;
+  bio?: string;
+  anneesExperience: number;
+  statut: 'PENDING' | 'APPROVED' | 'REJECTED';
+  motifRejet?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  coachNomComplet?: string;
+  coachEmail?: string;
+  coachTelephone?: string;
+  coachVille?: string;
+  gymNom?: string;
+}
+
+export interface SchedulingRequest {
+  id: number;
+  coachId: number;
+  gymId: number;
+  activite: string;
+  classId?: number;
+  joursSemaine: string;
+  heureDebut: string;
+  heureFin: string;
+  dateDebut: string;
+  dateFin: string;
+  salle?: string;
+  remarques?: string;
+  statut: 'PENDING' | 'APPROVED' | 'REJECTED';
+  motifRejet?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  coachNomComplet?: string;
+  coachEmail?: string;
+  coachTelephone?: string;
+  gymNom?: string;
+}
