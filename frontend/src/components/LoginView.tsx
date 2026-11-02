@@ -77,7 +77,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
       {/* 1. Header (Compact, Zero Overflow, Fits Any Screen) */}
       <header className="anime-item w-full max-w-7xl mx-auto px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between z-10 shrink-0">
-        <div className="flex-shrink-0">
+        <div className="flex items-center flex-shrink-0 pl-1 sm:pl-2">
           <HadidLogo size="md" onClick={onBackToLanding} />
         </div>
 

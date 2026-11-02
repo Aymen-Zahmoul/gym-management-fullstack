@@ -193,16 +193,16 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
 
   return (
     <GridBackground className="min-h-screen bg-[#fbfbfa] dark:bg-[#0c0d10] text-neutral-900 dark:text-neutral-100 font-sans selection:bg-[#c5a880]/30 selection:text-[#c5a880]">
-      {/* 1. Header Navigation: Compact Height (80px), Borderless Corner Logo, No Link Collision */}
+      {/* 1. Header Navigation: Perfectly Centered, Spacious Logo, High-Visibility Logout */}
       <header className="sticky top-0 z-40 border-b border-neutral-200/80 dark:border-white/[0.08] bg-[#fbfbfa]/90 dark:bg-[#0c0d10]/90 backdrop-blur-xl transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Hadid Official Borderless Brand in the Corner */}
-          <div className="flex-shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 relative flex items-center justify-between">
+          {/* Hadid Official Brand with generous breathing room */}
+          <div className="flex items-center flex-shrink-0 z-10 pl-1 sm:pl-2">
             <HadidLogo size="md" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
           </div>
 
-          {/* Clean Navigation Links with Balanced Spacing (No Collisions) */}
-          <nav className="hidden md:flex items-center gap-7 lg:gap-10 text-[11px] font-heading font-bold uppercase tracking-[0.16em] text-neutral-600 dark:text-neutral-300">
+          {/* Clean Navigation Links — Pinned EXACTLY in the Center */}
+          <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-7 xl:gap-9 text-[11px] font-heading font-bold uppercase tracking-[0.16em] text-neutral-600 dark:text-neutral-300 pointer-events-auto">
             <a href="#spaces" className="hover:text-[#c5a880] transition-colors">Studios</a>
             <a href="#assessment" className="hover:text-[#c5a880] transition-colors">Bilan Santé</a>
             <a href="#schedule" className="hover:text-[#c5a880] transition-colors">Planning</a>
@@ -211,41 +211,41 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
           </nav>
 
           {/* Actions: Theme Toggle + Member Portal Access / Logout */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 z-10">
             <button
               onClick={onToggleTheme}
               aria-label="Changer de thème"
               title={isDark ? 'Mode Clair' : 'Mode Sombre'}
-              className="p-2 sm:p-2.5 rounded-full border border-neutral-300 dark:border-white/10 hover:border-[#c5a880] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer"
+              className="p-2 sm:p-2.5 rounded-full border border-neutral-300 dark:border-white/10 hover:border-[#c5a880] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer flex-shrink-0"
             >
               {isDark ? <Sun className="w-4 h-4 text-[#c5a880]" /> : <Moon className="w-4 h-4 text-neutral-900" />}
             </button>
 
             {currentUser ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={onOpenLogin}
                   className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
                 >
                   <User className="w-3.5 h-3.5 text-[#c5a880] dark:text-neutral-950" />
-                  <span className="hidden sm:inline">{currentUser.nomComplet.split(' ')[0]} ({currentUser.role})</span>
+                  <span className="hidden sm:inline">Mon Espace ({currentUser.role})</span>
                   <span className="sm:hidden">Espace</span>
                 </button>
                 {onLogout && (
                   <button
                     onClick={onLogout}
                     title="Se Déconnecter"
-                    className="p-2 sm:p-2.5 rounded-full border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 transition-all cursor-pointer active:scale-95 flex items-center gap-1 text-[10px] font-bold uppercase"
+                    className="px-3 sm:px-3.5 py-2 rounded-full border border-rose-500/30 bg-rose-500/10 hover:bg-rose-600 text-rose-600 dark:text-rose-400 hover:text-white transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider shadow-sm flex-shrink-0"
                   >
                     <LogOut className="w-3.5 h-3.5" />
-                    <span className="hidden md:inline">Quitter</span>
+                    <span>Déconnexion</span>
                   </button>
                 )}
               </div>
             ) : (
               <button
                 onClick={onOpenLogin}
-                className="px-4 sm:px-5 py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+                className="px-4 sm:px-5 py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95 flex-shrink-0"
               >
                 <LogIn className="w-3.5 h-3.5 text-[#c5a880] dark:text-inherit" />
                 <span>Espace Membre</span>

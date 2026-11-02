@@ -18,10 +18,10 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
   onClick,
 }) => {
   const sizeMap = {
-    sm: { img: 'h-8 sm:h-9', text: 'text-sm', sub: 'text-[9px]' },
-    md: { img: 'h-10 sm:h-12', text: 'text-base sm:text-lg', sub: 'text-[10px]' },
-    lg: { img: 'h-14 sm:h-16', text: 'text-xl sm:text-2xl', sub: 'text-xs' },
-    xl: { img: 'h-24 sm:h-28', text: 'text-2xl sm:text-3xl', sub: 'text-xs' },
+    sm: { img: 'h-7 sm:h-8', text: 'text-xs sm:text-sm', sub: 'text-[8px]' },
+    md: { img: 'h-8 sm:h-9', text: 'text-sm sm:text-base', sub: 'text-[9px]' },
+    lg: { img: 'h-12 sm:h-14', text: 'text-lg sm:text-xl', sub: 'text-[11px]' },
+    xl: { img: 'h-20 sm:h-24', text: 'text-2xl sm:text-3xl', sub: 'text-xs' },
   };
 
   const current = sizeMap[size];

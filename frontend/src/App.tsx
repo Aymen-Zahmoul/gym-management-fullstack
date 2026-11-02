@@ -63,11 +63,8 @@ export function App() {
     return null;
   });
 
-  // View mode: 'landing' (public showcase), 'login' (auth form), or 'app' (protected back-office)
-  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'app'>(() => {
-    const saved = localStorage.getItem('gym_auth_user');
-    return saved ? 'app' : 'landing';
-  });
+  // View mode: ALWAYS starts on 'landing' when opening the site
+  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'app'>('landing');
 
   const getDefaultTabForRole = (user: Member | null): string => {
     if (!user) return 'dashboard';
