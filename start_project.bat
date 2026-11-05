@@ -36,7 +36,7 @@ echo.
 echo ========================================================
 echo Application lancee avec succes !
 echo - Frontend : http://localhost:3000
-echo - API Java : http://localhost:8080/api
+echo - API Java : http://localhost:8080/api (ou 8081)
 echo ========================================================
 start http://localhost:3000
 pause

@@ -18,6 +18,33 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
     });
 
     if (!res.ok) {
+      // If we got 401/404 from a foreign listener (like Oracle XE on port 8080), try alternate port failover
+      if (res.status === 401 || res.status === 404) {
+        const altBase = activeBase.includes('8080')
+          ? activeBase.replace('8080', '8081')
+          : activeBase.replace('8081', '8080');
+        const altReplaced = url.replace(/localhost:(8080|8081)\/api/, altBase.replace(/^https?:\/\//, ''));
+        const altFinalUrl = altReplaced.startsWith('http') ? altReplaced : `http://${altReplaced}`;
+
+        try {
+          const altRes = await fetch(altFinalUrl, {
+            ...options,
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              ...options?.headers,
+            },
+          });
+          if (altRes.ok) {
+            activeBase = altBase;
+            if (altRes.status === 204) return {} as T;
+            return altRes.json();
+          }
+        } catch {
+          // ignore and proceed to standard error
+        }
+      }
+
       let errMsg = `Erreur HTTP ${res.status}`;
       try {
         const errData = await res.json();
