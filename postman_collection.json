@@ -1,63 +1,126 @@
 {
   "info": {
-    "name": "Carthage Fitness Club - API REST Java Pur",
-    "_postman_id": "carthage-gym-api-v1",
-    "description": "Collection de tests Postman pour le projet fédérateur Java Web Builder (ENICarthage - Mme Jihen ABBASSI).",
+    "name": "HADID Byrsa - Gym Management API (Java Pur Native)",
+    "_postman_id": "hadid-gym-api-v2",
+    "description": "Collection de tests Postman officielle et exhaustive pour le projet fédérateur Java Web (ENICarthage).\nArchitecture N-Tiers sans Spring Boot : HttpServer natif Java 21 + JDBC + MySQL.\nBinôme : Aymen Zahmoul (Lead Architect ~65%) & Aziz (Domain Developer ~35%).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string",
+      "description": "URL de base de l'API REST (bascule sur 8081 si le port 8080 est occupé)"
+    }
+  ],
   "item": [
     {
-      "name": "1. Dashboard & KPIs",
+      "name": "0. Authentification (Auth)",
       "item": [
         {
-          "name": "Obtenir les statistiques globales",
+          "name": "Connexion Administrateur (Admin)",
           "request": {
-            "method": "GET",
-            "header": [],
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@carthagefitness.tn\",\n  \"motDePasse\": \"admin123\"\n}"
+            },
             "url": {
-              "raw": "http://localhost:8081/api/dashboard",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "dashboard"]
-            }
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authentifie le directeur du club et renvoie le profil complet avec le rôle ADMIN."
+          }
+        },
+        {
+          "name": "Connexion Coach Actif",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"karim.coach@carthagefitness.tn\",\n  \"motDePasse\": \"coach123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authentifie un coach officiel actif avec le rôle COACH."
+          }
+        },
+        {
+          "name": "Connexion Adhérent (Member)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"yassine.khemir@gmail.com\",\n  \"motDePasse\": \"pass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authentifie un membre actif avec le rôle MEMBER."
           }
         }
       ]
     },
     {
-      "name": "2. Adhérents (Members)",
+      "name": "1. Dashboard & KPIs",
       "item": [
         {
-          "name": "Lister tous les adhérents",
+          "name": "Obtenir les statistiques globales (Admin)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/members",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "members"]
-            }
+              "raw": "{{baseUrl}}/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard"]
+            },
+            "description": "Calcule et agrège en temps réel : total membres actifs, séances du jour, taux d'occupation, CA mensuel et alertes impayés."
           }
         },
         {
-          "name": "Obtenir un adhérent par ID",
+          "name": "Obtenir les informations du Club (Gym)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/members/5",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "members", "5"]
-            }
+              "raw": "{{baseUrl}}/gym",
+              "host": ["{{baseUrl}}"],
+              "path": ["gym"]
+            },
+            "description": "Retourne les coordonnées officielles de la salle de sport (Carthage Fitness Club / Byrsa)."
           }
-        },
+        }
+      ]
+    },
+    {
+      "name": "2. Adhérents (Members CRUD)",
+      "item": [
         {
-          "name": "Inscrire un nouvel adhérent (POST)",
+          "name": "C - Inscrire un nouvel adhérent (POST)",
           "request": {
             "method": "POST",
             "header": [
@@ -71,16 +134,41 @@
               "raw": "{\n  \"nomComplet\": \"Tarek Dridi\",\n  \"email\": \"tarek.dridi@gmail.com\",\n  \"telephone\": \"+216 55 123 789\",\n  \"initialPlanId\": 1\n}"
             },
             "url": {
-              "raw": "http://localhost:8081/api/members",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "members"]
-            }
+              "raw": "{{baseUrl}}/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["members"]
+            },
+            "description": "Crée un nouvel utilisateur avec le rôle MEMBER, statut ACTIF, et génère son adhésion initiale."
           }
         },
         {
-          "name": "Modifier un adhérent (PUT)",
+          "name": "R - Lister tous les adhérents (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["members"]
+            },
+            "description": "Récupère le fichier complet des adhérents avec leurs statuts d'adhésion."
+          }
+        },
+        {
+          "name": "R - Obtenir un adhérent par son ID (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/members/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", "5"]
+            },
+            "description": "Consulte la fiche détaillée de l'adhérent ID 5."
+          }
+        },
+        {
+          "name": "U - Mettre à jour un adhérent (PUT)",
           "request": {
             "method": "PUT",
             "header": [
@@ -94,68 +182,33 @@
               "raw": "{\n  \"nomComplet\": \"Tarek Dridi Modifié\",\n  \"telephone\": \"+216 55 999 888\",\n  \"statut\": \"ACTIF\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8081/api/members/5",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "members", "5"]
-            }
+              "raw": "{{baseUrl}}/members/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", "5"]
+            },
+            "description": "Met à jour les coordonnées ou le statut de l'adhérent."
           }
         },
         {
-          "name": "Supprimer un adhérent (DELETE)",
+          "name": "D - Supprimer / Radier un adhérent (DELETE)",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/members/10",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "members", "10"]
-            }
+              "raw": "{{baseUrl}}/members/10",
+              "host": ["{{baseUrl}}"],
+              "path": ["members", "10"]
+            },
+            "description": "Supprime définitivement un adhérent avec suppression en cascade de ses réservations."
           }
         }
       ]
     },
     {
-      "name": "3. Coachs",
+      "name": "3. Demandes de Créneaux Coach (Scheduling Requests)",
       "item": [
         {
-          "name": "Lister les coachs certifiés",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8081/api/coaches",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "coaches"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "4. Formules d'abonnement (Plans)",
-      "item": [
-        {
-          "name": "Lister les forfaits disponibles",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8081/api/plans",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "plans"]
-            }
-          }
-        },
-        {
-          "name": "Créer un nouveau forfait (POST)",
+          "name": "C - Soumettre une demande récurrente (POST Coach)",
           "request": {
             "method": "POST",
             "header": [
@@ -166,52 +219,70 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nom\": \"Pass Semestriel Performance\",\n  \"description\": \"Accès 6 mois avec coaching personnalisé\",\n  \"prix\": 420.00,\n  \"dureeMois\": 6,\n  \"accesCoursIllimite\": true,\n  \"estActif\": true\n}"
+              "raw": "{\n  \"coachId\": 2,\n  \"gymId\": 1,\n  \"activite\": \"Boxe Sparring Pro\",\n  \"classId\": 1,\n  \"joursSemaine\": \"LUNDI,VENDREDI\",\n  \"heureDebut\": \"17:00:00\",\n  \"heureFin\": \"19:00:00\",\n  \"dateDebut\": \"2026-11-09\",\n  \"dateFin\": \"2026-11-30\",\n  \"salle\": \"Dojo & Ring 1\",\n  \"remarques\": \"Préparation tournoi national\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8081/api/plans",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "plans"]
-            }
+              "raw": "{{baseUrl}}/scheduling-requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["scheduling-requests"]
+            },
+            "description": "Le coach soumet une demande de cours récurrent. Statut initial : PENDING (n'apparaît pas au calendrier des membres)."
           }
-        }
-      ]
-    },
-    {
-      "name": "5. Séances & Cours",
-      "item": [
+        },
         {
-          "name": "Lister toutes les séances du planning",
+          "name": "R - Lister toutes les demandes (GET Admin)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/sessions",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "sessions"]
-            }
+              "raw": "{{baseUrl}}/scheduling-requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["scheduling-requests"]
+            },
+            "description": "L'administrateur consulte l'ensemble des demandes de créneaux en attente ou traitées."
           }
         },
         {
-          "name": "Lister les cours collectifs (Disciplines)",
+          "name": "R - Lister les demandes d'un Coach spécifique (GET Coach)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/classes",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "classes"]
-            }
+              "raw": "{{baseUrl}}/scheduling-requests/coach/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["scheduling-requests", "coach", "2"]
+            },
+            "description": "Filtre les demandes appartenant au coach ID 2 (Karim Ben Ali)."
           }
         },
         {
-          "name": "Programmer une nouvelle séance (POST)",
+          "name": "R - Vérifier les conflits de salle (GET Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/scheduling-requests/3/conflicts",
+              "host": ["{{baseUrl}}"],
+              "path": ["scheduling-requests", "3", "conflicts"]
+            },
+            "description": "Vérifie si les créneaux demandés chevauchent des cours déjà programmés dans la même salle."
+          }
+        },
+        {
+          "name": "U - Approuver une demande de créneaux (POST Admin)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/scheduling-requests/3/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["scheduling-requests", "3", "approve"]
+            },
+            "description": "Valide la demande (statut APPROVED) et GÉNÈRE AUTOMATIQUEMENT toutes les séances associées dans la table class_session."
+          }
+        },
+        {
+          "name": "U - Rejeter une demande avec motif (POST Admin)",
           "request": {
             "method": "POST",
             "header": [
@@ -222,38 +293,23 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"classId\": 1,\n  \"coachId\": 2,\n  \"salle\": \"Ring & Dojo A\",\n  \"dateHeureDebut\": \"2026-11-05T18:00:00\",\n  \"dateHeureFin\": \"2026-11-05T19:15:00\"\n}"
+              "raw": "{\n  \"motif\": \"Salle réservée pour un stage ce créneau-là\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8081/api/sessions",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "sessions"]
-            }
+              "raw": "{{baseUrl}}/scheduling-requests/3/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["scheduling-requests", "3", "reject"]
+            },
+            "description": "Décline la demande (statut REJECTED) et enregistre le motif du refus pour le coach."
           }
         }
       ]
     },
     {
-      "name": "6. Réservations (Bookings)",
+      "name": "4. Candidatures & Affiliation Coachs",
       "item": [
         {
-          "name": "Lister toutes les réservations",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8081/api/bookings",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "bookings"]
-            }
-          }
-        },
-        {
-          "name": "Réserver une place (POST)",
+          "name": "C - Déposer une candidature Coach (POST Public)",
           "request": {
             "method": "POST",
             "header": [
@@ -264,48 +320,234 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"sessionId\": 1,\n  \"memberId\": 6\n}"
+              "raw": "{\n  \"nomComplet\": \"Sami Kallel\",\n  \"email\": \"sami.coach@gmail.com\",\n  \"motDePasse\": \"pass123\",\n  \"telephone\": \"+216 98 777 666\",\n  \"specialites\": \"Kickboxing & Conditioning\",\n  \"anneesExperience\": 5,\n  \"bio\": \"Ancien compétiteur national, coach certifié\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8081/api/bookings",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "bookings"]
-            }
+              "raw": "{{baseUrl}}/coach-collaborations",
+              "host": ["{{baseUrl}}"],
+              "path": ["coach-collaborations"]
+            },
+            "description": "Inscription d'un coach externe avec création de son compte (INACTIF) et de sa demande d'affiliation (statut PENDING)."
           }
         },
         {
-          "name": "Annuler une réservation (DELETE)",
+          "name": "R - Lister les candidatures de coachs (GET Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coach-collaborations",
+              "host": ["{{baseUrl}}"],
+              "path": ["coach-collaborations"]
+            },
+            "description": "L'administrateur consulte les candidatures en attente."
+          }
+        },
+        {
+          "name": "U - Approuver un coach (POST Admin)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coach-collaborations/1/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["coach-collaborations", "1", "approve"]
+            },
+            "description": "Valide la candidature : passe la demande en APPROVED, active le compte utilisateur (statut ACTIF) et l'affilie officiellement au club."
+          }
+        },
+        {
+          "name": "U - Rejeter un coach avec motif (POST Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motif\": \"Profil ne correspondant pas aux disciplines actuelles du club\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coach-collaborations/1/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["coach-collaborations", "1", "reject"]
+            },
+            "description": "Rejette la demande d'affiliation."
+          }
+        },
+        {
+          "name": "R - Annuaire public des coachs certifiés (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coaches",
+              "host": ["{{baseUrl}}"],
+              "path": ["coaches"]
+            },
+            "description": "Retourne la liste des coachs officiellement actifs et affiliés."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Séances & Calendrier (Planning)",
+      "item": [
+        {
+          "name": "R - Lister toutes les séances du calendrier (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["sessions"]
+            },
+            "description": "Récupère toutes les séances programmées avec cours, coach, date, jauge et réservations en cours."
+          }
+        },
+        {
+          "name": "R - Lister les disciplines / cours collectifs (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes"]
+            },
+            "description": "Liste les activités disponibles (Boxe, Yoga, Cross Training, etc.)."
+          }
+        },
+        {
+          "name": "C - Créer une séance directe (POST Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"classId\": 1,\n  \"coachId\": 2,\n  \"salle\": \"Dojo & Ring 1\",\n  \"dateHeureDebut\": \"2026-11-10T18:00:00\",\n  \"dateHeureFin\": \"2026-11-10T19:15:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["sessions"]
+            },
+            "description": "Programmation manuelle directe d'un cours par l'administrateur."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Réservations de Places (Bookings)",
+      "item": [
+        {
+          "name": "C - Réserver une place (POST Member)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": 1,\n  \"memberId\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"]
+            },
+            "description": "Un adhérent réserve sa place à une séance. Le service vérifie la capacité maximale et l'absence de doublon."
+          }
+        },
+        {
+          "name": "R - Lister toutes les réservations (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"]
+            },
+            "description": "Liste de l'ensemble des réservations actives."
+          }
+        },
+        {
+          "name": "D - Annuler une réservation (DELETE Member)",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/bookings/1",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "bookings", "1"]
-            }
+              "raw": "{{baseUrl}}/bookings/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "1"]
+            },
+            "description": "Annule une place et libère le quota pour d'autres adhérents."
           }
         }
       ]
     },
     {
-      "name": "7. Caisse & Paiements",
+      "name": "7. Abonnements & Caisse (Memberships & Payments)",
       "item": [
         {
-          "name": "Lister l'historique des règlements",
+          "name": "R - Lister les formules d'adhésion (Plans GET)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/api/payments",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8081",
-              "path": ["api", "payments"]
-            }
+              "raw": "{{baseUrl}}/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["plans"]
+            },
+            "description": "Grille tarifaire (Pass Mensuel, Pass Trimestriel, Pass VIP Annuel)."
+          }
+        },
+        {
+          "name": "C - Souscrire / Renouveler un pass en ligne (POST Transactionnel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 5,\n  \"planId\": 2,\n  \"modePaiement\": \"CARTE_BANCAIRE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/memberships",
+              "host": ["{{baseUrl}}"],
+              "path": ["memberships"]
+            },
+            "description": "Opération atomique JDBC : crée l'adhésion et enregistre simultanément le reçu de paiement dans le livre de caisse (commit/rollback)."
+          }
+        },
+        {
+          "name": "R - Livre de caisse & règlements (GET Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payments",
+              "host": ["{{baseUrl}}"],
+              "path": ["payments"]
+            },
+            "description": "Grand livre comptable de tous les paiements avec référence, montant, mode et statut."
           }
         }
       ]

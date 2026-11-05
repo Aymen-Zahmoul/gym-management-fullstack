@@ -139,15 +139,9 @@ public class UserDAO {
         u.setTelephone(rs.getString("telephone"));
         u.setRole(rs.getString("role"));
         u.setStatut(rs.getString("statut"));
-        try {
-            u.setSpecialite(rs.getString("specialite"));
-            u.setVille(rs.getString("ville"));
-            BigDecimal th = rs.getBigDecimal("tarif_horaire");
-            if (th != null) u.setTarifHoraire(th.doubleValue());
-            u.setBio(rs.getString("bio"));
-            u.setDisponibilite(rs.getString("disponibilite"));
-        } catch (SQLException ignored) {
-        }
+        // Note: specialite, ville, tarif_horaire, bio, disponibilite columns
+        // are NOT part of the 'user' table. Coach metadata is loaded from
+        // coach_collaboration_request via CoachCollaborationRequestDAO.
         Timestamp ca = rs.getTimestamp("created_at");
         if (ca != null) u.setCreatedAt(ca.toLocalDateTime());
         Timestamp ua = rs.getTimestamp("updated_at");

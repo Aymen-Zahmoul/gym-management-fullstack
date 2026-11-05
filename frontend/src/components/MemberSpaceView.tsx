@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Award,
   Calendar,
-  CheckCircle2,
   Clock,
   QrCode,
   ShieldCheck,
-  Dumbbell,
-  ArrowRight,
-  Sparkles,
   CreditCard,
   AlertTriangle,
   Banknote,
@@ -37,7 +33,7 @@ interface MemberSpaceViewProps {
 export const MemberSpaceView: React.FC<MemberSpaceViewProps> = ({
   currentUser,
   plans,
-  sessions,
+  sessions: _sessions,
   onNavigateToSchedule,
   onNavigateToCoaches,
   onRefreshData,

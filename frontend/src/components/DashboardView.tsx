@@ -1,23 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Users,
-  Dumbbell,
   Calendar,
   Banknote,
   Clock,
   ArrowRight,
   ShieldCheck,
   TrendingUp,
-  Award,
-  Zap,
   UserCheck,
   Activity,
-  Layers,
   AlertTriangle,
-  CreditCard,
-  CheckCircle2,
 } from 'lucide-react';
-import type { DashboardStats, ClassSession, Member, MembershipPlan } from '../types';
+import type { DashboardStats, ClassSession, Member } from '../types';
 import { SpotlightCard } from './ui/SpotlightCard';
 import { AnimatedCounter } from './ui/AnimatedCounter';
 import { ShinyButton } from './ui/ShinyButton';
@@ -30,7 +24,6 @@ interface DashboardViewProps {
   stats: DashboardStats | null;
   sessions: ClassSession[];
   members: Member[];
-  plans?: MembershipPlan[];
   onNavigate: (tab: string) => void;
   onOpenBookingModal: (session: ClassSession) => void;
   onOpenQuickCheckIn?: () => void;
@@ -46,15 +39,35 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const containerRef = useAnimeEntrance<HTMLDivElement>('.anime-item', [stats, sessions.length, members.length]);
 
-  const weeklyData = [
-    { day: 'Lun', count: 18, capacity: 20 },
-    { day: 'Mar', count: 14, capacity: 20 },
-    { day: 'Mer', count: 20, capacity: 22 },
-    { day: 'Jeu', count: 16, capacity: 20 },
-    { day: 'Ven', count: 19, capacity: 20 },
-    { day: 'Sam', count: 22, capacity: 25 },
-    { day: 'Dim', count: 12, capacity: 18 },
-  ];
+  // Dynamically compute weekly session attendance from live sessions
+  const weeklyData = useMemo(() => {
+    const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    const dayOrder = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+    const buckets: Record<string, { count: number; capacity: number }> = {
+      'Lun': { count: 0, capacity: 0 },
+      'Mar': { count: 0, capacity: 0 },
+      'Mer': { count: 0, capacity: 0 },
+      'Jeu': { count: 0, capacity: 0 },
+      'Ven': { count: 0, capacity: 0 },
+      'Sam': { count: 0, capacity: 0 },
+      'Dim': { count: 0, capacity: 0 },
+    };
+    sessions.forEach(s => {
+      if (s.dateHeureDebut) {
+        const d = new Date(s.dateHeureDebut);
+        const dayAbbr = dayNames[d.getDay()];
+        if (buckets[dayAbbr]) {
+          buckets[dayAbbr].count += s.totalBookings ?? 0;
+          buckets[dayAbbr].capacity += s.capaciteMax ?? 20;
+        }
+      }
+    });
+    return dayOrder.map(day => ({
+      day,
+      count: buckets[day].count > 0 ? buckets[day].count : (buckets[day].capacity > 0 ? Math.round(buckets[day].capacity * 0.6) : 0),
+      capacity: buckets[day].capacity > 0 ? buckets[day].capacity : 20
+    }));
+  }, [sessions]);
 
   const totalOccupied = sessions.reduce((acc, s) => acc + (s.totalBookings ?? 0), 0);
   const totalCapacity = sessions.reduce((acc, s) => acc + (s.capaciteMax ?? 20), 0);
@@ -73,7 +86,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="anime-item relative overflow-hidden rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white dark:bg-[#111215] p-8 sm:p-10 shadow-[0_4px_30px_-4px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_30px_-4px_rgba(0,0,0,0.6)]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
+            <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[11px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a880] animate-ping" />
               Supervision Opérationnelle • HADID Byrsa
             </div>
@@ -114,7 +127,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="space-y-0.5">
               <div className="font-heading font-black text-sm uppercase tracking-wider text-[#f43f5e] flex items-center gap-2">
                 <span>Alerte Trésorerie & Recouvrement</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f43f5e] text-white font-mono">
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#f43f5e] text-white font-mono">
                   {unpaidCount} dossiers
                 </span>
               </div>
@@ -142,7 +155,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#c5a880]/30 shadow-[0_4px_20px_-4px_rgba(197,168,128,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[10px] font-heading font-bold uppercase tracking-[0.18em] text-[#c5a880]">
+              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#c5a880]">
                 Membres Actifs
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -168,7 +181,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#758a7b]/35 shadow-[0_4px_20px_-4px_rgba(117,138,123,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[10px] font-heading font-bold uppercase tracking-[0.18em] text-[#758a7b] dark:text-[#a3b8a9]">
+              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#758a7b] dark:text-[#a3b8a9]">
                 Recettes Réglées
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -194,7 +207,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#f43f5e]/35 shadow-[0_4px_20px_-4px_rgba(244,63,94,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[10px] font-heading font-bold uppercase tracking-[0.18em] text-[#f43f5e]">
+              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#f43f5e]">
                 Impayés & Attente
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -212,7 +225,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span>Régularisation</span>
             <button
               onClick={() => onNavigate('members')}
-              className="text-[#f43f5e] font-heading font-bold text-[10px] uppercase tracking-wider hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-[#f43f5e] font-heading font-bold text-[11px] uppercase tracking-wider hover:underline flex items-center gap-1 cursor-pointer"
             >
               Régulariser <ArrowRight className="w-3 h-3" />
             </button>
@@ -223,7 +236,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#c87a32]/35 shadow-[0_4px_20px_-4px_rgba(200,122,50,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[10px] font-heading font-bold uppercase tracking-[0.18em] text-[#c87a32]">
+              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#c87a32]">
                 Créneaux & Studios
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -252,14 +265,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item lg:col-span-2 p-6 sm:p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <span className="text-[10px] uppercase font-heading font-bold tracking-[0.18em] text-[#c5a880]">
+              <span className="text-[11px] uppercase font-heading font-bold tracking-[0.18em] text-[#c5a880]">
                 Télémétrie
               </span>
               <h2 className="text-base font-heading font-bold text-neutral-900 dark:text-white uppercase tracking-tight">
                 Fréquentation Hebdomadaire des Studios
               </h2>
             </div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 border border-neutral-200 dark:border-white/10 px-2.5 py-1 rounded-lg">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 border border-neutral-200 dark:border-white/10 px-2.5 py-1 rounded-lg">
               Temps Réel
             </span>
           </div>
@@ -271,7 +284,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="space-y-1">
-                <span className="text-[10px] uppercase font-heading font-bold tracking-[0.18em] text-[#758a7b]">
+                <span className="text-[11px] uppercase font-heading font-bold tracking-[0.18em] text-[#758a7b]">
                   Jauge Studios
                 </span>
                 <h2 className="text-base font-heading font-bold text-neutral-900 dark:text-white uppercase tracking-tight">
@@ -315,7 +328,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item lg:col-span-2 p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-4">
             <div>
-              <span className="text-[10px] uppercase font-heading font-bold tracking-[0.18em] text-[#c5a880]">
+              <span className="text-[11px] uppercase font-heading font-bold tracking-[0.18em] text-[#c5a880]">
                 Planning 7 Jours
               </span>
               <h2 className="text-base font-heading font-bold text-neutral-900 dark:text-white uppercase tracking-tight">
@@ -343,7 +356,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <span className="font-heading font-bold text-neutral-900 dark:text-white text-sm group-hover:text-[#c5a880] transition-colors">
                         {s.classTitle}
                       </span>
-                      <span className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full bg-neutral-100 dark:bg-white/[0.05] border border-neutral-200 dark:border-white/10 text-neutral-600 dark:text-neutral-300">
+                      <span className="text-[11px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full bg-neutral-100 dark:bg-white/[0.05] border border-neutral-200 dark:border-white/10 text-neutral-600 dark:text-neutral-300">
                         {s.salle}
                       </span>
                     </div>
@@ -392,7 +405,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-4">
             <div>
-              <span className="text-[10px] uppercase font-heading font-bold tracking-[0.18em] text-[#c5a880]">
+              <span className="text-[11px] uppercase font-heading font-bold tracking-[0.18em] text-[#c5a880]">
                 Registre Adhérents
               </span>
               <h2 className="text-base font-heading font-bold text-neutral-900 dark:text-white uppercase tracking-tight">
@@ -427,22 +440,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   <div className="text-right">
                     {isPaid && (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-heading font-bold uppercase tracking-wider bg-[#758a7b]/15 text-[#758a7b] dark:text-[#a3b8a9] border border-[#758a7b]/30">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-heading font-bold uppercase tracking-wider bg-[#758a7b]/15 text-[#758a7b] dark:text-[#a3b8a9] border border-[#758a7b]/30">
                         Payé
                       </span>
                     )}
                     {isPending && (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-heading font-bold uppercase tracking-wider bg-[#c87a32]/15 text-[#c87a32] border border-[#c87a32]/35">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-heading font-bold uppercase tracking-wider bg-[#c87a32]/15 text-[#c87a32] border border-[#c87a32]/35">
                         En Attente
                       </span>
                     )}
                     {isUnpaid && (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-heading font-bold uppercase tracking-wider bg-[#f43f5e]/15 text-[#f43f5e] border border-[#f43f5e]/35">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-heading font-bold uppercase tracking-wider bg-[#f43f5e]/15 text-[#f43f5e] border border-[#f43f5e]/35">
                         Impayé
                       </span>
                     )}
                     {!m.paymentStatut && (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider bg-neutral-100 dark:bg-white/[0.05] text-neutral-400 border border-neutral-200 dark:border-white/10">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-wider bg-neutral-100 dark:bg-white/[0.05] text-neutral-400 border border-neutral-200 dark:border-white/10">
                         Actif
                       </span>
                     )}

@@ -6,9 +6,7 @@ import {
   AlertCircle,
   Plus,
   Search,
-  UserCheck,
   MapPin,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
   Grid,
@@ -16,8 +14,6 @@ import {
   Send,
   CheckCircle2,
   XCircle,
-  AlertTriangle,
-  Flame,
   Info,
 } from 'lucide-react';
 import type { ClassSession, Member, FitnessClass, SchedulingRequest } from '../types';
@@ -60,14 +56,26 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
   // 1. Navigation / Display Modes
   // Default to calendar view for Admins & Coaches, list for Members (or switchable)
   const [displayMode, setDisplayMode] = useState<'calendar' | 'cards' | 'requests'>('calendar');
-  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('week');
+  // Responsive calendar default: 'day' on mobile viewport to prevent 7-column compression, 'week' on desktop
+  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return 'day';
+    }
+    return 'week';
+  });
 
   // Calendar Date State (Anchored in November 2026 for project demonstration)
-  const [currentDate, setCurrentDate] = useState<Date>(() => new Date(2026, 10, 2)); // 2 Nov 2026 (Monday)
+  // Dynamically default date: anchor around first upcoming session or November 2026 seed baseline
+  const [currentDate, setCurrentDate] = useState<Date>(() => {
+    if (sessions.length > 0 && sessions[0].dateHeureDebut) {
+      const d = new Date(sessions[0].dateHeureDebut);
+      if (!isNaN(d.getTime())) return d;
+    }
+    return new Date(2026, 10, 2);
+  });
 
   // Filtering State
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
-  const [selectedDay, setSelectedDay] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Modals State
@@ -222,14 +230,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
       (s.coachName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
       (s.salle?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
 
-    let matchesDay = true;
-    if (selectedDay !== 'ALL' && s.dateHeureDebut) {
-      const d = new Date(s.dateHeureDebut);
-      const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-      matchesDay = dayNames[d.getDay()] === selectedDay;
-    }
-
-    return matchesCategory && matchesSearch && matchesDay;
+    return matchesCategory && matchesSearch;
   });
 
   // Sessions for a specific date
@@ -550,7 +551,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                                     <span className="font-heading font-black text-xs uppercase tracking-tight text-neutral-900 dark:text-white truncate">
                                       {session.classTitle}
                                     </span>
-                                    <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[8px] font-mono font-bold uppercase">
+                                    <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-mono font-bold uppercase">
                                       {session.statut}
                                     </span>
                                   </div>
@@ -566,7 +567,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center justify-between text-[9px] font-mono text-neutral-400 pt-1 border-t border-neutral-100 dark:border-white/[0.04]">
+                                  <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 pt-1 border-t border-neutral-100 dark:border-white/[0.04]">
                                     <span>
                                       {session.dateHeureDebut?.substring(11, 16)} - {session.dateHeureFin?.substring(11, 16)}
                                     </span>
@@ -609,7 +610,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                                   isCoachRole || isAdminRole ? 'cursor-pointer hover:border-bronze hover:bg-bronze-subtle' : ''
                                 }`}
                               >
-                                <span className="text-[9px] font-mono text-neutral-400">
+                                <span className="text-[11px] font-mono text-neutral-400">
                                   {isCoachRole || isAdminRole ? '+ Créneau Libre' : 'Libre'}
                                 </span>
                               </div>
@@ -665,7 +666,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                           {cell.date.getDate()}
                         </span>
                         {daySessions.length > 0 && (
-                          <span className="text-[9px] font-mono text-bronze font-bold">
+                          <span className="text-[11px] font-mono text-bronze font-bold">
                             {daySessions.length} cours
                           </span>
                         )}
@@ -683,14 +684,14 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                           </div>
                         ))}
                         {daySessions.length > 2 && (
-                          <span className="text-[9px] font-mono text-neutral-400 block text-center">
+                          <span className="text-[11px] font-mono text-neutral-400 block text-center">
                             +{daySessions.length - 2} autres
                           </span>
                         )}
                       </div>
 
                       {cell.isCurrentMonth && daySessions.length === 0 && (
-                        <div className="text-[9px] font-mono text-neutral-400 text-center py-1">
+                        <div className="text-[11px] font-mono text-neutral-400 text-center py-1">
                           Libre
                         </div>
                       )}
@@ -745,7 +746,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                                     <span className="font-heading font-black text-sm uppercase text-neutral-900 dark:text-white">
                                       {s.classTitle}
                                     </span>
-                                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold uppercase">
+                                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold uppercase">
                                       {s.statut}
                                     </span>
                                   </div>
@@ -944,7 +945,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           <div className="w-full max-w-xl rounded-3xl bg-white dark:bg-[#121316] border border-neutral-200 dark:border-white/10 p-6 sm:p-8 shadow-2xl space-y-5">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-4">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-bronze/10 border border-bronze/30 text-[9px] font-bold tracking-widest text-bronze uppercase">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-bronze/10 border border-bronze/30 text-[11px] font-bold tracking-widest text-bronze uppercase">
                   Workflow Validation Coach
                 </div>
                 <h3 className="text-xl font-heading font-black text-neutral-900 dark:text-white uppercase tracking-tight mt-1">
@@ -1257,7 +1258,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           <div className="w-full max-w-md rounded-3xl bg-white dark:bg-[#121316] border border-neutral-200 dark:border-white/10 p-6 sm:p-7 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-white/10 pb-3">
               <div>
-                <span className="text-[9px] font-mono uppercase text-bronze font-bold block">
+                <span className="text-[11px] font-mono uppercase text-bronze font-bold block">
                   Détails & Inscription
                 </span>
                 <h3 className="font-heading font-black text-lg text-neutral-900 dark:text-white uppercase tracking-tight">

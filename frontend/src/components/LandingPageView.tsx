@@ -1,37 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  Building2,
   Dumbbell,
-  ArrowRight,
-  Shield,
-  Clock,
-  MapPin,
-  Calendar,
-  Award,
   Users,
+  UserCheck,
+  CreditCard,
+  Receipt,
+  Handshake,
+  Compass,
+  LayoutDashboard,
+  ArrowRight,
   Check,
   ChevronDown,
-  Activity,
-  Heart,
-  Scale,
-  Sun,
-  Moon,
-  LogIn,
-  LogOut,
-  User,
-  QrCode,
+  Menu,
   X,
-  Sparkles,
-  Sliders,
-  Wind,
-  Droplets,
-  Layers,
+  Globe,
+  Share2,
+  Mail,
 } from 'lucide-react';
 import type { MembershipPlan, ClassSession, Member } from '../types';
-import { SpotlightCard } from './ui/SpotlightCard';
-import { ShinyButton } from './ui/ShinyButton';
-import { HadidLogo } from './ui/HadidLogo';
-import { GridBackground } from './ui/GridBackground';
 
 interface LandingPageViewProps {
   onOpenLogin: () => void;
@@ -45,980 +33,1125 @@ interface LandingPageViewProps {
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({
   onOpenLogin,
-  isDark,
-  onToggleTheme,
-  plans,
-  sessions,
   currentUser,
   onLogout,
 }) => {
-  // Interactive BMI Calculator State (Clinical Wellness Style)
-  const [weight, setWeight] = useState<number>(76);
-  const [height, setHeight] = useState<number>(180);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
 
-  const heightInMeters = height / 100;
-  const bmi = weight / (heightInMeters * heightInMeters);
+  // Track scroll position for sticky navbar background transition and scrollspy
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
 
-  const getBmiAssessment = (val: number) => {
-    if (val < 18.5) {
-      return {
-        category: 'Indice Faible • Prise de Masse',
-        tag: 'Hypertrophie & Force',
-        desc: 'Mouvements composés poly-articulaires avec surcharge progressive et suivi nutritionnel hyper-calorique.',
-        planName: 'Pass Trimestriel Fitness Total',
-      };
-    } else if (val < 25) {
-      return {
-        category: 'Condition Optimale • Athlète',
-        tag: 'Conditionnement & Puissance',
-        desc: 'Capacité aérobie idéale. Alternance WOD / Cross Training haute intensité et travail de mobilité articulaire.',
-        planName: 'Pass VIP Annuel Illimité',
-      };
-    } else if (val < 30) {
-      return {
-        category: 'Surcharge Métabolique • Recomposition',
-        tag: 'Dépense Métabolique & HIIT',
-        desc: 'Renforcement musculaire lourd couplé à des séances de Spinning RPM / Boxe pour préserver la masse maigre.',
-        planName: 'Pass Trimestriel Fitness Total',
-      };
-    } else {
-      return {
-        category: 'Réathlétisation & Santé Cardio',
-        tag: 'Accompagnement Sur-Mesure',
-        desc: 'Reprise progressive sous supervision individuelle : réadaptation cardio, mobilité douce et nutrition adaptée.',
-        planName: 'Pass Mensuel Cardio & Musculation',
-      };
+      const sections = ['hero', 'about', 'features', 'for-gyms', 'for-coaches', 'for-members', 'how-it-works', 'why-hadid'];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const offsetTop = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth',
+      });
     }
   };
 
-  const assessment = getBmiAssessment(bmi);
-
-  // Facility Spaces Selector
-  const [activeSpace, setActiveSpace] = useState<number>(0);
-  const clubSpaces = [
-    {
-      id: 'strength',
-      number: '01',
-      title: 'Plateau Force & Haltérophilie',
-      subtitle: 'Barres Olympiques Eleiko & Cages Rogue',
-      desc: 'Plateformes de tirage en chêne massif insonorisées, barres d’haltérophilie certifiées IWF, disques calibrés et haltères taillés dans la masse jusqu’à 50 kg.',
-      specs: [
-        '4 Plateformes de tirage Eleiko compétition',
-        'Cages à squat Rogue Monster Lite',
-        'Machines à charge libre Hammer Strength',
-        'Magnésie liquide et ceintures de force fournies',
-      ],
-      leadTrainer: 'Karim Ben Ali • Préparateur Fédéral',
-    },
-    {
-      id: 'combat',
-      number: '02',
-      title: 'Le Dojo & Ring Officiel',
-      subtitle: 'Boxe Anglaise & Muay Thai Authentique',
-      desc: 'Ring de boxe aux dimensions de championnat, tatamis haute densité de 5 cm pour la lutte et 12 sacs Aqua Bag hydro-dynamiques absorbant les chocs articulaires.',
-      specs: [
-        'Ring de boxe surélevé 5x5 mètres',
-        '12 Sacs hydro-dynamiques Aqua Bag',
-        'Tatamis amortissants normes internationales',
-        'Gants et protections Venum Pro à disposition',
-      ],
-      leadTrainer: 'Yassine Dridi • Champion Méditerranéen',
-    },
-    {
-      id: 'recovery',
-      number: '03',
-      title: 'Sanctuaire Yoga & Récupération',
-      subtitle: 'Sauna Sel de l’Himalaya & Bain Froid',
-      desc: 'Studio insonorisé avec sol en bambou naturel pour les disciplines posturales (Vinyasa, Pilates). Espace thermal avec sauna en briques de sel gemme et cryo immersion.',
-      specs: [
-        'Studio insonorisé et tempéré à 24°C',
-        'Sauna sec aux briques de sel de l’Himalaya',
-        'Bain froid de récupération cryo immersion',
-        'Tapis de yoga Manduka haute densité',
-      ],
-      leadTrainer: 'Nour Mehrez • Praticienne Certifiée Alliance',
-    },
-    {
-      id: 'cardio',
-      number: '04',
-      title: 'Suite Cardio Haute Précision',
-      subtitle: 'Vélos Connectés RPM & Tapis Skillmill',
-      desc: 'Vélos indoor connectés mesurant la puissance réelle en watts, tapis incurvés sans moteur Technogym Skillmill et rameurs Concept2 ventilés synchronisés.',
-      specs: [
-        'Vélos connectés avec wattmètre de laboratoire',
-        'Tapis Skillmill incurvés à résistance magnétique',
-        'Rameurs et SkiErg Concept2 synchronisés',
-        'Affichage des zones de fréquence cardiaque live',
-      ],
-      leadTrainer: 'Sami Karray • Master Trainer Cardio',
-    },
-  ];
-
-  // Guest Pass / Private Tour Modal State
-  const [isTourModalOpen, setIsTourModalOpen] = useState(false);
-  const [guestName, setGuestName] = useState('');
-  const [guestPhone, setGuestPhone] = useState('');
-  const [preferredSpace, setPreferredSpace] = useState('Plateau Force & Haltérophilie');
-  const [tourBooked, setTourBooked] = useState(false);
-
-  useEffect(() => {
-    if (!isTourModalOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsTourModalOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isTourModalOpen]);
-
-  // FAQ Accordion State
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const faqs = [
-    {
-      q: 'Quelles sont les conditions d’accès et d’horaires du club à Carthage ?',
-      a: 'Le club est accessible 7 jours sur 7 de 06h00 à 23h00 en semaine, et de 07h00 à 21h00 le week-end. L’accès est sécurisé par badge RFID biométrique ou pass numérique sur smartphone.',
-    },
-    {
-      q: 'Comment s’effectue la réservation des cours collectifs ?',
-      a: 'Toutes les séances collectives sont gérées en direct par notre plateforme logicielle. Afin d’assurer un confort d’espace optimal, chaque cours dispose d’une capacité maximale stricte sans surpopulation.',
-    },
-    {
-      q: 'Le bilan de condition physique et impédance est-il inclus ?',
-      a: 'Oui. Chaque nouvel adhérent bénéficie à l’inscription d’une consultation avec l’un de nos préparateurs physiques comprenant une pesée médicale par impédancemétrie et une analyse posturale.',
-    },
-    {
-      q: 'Existe-t-il un service de serviettes et casiers sécurisés ?',
-      a: 'Absolument. Les vestiaires disposent de casiers à code individuel, de douches privatives en pierre naturelle, de sèche-cheveux haute puissance et d’un service de serviettes d’entraînement propre.',
-    },
+  const navLinks = [
+    { label: 'Home', id: 'hero' },
+    { label: 'Features', id: 'features' },
+    { label: 'For Gyms', id: 'for-gyms' },
+    { label: 'For Coaches', id: 'for-coaches' },
+    { label: 'For Members', id: 'for-members' },
+    { label: 'About', id: 'about' },
   ];
 
   return (
-    <GridBackground className="min-h-screen bg-[#fbfbfa] dark:bg-[#0c0d10] text-neutral-900 dark:text-neutral-100 font-sans selection:bg-[#c5a880]/30 selection:text-[#c5a880]">
-      {/* 1. Header Navigation: Zero Collision, Natural Flow, Pinned Centered Navigation */}
-      <header className="sticky top-0 z-40 border-b border-neutral-200/80 dark:border-white/[0.08] bg-[#fbfbfa]/90 dark:bg-[#0c0d10]/90 backdrop-blur-xl transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Left: Hadid Official Brand with generous breathing room */}
-          <div className="flex items-center flex-shrink-0">
-            <HadidLogo size="md" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
-          </div>
-
-          {/* Center: Clean Navigation Links in Normal Flow (Zero Collision Guaranteed) */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-6 xl:gap-9 text-[11px] font-heading font-bold uppercase tracking-[0.16em] text-neutral-600 dark:text-neutral-300">
-            <a href="#spaces" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Studios</a>
-            <a href="#assessment" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Bilan Santé</a>
-            <a href="#schedule" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Planning</a>
-            <a href="#memberships" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Formules</a>
-            <a href="#standards" className="hover:text-[#c5a880] transition-colors whitespace-nowrap">Standards</a>
-          </nav>
-
-          {/* Right: Actions (Theme Toggle + Member Portal Access / Logout) */}
-          <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+    <div className="min-h-screen bg-[#101010] text-white font-inter selection:bg-[#B07845] selection:text-white antialiased overflow-x-hidden">
+      {/* ============================================================ */}
+      {/* 3. NAVBAR                                                    */}
+      {/* ============================================================ */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#101010]/95 backdrop-blur-md border-b border-[#191919] py-3.5 shadow-2xl'
+            : 'bg-transparent py-5 sm:py-6'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            {/* Left: HADID Wordmark */}
             <button
-              onClick={onToggleTheme}
-              aria-label="Changer de thème"
-              title={isDark ? 'Mode Clair' : 'Mode Sombre'}
-              className="p-2 sm:p-2.5 rounded-full border border-neutral-300 dark:border-white/10 hover:border-[#c5a880] text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer flex-shrink-0"
+              onClick={() => scrollToSection('hero')}
+              className="flex items-center gap-3 group text-left cursor-pointer focus:outline-none"
             >
-              {isDark ? <Sun className="w-4 h-4 text-[#c5a880]" /> : <Moon className="w-4 h-4 text-neutral-900" />}
+              <span className="font-space font-bold text-2xl tracking-[0.2em] text-white group-hover:text-[#B07845] transition-colors">
+                HADID
+              </span>
+              <span className="text-[10px] font-space tracking-[0.3em] text-[#A8A9AD] uppercase pl-2 border-l border-[#262626] hidden sm:inline-block">
+                Ecosystem
+              </span>
             </button>
 
-            {currentUser ? (
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  onClick={onOpenLogin}
-                  className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 flex-shrink-0"
-                >
-                  <User className="w-3.5 h-3.5 text-[#c5a880] dark:text-neutral-950" />
-                  <span className="hidden sm:inline">Mon Espace ({currentUser.role})</span>
-                  <span className="sm:hidden">Espace</span>
-                </button>
-                {onLogout && (
+            {/* Center: Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-8">
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.id;
+                return (
                   <button
-                    onClick={onLogout}
-                    title="Se Déconnecter"
-                    className="px-3 sm:px-3.5 py-2 rounded-full border border-rose-500/30 bg-rose-500/10 hover:bg-rose-600 text-rose-600 dark:text-rose-400 hover:text-white transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider shadow-sm flex-shrink-0"
+                    key={link.id}
+                    onClick={() => scrollToSection(link.id)}
+                    className={`text-xs font-space font-semibold uppercase tracking-[0.15em] transition-all relative py-1 cursor-pointer focus:outline-none ${
+                      isActive ? 'text-[#B07845]' : 'text-[#A8A9AD] hover:text-white'
+                    }`}
                   >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span>Déconnexion</span>
+                    {link.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#B07845]"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
                   </button>
-                )}
-              </div>
-            ) : (
+                );
+              })}
+            </nav>
+
+            {/* Right: Actions */}
+            <div className="hidden lg:flex items-center gap-4">
+              {currentUser ? (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={onOpenLogin}
+                    className="text-xs font-space font-semibold uppercase tracking-[0.15em] text-[#A8A9AD] hover:text-white transition-colors cursor-pointer"
+                  >
+                    Espace {currentUser.role}
+                  </button>
+                  {onLogout && (
+                    <button
+                      onClick={onLogout}
+                      className="px-3.5 py-2 text-xs font-space font-semibold uppercase tracking-wider text-[#A8A9AD] hover:text-white border border-[#262626] hover:border-[#A8A9AD] rounded-lg transition-all cursor-pointer"
+                    >
+                      Déconnexion
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={onOpenLogin}
+                    className="text-xs font-space font-semibold uppercase tracking-[0.15em] text-[#A8A9AD] hover:text-white transition-colors px-3 py-2 cursor-pointer focus:outline-none"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={onOpenLogin}
+                    className="px-5 py-2.5 bg-[#B07845] hover:bg-[#966436] text-white text-xs font-space font-bold uppercase tracking-[0.15em] rounded-lg transition-all duration-200 shadow-lg shadow-[#B07845]/15 hover:shadow-[#B07845]/30 cursor-pointer active:scale-95"
+                  >
+                    Get Started
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Hamburger Toggle */}
+            <div className="lg:hidden flex items-center gap-3">
               <button
-                onClick={onOpenLogin}
-                className="px-4 sm:px-5 py-2.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all flex items-center gap-2 cursor-pointer shadow-sm active:scale-95 flex-shrink-0"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle mobile navigation"
+                className="p-2 text-[#A8A9AD] hover:text-white focus:outline-none"
               >
-                <LogIn className="w-3.5 h-3.5 text-[#c5a880] dark:text-inherit" />
-                <span>Espace Membre</span>
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
-            )}
+            </div>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              className="lg:hidden bg-[#101010] border-b border-[#191919] px-6 py-6 overflow-hidden"
+            >
+              <div className="flex flex-col space-y-4">
+                {navLinks.map((link) => (
+                  <button
+                    key={link.id}
+                    onClick={() => scrollToSection(link.id)}
+                    className="text-left font-space text-sm font-semibold uppercase tracking-wider text-[#A8A9AD] hover:text-[#B07845] py-2 transition-colors cursor-pointer"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+                <div className="pt-4 border-t border-[#191919] flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onOpenLogin();
+                    }}
+                    className="w-full text-center py-2.5 font-space text-xs font-semibold uppercase tracking-wider text-white border border-[#262626] rounded-lg"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onOpenLogin();
+                    }}
+                    className="w-full text-center py-2.5 bg-[#B07845] hover:bg-[#966436] font-space text-xs font-bold uppercase tracking-wider text-white rounded-lg"
+                  >
+                    Get Started
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
-      {/* 2. Hero Section: Architectural Monumental Typography, Viewport-Fit, No Overflow */}
-      <section className="relative pt-10 pb-16 sm:pt-14 sm:pb-24 border-b border-neutral-200/80 dark:border-white/[0.08] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="space-y-6 max-w-4xl">
-            {/* Subtle Eyebrow */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-heading font-extrabold uppercase tracking-[0.25em] text-neutral-900 dark:text-white">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#c5a880] animate-ping" />
-              Sanctuaire Athlétique • Colline de Byrsa
-            </div>
+      {/* ============================================================ */}
+      {/* 4. HERO SECTION                                              */}
+      {/* ============================================================ */}
+      <section
+        id="hero"
+        className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      >
+        {/* Background Photograph with Dramatic Lighting & Gradient Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=85"
+            alt="Luxury Modern Gym Interior"
+            className="w-full h-full object-cover object-center filter brightness-[0.45] contrast-[1.15]"
+          />
+          {/* Multi-layer Dark Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-[#101010]/80 to-[#101010]/50" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(176,120,69,0.08)_0%,_transparent_70%)]" />
+        </div>
 
-            {/* Architectural Monumental Headline with HADID Branding */}
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-black uppercase tracking-tight leading-[0.96] text-neutral-950 dark:text-white">
-              HADID <span className="text-bronze font-light font-sans tracking-normal text-3xl sm:text-5xl lg:text-7xl">حديد</span> <br />
-              <span className="text-neutral-400 dark:text-neutral-500">Pure Performance.</span>
-            </h1>
+        {/* Content Container */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#191919]/90 border border-[#262626] mb-6"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#B07845] animate-pulse" />
+            <span className="text-[11px] sm:text-xs font-space font-medium tracking-[0.25em] text-[#A8A9AD] uppercase">
+              THE NEXT GENERATION OF GYM MANAGEMENT
+            </span>
+          </motion.div>
 
-            {/* Concise Subtext (18 words, compliant with anti-slop guidelines) */}
-            <p className="text-base sm:text-lg text-neutral-600 dark:text-neutral-300 max-w-2xl font-sans font-normal leading-relaxed">
-              Sanctuaire athlétique de 1 200 m² à Byrsa. Ingénierie de la fonte, plateaux Eleiko insonorisés et encadrement biomécanique d'élite.
-            </p>
-          </div>
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="font-space font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.08] text-white uppercase max-w-4xl mb-6"
+          >
+            BUILT ON <span className="text-[#B07845]">STRENGTH</span>.<br />
+            POWERED BY <span className="text-[#B07845]">CONNECTION</span>.
+          </motion.h1>
 
-          {/* Primary Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-1">
-            <ShinyButton
-              variant="primary"
-              onClick={() => setIsTourModalOpen(true)}
-              className="text-xs px-8 py-3.5 justify-center"
+          {/* Supporting Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="font-inter text-base sm:text-lg text-[#A8A9AD] max-w-2xl leading-relaxed mb-10 text-center"
+          >
+            Manage your gym, connect with professional coaches and give your members a better fitness
+            experience. Everything comes together with HADID.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+          >
+            <button
+              onClick={onOpenLogin}
+              className="w-full sm:w-auto px-8 py-4 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-200 shadow-xl shadow-[#B07845]/20 hover:shadow-[#B07845]/40 cursor-pointer active:scale-95 flex items-center justify-center gap-2 group"
             >
-              <span>Demander une Visite & Essai</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </ShinyButton>
+              <span>Get Started</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-white/[0.04] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg border border-[#A8A9AD] hover:border-white transition-all duration-200 cursor-pointer flex items-center justify-center"
+            >
+              Discover HADID
+            </button>
+          </motion.div>
 
-            <a href="#memberships">
-              <ShinyButton
-                variant="secondary"
-                className="text-xs px-8 py-3.5 justify-center w-full sm:w-auto"
-              >
-                <span>Consulter les Tarifs</span>
-              </ShinyButton>
-            </a>
-          </div>
-
-          {/* Architectural Metric Strip (Hairline Separators, Anti-Collision Grid) */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-12 border-t border-neutral-200/80 dark:border-white/[0.08]">
-            <div className="space-y-1">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-neutral-950 dark:text-white tracking-tight">
-                1 200 M²
-              </p>
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-[#c5a880]">
-                Installations Byrsa
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-neutral-950 dark:text-white tracking-tight">
-                06H — 23H
-              </p>
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-[#758a7b] dark:text-[#a3b8a9]">
-                Accès Libre 7J/7
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-neutral-950 dark:text-white tracking-tight">
-                ELEIKO IWF
-              </p>
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-[#c87a32]">
-                Matériel Compétition
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-2xl sm:text-3xl lg:text-4xl font-heading font-black text-neutral-950 dark:text-white tracking-tight">
-                RECOVERY
-              </p>
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-neutral-400">
-                Sauna Sel & Cryo
-              </p>
-            </div>
-          </div>
+          {/* Subtle Scroll Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mt-16 sm:mt-20 flex flex-col items-center gap-2 text-[#A8A9AD] hover:text-white cursor-pointer transition-colors"
+            onClick={() => scrollToSection('about')}
+          >
+            <span className="text-[10px] font-space tracking-[0.25em] uppercase">Scroll</span>
+            <ChevronDown className="w-4 h-4 text-[#B07845] animate-bounce" />
+          </motion.div>
         </div>
       </section>
 
-      {/* 3. Specialized Spaces / Studios */}
-      <section id="spaces" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-3xl space-y-3">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-              Quatre Studios Dédiés. Zéro Compromis.
+      {/* ============================================================ */}
+      {/* 5. INTRODUCTION SECTION — THE HADID ECOSYSTEM                */}
+      {/* ============================================================ */}
+      <section id="about" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#101010]">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto mb-16 sm:mb-20"
+          >
+            <h2 className="font-space font-bold text-2xl sm:text-4xl lg:text-5xl tracking-tight uppercase text-white mb-5">
+              ONE PLATFORM. THREE ESSENTIAL CONNECTIONS.
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-sans font-light leading-relaxed">
-              Chaque discipline dispose de son propre volume insonorisé, calibré selon des exigences biomécaniques rigoureuses.
+            <p className="font-inter text-sm sm:text-base text-[#A8A9AD] leading-relaxed">
+              HADID brings together the people who make the fitness industry work. From gym owners to
+              professional coaches and members, everything starts with a stronger connection.
             </p>
-          </div>
+          </motion.div>
 
-          {/* Tab Switcher */}
-          <div className="flex overflow-x-auto gap-2 pb-2 no-scrollbar border-b border-neutral-200/80 dark:border-white/[0.08]">
-            {clubSpaces.map((space, idx) => (
+          {/* 3 Distinct Ecosystem Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {/* Card 1: Gym Owners */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="bg-[#191919] border border-[#262626] hover:border-[#B07845]/70 rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 group shadow-xl"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-[#101010] border border-[#262626] flex items-center justify-center text-[#B07845] mb-6 group-hover:border-[#B07845]/50 transition-colors">
+                  <Building2 className="w-6 h-6 text-[#B07845]" />
+                </div>
+                <h3 className="font-space font-bold text-xl uppercase tracking-wider text-white mb-3">
+                  GYM OWNERS
+                </h3>
+                <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed mb-6">
+                  Take control of your gym operations, manage your members and memberships, oversee
+                  payments and build professional coaching partnerships.
+                </p>
+              </div>
               <button
-                key={space.id}
-                onClick={() => setActiveSpace(idx)}
-                className={`pb-3.5 px-3 text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-all border-b-2 cursor-pointer ${
-                  activeSpace === idx
-                    ? 'border-[#c5a880] text-neutral-950 dark:text-white'
-                    : 'border-transparent text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'
-                }`}
+                onClick={() => scrollToSection('for-gyms')}
+                className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase tracking-[0.15em] text-[#B07845] group-hover:text-white transition-colors cursor-pointer pt-2"
               >
-                <span className="font-mono text-[10px] mr-2 text-[#c5a880]">{space.number}</span>
-                <span>{space.title}</span>
+                <span>Discover More</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </button>
-            ))}
-          </div>
+            </motion.div>
 
-          {/* Active Space Featured Layout: Balanced Grid Without Collisions */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-            <div className="lg:col-span-7 space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <span className="font-mono text-xs font-bold text-[#c5a880] uppercase tracking-widest">
-                    Zone {clubSpaces[activeSpace].number} • Byrsa
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                    {clubSpaces[activeSpace].title}
-                  </h3>
-                  <p className="text-xs font-heading font-bold uppercase tracking-wider text-[#758a7b] dark:text-[#a3b8a9]">
-                    {clubSpaces[activeSpace].subtitle}
-                  </p>
+            {/* Card 2: Coaches */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-[#191919] border border-[#262626] hover:border-[#B07845]/70 rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 group shadow-xl"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-[#101010] border border-[#262626] flex items-center justify-center text-[#B07845] mb-6 group-hover:border-[#B07845]/50 transition-colors">
+                  <Dumbbell className="w-6 h-6 text-[#B07845]" />
                 </div>
-
-                <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
-                  {clubSpaces[activeSpace].desc}
+                <h3 className="font-space font-bold text-xl uppercase tracking-wider text-white mb-3">
+                  COACHES
+                </h3>
+                <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed mb-6">
+                  Discover gyms, establish professional collaborations and connect your expertise with the
+                  right fitness environments.
                 </p>
+              </div>
+              <button
+                onClick={() => scrollToSection('for-coaches')}
+                className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase tracking-[0.15em] text-[#B07845] group-hover:text-white transition-colors cursor-pointer pt-2"
+              >
+                <span>Discover More</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </motion.div>
 
-                <div className="space-y-2.5 pt-3">
-                  <p className="text-[10px] font-heading font-extrabold uppercase tracking-[0.2em] text-neutral-400">
-                    Spécifications & Équipements :
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {clubSpaces[activeSpace].specs.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2.5 text-xs text-neutral-700 dark:text-neutral-300">
-                        <Check className="w-4 h-4 text-[#c5a880] flex-shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+            {/* Card 3: Members */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-[#191919] border border-[#262626] hover:border-[#B07845]/70 rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 group shadow-xl"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-[#101010] border border-[#262626] flex items-center justify-center text-[#B07845] mb-6 group-hover:border-[#B07845]/50 transition-colors">
+                  <Users className="w-6 h-6 text-[#B07845]" />
+                </div>
+                <h3 className="font-space font-bold text-xl uppercase tracking-wider text-white mb-3">
+                  MEMBERS
+                </h3>
+                <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed mb-6">
+                  Find your gym, explore available memberships and enjoy a simpler way to manage your
+                  fitness experience.
+                </p>
+              </div>
+              <button
+                onClick={() => scrollToSection('for-members')}
+                className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase tracking-[0.15em] text-[#B07845] group-hover:text-white transition-colors cursor-pointer pt-2"
+              >
+                <span>Discover More</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 6. FEATURES SECTION                                          */}
+      {/* ============================================================ */}
+      <section id="features" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#191919] border-y border-[#262626]">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto mb-16 sm:mb-20"
+          >
+            <h2 className="font-space font-bold text-2xl sm:text-4xl lg:text-5xl tracking-tight uppercase text-white mb-5">
+              EVERYTHING YOUR GYM NEEDS. NOTHING IT DOESN’T.
+            </h2>
+            <p className="font-inter text-sm sm:text-base text-[#A8A9AD] leading-relaxed">
+              A smarter approach to gym management, built around the needs of modern fitness businesses.
+            </p>
+          </motion.div>
+
+          {/* Features Grid: 6 Modern SaaS Cards with subtle layout variations */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Feature 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.05 }}
+              className="bg-[#101010] border border-[#262626] hover:border-[#B07845]/50 rounded-xl p-7 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#B07845] mb-5">
+                <UserCheck className="w-5 h-5 text-[#B07845]" />
+              </div>
+              <h3 className="font-space font-bold text-lg text-white mb-2 uppercase tracking-wide">
+                Client Management
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Keep member information organized and accessible.
+              </p>
+            </motion.div>
+
+            {/* Feature 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="bg-[#101010] border border-[#262626] hover:border-[#B07845]/50 rounded-xl p-7 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#B07845] mb-5">
+                <CreditCard className="w-5 h-5 text-[#B07845]" />
+              </div>
+              <h3 className="font-space font-bold text-lg text-white mb-2 uppercase tracking-wide">
+                Membership Management
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Create, organize and manage gym membership offers.
+              </p>
+            </motion.div>
+
+            {/* Feature 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="bg-[#101010] border border-[#262626] hover:border-[#B07845]/50 rounded-xl p-7 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#B07845] mb-5">
+                <Receipt className="w-5 h-5 text-[#B07845]" />
+              </div>
+              <h3 className="font-space font-bold text-lg text-white mb-2 uppercase tracking-wide">
+                Payment Management
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Keep track of membership payments and payment statuses.
+              </p>
+            </motion.div>
+
+            {/* Feature 4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-[#101010] border border-[#262626] hover:border-[#B07845]/50 rounded-xl p-7 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#B07845] mb-5">
+                <Handshake className="w-5 h-5 text-[#B07845]" />
+              </div>
+              <h3 className="font-space font-bold text-lg text-white mb-2 uppercase tracking-wide">
+                Coach Collaboration
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Connect gym owners and professional coaches through collaboration opportunities.
+              </p>
+            </motion.div>
+
+            {/* Feature 5 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="bg-[#101010] border border-[#262626] hover:border-[#B07845]/50 rounded-xl p-7 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#B07845] mb-5">
+                <Compass className="w-5 h-5 text-[#B07845]" />
+              </div>
+              <h3 className="font-space font-bold text-lg text-white mb-2 uppercase tracking-wide">
+                Gym Discovery
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Make it easier for coaches and members to discover participating gyms.
+              </p>
+            </motion.div>
+
+            {/* Feature 6 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="bg-[#101010] border border-[#262626] hover:border-[#B07845]/50 rounded-xl p-7 transition-all duration-300 hover:-translate-y-1 group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#B07845] mb-5">
+                <LayoutDashboard className="w-5 h-5 text-[#B07845]" />
+              </div>
+              <h3 className="font-space font-bold text-lg text-white mb-2 uppercase tracking-wide">
+                Centralized Management
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Bring essential gym operations together in one organized platform.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 7. FOR GYM OWNERS SECTION (Split-screen)                     */}
+      {/* ============================================================ */}
+      <section id="for-gyms" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#101010]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Text Side */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="text-[11px] font-space font-bold tracking-[0.25em] text-[#B07845] uppercase mb-4">
+                FOR GYM OWNERS
+              </div>
+              <h2 className="font-space font-bold text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-white mb-6 leading-[1.12]">
+                YOUR GYM. YOUR BUSINESS. YOUR CONTROL.
+              </h2>
+              <p className="font-inter text-sm sm:text-base text-[#A8A9AD] leading-relaxed mb-8">
+                Running a gym requires more than managing equipment and memberships. HADID gives gym
+                owners a centralized platform to organize their operations and build stronger professional
+                relationships.
+              </p>
+
+              {/* Benefits List */}
+              <div className="space-y-4 mb-10">
+                {[
+                  'Organize gym members.',
+                  'Manage membership offers.',
+                  'Monitor payments.',
+                  'Connect with professional coaches.',
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-3.5">
+                    <div className="w-5 h-5 rounded-full bg-[#191919] border border-[#B07845]/50 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-[#B07845]" />
+                    </div>
+                    <span className="font-inter text-sm text-white">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={onOpenLogin}
+                className="px-8 py-4 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-200 shadow-xl shadow-[#B07845]/20 hover:shadow-[#B07845]/40 cursor-pointer active:scale-95"
+              >
+                Explore HADID for Gyms
+              </button>
+            </motion.div>
+
+            {/* Image Side */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+              className="relative group"
+            >
+              <div className="relative rounded-2xl overflow-hidden border border-[#262626] bg-[#191919] shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85"
+                  alt="Luxury Gym Facility Management"
+                  className="w-full h-[400px] sm:h-[480px] object-cover filter brightness-[0.75] contrast-[1.1] group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-[#101010]/90 backdrop-blur-md border border-[#262626]">
+                  <div className="text-[10px] font-space uppercase tracking-[0.2em] text-[#B07845] mb-1">
+                    Centralized Operations
+                  </div>
+                  <div className="font-space text-sm text-white font-bold">
+                    Designed for Elite Gym Operations & Longevity
                   </div>
                 </div>
               </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
-              <div className="pt-4 flex items-center gap-4 border-t border-neutral-200/80 dark:border-white/[0.08]">
-                <div className="w-10 h-10 rounded-2xl bg-[#c5a880]/15 border border-[#c5a880]/30 flex items-center justify-center font-heading font-black text-xs text-[#c5a880]">
-                  HD
-                </div>
-                <div>
-                  <p className="text-xs font-heading font-bold text-neutral-950 dark:text-white uppercase tracking-wider">
-                    Coach Titulaire du Studio
-                  </p>
-                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium">{clubSpaces[activeSpace].leadTrainer}</p>
+      {/* ============================================================ */}
+      {/* 8. FOR COACHES SECTION (Split Layout: Image Left, Text Right) */}
+      {/* ============================================================ */}
+      <section id="for-coaches" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#191919] border-t border-[#262626]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Image Side (Left) */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+              className="relative group order-2 lg:order-1"
+            >
+              <div className="relative rounded-2xl overflow-hidden border border-[#262626] bg-[#101010] shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1200&q=85"
+                  alt="Professional Personal Trainer in Luxury Gym"
+                  className="w-full h-[400px] sm:h-[480px] object-cover filter brightness-[0.75] contrast-[1.1] group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-[#101010]/90 backdrop-blur-md border border-[#262626]">
+                  <div className="text-[10px] font-space uppercase tracking-[0.2em] text-[#B07845] mb-1">
+                    Professional Network
+                  </div>
+                  <div className="font-space text-sm text-white font-bold">
+                    Verified Partnerships with Premium Venues
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right Card: Experience summary & Booking */}
-            <div className="lg:col-span-5 p-7 sm:p-8 rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/80 dark:bg-[#121316]/90 backdrop-blur-md space-y-6 shadow-sm flex flex-col justify-between">
-              <div className="space-y-2">
-                <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-[#c5a880]">
-                  Pass Découverte
-                </span>
-                <h4 className="text-lg sm:text-xl font-heading font-black uppercase text-neutral-950 dark:text-white tracking-tight">
-                  Tester ce studio en conditions réelles
-                </h4>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed font-light">
-                  Bénéficiez d'une visite privée guidée par un coach et d'un entraînement d'essai gratuit.
-                </p>
+            {/* Text Side (Right) */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+              className="order-1 lg:order-2"
+            >
+              <div className="text-[11px] font-space font-bold tracking-[0.25em] text-[#B07845] uppercase mb-4">
+                FOR COACHES
+              </div>
+              <h2 className="font-space font-bold text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-white mb-6 leading-[1.12]">
+                YOUR EXPERTISE DESERVES THE RIGHT ENVIRONMENT.
+              </h2>
+              <p className="font-inter text-sm sm:text-base text-[#A8A9AD] leading-relaxed mb-8">
+                Find the right gym, establish professional collaborations and take your coaching career
+                further with HADID.
+              </p>
+
+              {/* Benefits List */}
+              <div className="space-y-4 mb-10">
+                {[
+                  'Discover participating gyms.',
+                  'Send collaboration requests.',
+                  'Connect with gym owners.',
+                  'Manage professional collaborations.',
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-3.5">
+                    <div className="w-5 h-5 rounded-full bg-[#101010] border border-[#B07845]/50 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-[#B07845]" />
+                    </div>
+                    <span className="font-inter text-sm text-white">{item}</span>
+                  </div>
+                ))}
               </div>
 
-              <div className="p-4 rounded-2xl bg-neutral-100/70 dark:bg-neutral-900/70 border border-neutral-200/60 dark:border-white/[0.05] space-y-2.5 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-neutral-600 dark:text-neutral-400">Localisation Club</span>
-                  <span className="font-heading font-bold text-neutral-900 dark:text-white uppercase">Byrsa, Niveau 1</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-neutral-600 dark:text-neutral-400">Accès Inclus</span>
-                  <span className="font-heading font-bold text-[#c5a880] uppercase">Formules Trimestriel & VIP</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-neutral-600 dark:text-neutral-400">Jauge Maximum</span>
-                  <span className="font-mono font-bold text-neutral-900 dark:text-white">16 athlètes / séance</span>
-                </div>
-              </div>
-
-              <ShinyButton
-                variant="primary"
-                onClick={() => {
-                  setPreferredSpace(clubSpaces[activeSpace].title);
-                  setIsTourModalOpen(true);
-                }}
-                className="w-full text-xs justify-center py-3.5"
+              <button
+                onClick={onOpenLogin}
+                className="px-8 py-4 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-200 shadow-xl shadow-[#B07845]/20 hover:shadow-[#B07845]/40 cursor-pointer active:scale-95"
               >
-                <span>Réserver un Essai dans ce Studio</span>
-              </ShinyButton>
+                Join as a Coach
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 9. FOR MEMBERS SECTION (Split Layout: Text Left, Image Right) */}
+      {/* ============================================================ */}
+      <section id="for-members" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#101010] border-t border-[#262626]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Text Side */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="text-[11px] font-space font-bold tracking-[0.25em] text-[#B07845] uppercase mb-4">
+                FOR MEMBERS
+              </div>
+              <h2 className="font-space font-bold text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight text-white mb-6 leading-[1.12]">
+                YOUR FITNESS JOURNEY STARTS HERE.
+              </h2>
+              <p className="font-inter text-sm sm:text-base text-[#A8A9AD] leading-relaxed mb-8">
+                Discover gyms, explore membership options and enjoy a more convenient fitness experience
+                with HADID.
+              </p>
+
+              {/* Benefits List */}
+              <div className="space-y-4 mb-10">
+                {[
+                  'Explore available gyms.',
+                  'Discover membership offers.',
+                  'Access membership information.',
+                  'Enjoy a simpler membership experience.',
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-3.5">
+                    <div className="w-5 h-5 rounded-full bg-[#191919] border border-[#B07845]/50 flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3 h-3 text-[#B07845]" />
+                    </div>
+                    <span className="font-inter text-sm text-white">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={onOpenLogin}
+                className="px-8 py-4 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-200 shadow-xl shadow-[#B07845]/20 hover:shadow-[#B07845]/40 cursor-pointer active:scale-95"
+              >
+                Discover HADID
+              </button>
+            </motion.div>
+
+            {/* Image Side */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7 }}
+              className="relative group"
+            >
+              <div className="relative rounded-2xl overflow-hidden border border-[#262626] bg-[#191919] shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1200&q=85"
+                  alt="Member Working Out in Premium Gym"
+                  className="w-full h-[400px] sm:h-[480px] object-cover filter brightness-[0.75] contrast-[1.1] group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-[#101010]/90 backdrop-blur-md border border-[#262626]">
+                  <div className="text-[10px] font-space uppercase tracking-[0.2em] text-[#B07845] mb-1">
+                    Frictionless Access
+                  </div>
+                  <div className="font-space text-sm text-white font-bold">
+                    Seamless Digital Pass & Studio Schedules
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 10. HOW IT WORKS SECTION                                     */}
+      {/* ============================================================ */}
+      <section id="how-it-works" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#191919] border-t border-[#262626]">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto mb-20"
+          >
+            <h2 className="font-space font-bold text-2xl sm:text-4xl lg:text-5xl tracking-tight uppercase text-white mb-5">
+              SIMPLE CONNECTIONS. SMARTER MANAGEMENT.
+            </h2>
+          </motion.div>
+
+          {/* 3 Steps: Horizontal on Desktop with Connecting Line, Vertical Timeline on Mobile */}
+          <div className="relative">
+            {/* Desktop Connecting Line */}
+            <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[1px] bg-[#262626] z-0" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+              {/* Step 01 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="flex flex-col items-start md:items-center text-left md:text-center"
+              >
+                <div className="font-space font-bold text-4xl sm:text-5xl text-[#B07845] mb-4 bg-[#191919] px-3">
+                  01
+                </div>
+                <h3 className="font-space font-bold text-lg uppercase tracking-wider text-white mb-3">
+                  Establish Your Gym
+                </h3>
+                <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed max-w-xs">
+                  Gym owners create their presence on HADID and organize their gym information and
+                  membership offers.
+                </p>
+              </motion.div>
+
+              {/* Step 02 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="flex flex-col items-start md:items-center text-left md:text-center"
+              >
+                <div className="font-space font-bold text-4xl sm:text-5xl text-[#B07845] mb-4 bg-[#191919] px-3">
+                  02
+                </div>
+                <h3 className="font-space font-bold text-lg uppercase tracking-wider text-white mb-3">
+                  Connect with Coaches
+                </h3>
+                <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed max-w-xs">
+                  Professional coaches discover gyms and establish collaborations with gym owners.
+                </p>
+              </motion.div>
+
+              {/* Step 03 */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex flex-col items-start md:items-center text-left md:text-center"
+              >
+                <div className="font-space font-bold text-4xl sm:text-5xl text-[#B07845] mb-4 bg-[#191919] px-3">
+                  03
+                </div>
+                <h3 className="font-space font-bold text-lg uppercase tracking-wider text-white mb-3">
+                  Welcome Members
+                </h3>
+                <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed max-w-xs">
+                  Members join gyms and access available membership opportunities.
+                </p>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Clinical Metabolic & Performance Assessment (No Layout Collisions) */}
-      <section id="assessment" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-5xl mx-auto space-y-3">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-              Évaluez Votre Indice & Objectif Sportif
+      {/* ============================================================ */}
+      {/* 11. WHY HADID SECTION                                        */}
+      {/* ============================================================ */}
+      <section id="why-hadid" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#101010] border-t border-[#262626]">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto mb-16 sm:mb-20"
+          >
+            <h2 className="font-space font-bold text-2xl sm:text-4xl lg:text-5xl tracking-tight uppercase text-white mb-5">
+              MORE THAN MANAGEMENT. A CONNECTED FITNESS ECOSYSTEM.
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-              Ajustez vos paramètres morphologiques pour obtenir instantanément une prescription d'entraînement adaptée.
-            </p>
+          </motion.div>
+
+          {/* 3 Value Propositions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Prop 1: Centralization */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="p-8 rounded-2xl bg-[#191919] border border-[#262626] hover:border-[#B07845]/50 transition-all duration-300"
+            >
+              <div className="w-1.5 h-8 bg-[#B07845] mb-6 rounded-full" />
+              <h3 className="font-space font-bold text-xl uppercase tracking-wider text-white mb-3">
+                Centralization
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Bring essential gym operations together through one organized platform.
+              </p>
+            </motion.div>
+
+            {/* Prop 2: Collaboration */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="p-8 rounded-2xl bg-[#191919] border border-[#262626] hover:border-[#B07845]/50 transition-all duration-300"
+            >
+              <div className="w-1.5 h-8 bg-[#B07845] mb-6 rounded-full" />
+              <h3 className="font-space font-bold text-xl uppercase tracking-wider text-white mb-3">
+                Collaboration
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Build stronger professional connections between gym owners and coaches.
+              </p>
+            </motion.div>
+
+            {/* Prop 3: Simplicity */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="p-8 rounded-2xl bg-[#191919] border border-[#262626] hover:border-[#B07845]/50 transition-all duration-300"
+            >
+              <div className="w-1.5 h-8 bg-[#B07845] mb-6 rounded-full" />
+              <h3 className="font-space font-bold text-xl uppercase tracking-wider text-white mb-3">
+                Simplicity
+              </h3>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed">
+                Create a smoother experience for gym owners, coaches and members.
+              </p>
+            </motion.div>
           </div>
+        </div>
+      </section>
 
-          <div className="max-w-5xl mx-auto p-6 sm:p-10 rounded-3xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/80 backdrop-blur-md shadow-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-              {/* Sliders Controls */}
-              <div className="lg:col-span-7 space-y-7 flex flex-col justify-between">
-                {/* Weight Slider */}
-                <div className="space-y-2.5">
-                  <div className="flex justify-between items-center text-xs font-heading font-bold uppercase tracking-wider">
-                    <span className="text-neutral-600 dark:text-neutral-400">Poids Corporel</span>
-                    <span className="font-heading font-black text-xl text-[#c5a880]">{weight} KG</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="45"
-                    max="140"
-                    value={weight}
-                    onChange={(e) => setWeight(Number(e.target.value))}
-                    className="w-full h-2 bg-neutral-200 dark:bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-[#c5a880]"
-                  />
-                  <div className="flex justify-between text-[10px] font-mono text-neutral-400 uppercase">
-                    <span>45 kg</span>
-                    <span>Poids Moyen 85 kg</span>
-                    <span>140 kg</span>
-                  </div>
-                </div>
+      {/* ============================================================ */}
+      {/* 12. FINAL CALL TO ACTION                                     */}
+      {/* ============================================================ */}
+      <section className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#101010] border-t border-[#262626]">
+        {/* Background Photograph */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2000&q=85"
+            alt="Cinematic Modern Gym Background"
+            className="w-full h-full object-cover object-center filter brightness-[0.35] contrast-[1.2]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-[#101010]/85 to-[#101010]/70" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(176,120,69,0.12)_0%,_transparent_65%)]" />
+        </div>
 
-                {/* Height Slider */}
-                <div className="space-y-2.5">
-                  <div className="flex justify-between items-center text-xs font-heading font-bold uppercase tracking-wider">
-                    <span className="text-neutral-600 dark:text-neutral-400">Stature / Taille</span>
-                    <span className="font-heading font-black text-xl text-[#c5a880]">{height} CM</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="145"
-                    max="215"
-                    value={height}
-                    onChange={(e) => setHeight(Number(e.target.value))}
-                    className="w-full h-2 bg-neutral-200 dark:bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-[#c5a880]"
-                  />
-                  <div className="flex justify-between text-[10px] font-mono text-neutral-400 uppercase">
-                    <span>145 cm</span>
-                    <span>Stature Moyenne 180 cm</span>
-                    <span>215 cm</span>
-                  </div>
-                </div>
+        {/* Content */}
+        <div className="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="font-space font-bold text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tight text-white mb-6 leading-[1.1]"
+          >
+            READY TO BUILD SOMETHING STRONGER?
+          </motion.h2>
 
-                <div className="p-3.5 rounded-2xl bg-neutral-100/70 dark:bg-neutral-900/60 border border-neutral-200/80 dark:border-white/[0.05] text-xs text-neutral-500 leading-relaxed font-light">
-                  Formulation conforme aux standards biomédicaux de l'OMS. Bilan complété en club par une impédancemétrie médicale à 8 électrodes (InBody).
-                </div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="font-inter text-base sm:text-lg text-[#A8A9AD] max-w-xl mb-10 leading-relaxed"
+          >
+            Bring your gym operations, coaches and members together with HADID.
+          </motion.p>
+
+          <motion.button
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            onClick={onOpenLogin}
+            className="px-10 py-5 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs sm:text-sm uppercase tracking-[0.25em] rounded-lg transition-all duration-200 shadow-2xl shadow-[#B07845]/30 hover:shadow-[#B07845]/50 cursor-pointer active:scale-95"
+          >
+            JOIN THE HADID ECOSYSTEM
+          </motion.button>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 13. FOOTER                                                   */}
+      {/* ============================================================ */}
+      <footer className="bg-[#101010] border-t border-[#1F1F1F] pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            {/* Column 1: Brand */}
+            <div>
+              <div className="font-space font-bold text-2xl tracking-[0.2em] text-white mb-4">
+                HADID
               </div>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed max-w-xs">
+                Strengthening the connection between gyms, coaches and members.
+              </p>
+            </div>
 
-              {/* Assessment Card Output (No Text Collision) */}
-              <div className="lg:col-span-5 p-7 rounded-3xl bg-neutral-50 dark:bg-neutral-900/90 border border-neutral-200/80 dark:border-white/[0.08] flex flex-col justify-between space-y-6">
-                <div className="space-y-3">
-                  <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-[#c5a880]">
-                    Indice Physiologique
-                  </span>
-
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-5xl sm:text-6xl font-heading font-black tracking-tight text-neutral-950 dark:text-white">
-                      {bmi.toFixed(1)}
-                    </span>
-                    <span className="text-xs font-mono font-bold uppercase text-neutral-400">KG / M²</span>
-                  </div>
-
-                  <p className="text-xs font-heading font-bold uppercase tracking-wider text-[#758a7b] dark:text-[#a3b8a9]">
-                    {assessment.category}
-                  </p>
-
-                  <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 space-y-3">
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed font-light">
-                      {assessment.desc}
-                    </p>
-                    <div className="p-3 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200/80 dark:border-white/10 text-xs font-heading font-bold text-neutral-950 dark:text-white">
-                      💡 Formule suggérée : <span className="text-[#c5a880]">{assessment.planName}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <a href="#memberships">
-                  <button className="w-full py-3.5 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-xs font-heading font-bold uppercase tracking-wider hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-colors cursor-pointer">
-                    Consulter cette formule →
+            {/* Column 2: Platform */}
+            <div>
+              <div className="font-space font-bold text-xs uppercase tracking-[0.2em] text-white mb-4">
+                Platform
+              </div>
+              <ul className="space-y-3 font-inter text-sm">
+                <li>
+                  <button
+                    onClick={() => scrollToSection('features')}
+                    className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
+                  >
+                    Features
                   </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => scrollToSection('for-gyms')}
+                    className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
+                  >
+                    For Gyms
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => scrollToSection('for-coaches')}
+                    className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
+                  >
+                    For Coaches
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => scrollToSection('for-members')}
+                    className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
+                  >
+                    For Members
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Account */}
+            <div>
+              <div className="font-space font-bold text-xs uppercase tracking-[0.2em] text-white mb-4">
+                Account
+              </div>
+              <ul className="space-y-3 font-inter text-sm">
+                <li>
+                  <button
+                    onClick={onOpenLogin}
+                    className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
+                  >
+                    Login
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={onOpenLogin}
+                    className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
+                  >
+                    Register
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 4: Contact */}
+            <div>
+              <div className="font-space font-bold text-xs uppercase tracking-[0.2em] text-white mb-4">
+                Contact
+              </div>
+              <p className="font-inter text-sm text-[#A8A9AD] leading-relaxed mb-4">
+                Avenue Habib Bourguiba, Carthage, Tunis<br />
+                contact@hadid.fitness
+              </p>
+              <div className="flex items-center gap-3">
+                <a
+                  href="#hero"
+                  aria-label="Instagram"
+                  className="w-9 h-9 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#A8A9AD] hover:text-white hover:border-[#B07845] transition-colors"
+                >
+                  <Globe className="w-4 h-4" />
+                </a>
+                <a
+                  href="#hero"
+                  aria-label="Twitter"
+                  className="w-9 h-9 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#A8A9AD] hover:text-white hover:border-[#B07845] transition-colors"
+                >
+                  <Share2 className="w-4 h-4" />
+                </a>
+                <a
+                  href="mailto:contact@hadid.fitness"
+                  aria-label="Contact Email"
+                  className="w-9 h-9 rounded-lg bg-[#191919] border border-[#262626] flex items-center justify-center text-[#A8A9AD] hover:text-white hover:border-[#B07845] transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
                 </a>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* 5. Live Class Schedule Sneak-Peek */}
-      <section id="schedule" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="max-w-3xl space-y-3">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                Prochains Créneaux au Planning
-              </h2>
-              <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light">
-                Disponibilités en direct synchronisées avec le serveur Java pur.
-              </p>
-            </div>
-
-            <button
-              onClick={onOpenLogin}
-              className="text-xs font-heading font-bold uppercase tracking-wider text-neutral-950 dark:text-white hover:text-[#c5a880] flex items-center gap-2 cursor-pointer transition-colors"
-            >
-              <span>Accéder au planning complet</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Schedule Cards: Minimum Height, Symmetrical Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {sessions.slice(0, 3).map((s) => {
-              const booked = s.totalBookings ?? 0;
-              const max = s.capaciteMax ?? 20;
-              const remaining = max - booked;
-
-              return (
-                <div
-                  key={s.id}
-                  className="p-7 rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/80 dark:bg-[#111215]/80 backdrop-blur-md flex flex-col justify-between space-y-6 luxury-card shadow-sm min-h-[260px]"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold text-[#c5a880] uppercase tracking-wider">
-                        {s.salle || 'Studio Principal'}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-white/[0.05] text-[10px] font-mono font-bold text-neutral-700 dark:text-neutral-300">
-                        {s.dateHeureDebut
-                          ? new Date(s.dateHeureDebut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                          : '18:00'}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white line-clamp-1">
-                        {s.classTitle || 'Séance Athlétique'}
-                      </h4>
-                      <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                        Coach : <strong className="text-neutral-800 dark:text-neutral-200">{s.coachName || 'Staff HADID'}</strong>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 pt-4 border-t border-neutral-100 dark:border-white/[0.06]">
-                    <div className="flex justify-between items-center text-[11px] font-heading font-bold uppercase tracking-wider">
-                      <span className="text-neutral-500">Disponibilité</span>
-                      <span className="text-neutral-950 dark:text-white font-mono">{remaining} places</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#c5a880] rounded-full transition-all"
-                        style={{ width: `${Math.min(100, (booked / max) * 100)}%` }}
-                      />
-                    </div>
-
-                    <button
-                      onClick={onOpenLogin}
-                      className="w-full mt-2 py-2.5 rounded-full border border-neutral-300 dark:border-white/10 hover:border-[#c5a880] text-xs font-heading font-bold uppercase tracking-wider transition-colors cursor-pointer"
-                    >
-                      Réserver ma place →
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Membership Tiers & Official Investment (Pricing, No Collision) */}
-      <section id="memberships" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-              Investissez Dans Vos Standards.
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light">
-              Des formules claires, sans frais cachés ni engagement forcé. Tarifs en Dinars Tunisiens (TND).
-            </p>
-          </div>
-
-          {/* Official Membership Registration Rule Banner */}
-          <div className="max-w-2xl mx-auto mb-10 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-center space-y-1">
-            <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">
-              Règle d'Adhésion Officielle HADID Byrsa
-            </span>
-            <p className="text-xs text-neutral-700 dark:text-neutral-300 font-light leading-relaxed">
-              L'enregistrement initial d'un membre s'effectue via la procédure officielle du club avec intervention administrative. La souscription et le règlement en ligne sont strictement réservés aux adhérents déjà immatriculés.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
-            {plans.map((p, idx) => {
-              const isRecommended = idx === 1 || p.nom.toLowerCase().includes('trimestriel') || p.nom.toLowerCase().includes('vip');
-
-              return (
-                <div
-                  key={p.id}
-                  className={`p-8 sm:p-9 rounded-3xl border flex flex-col justify-between transition-all duration-300 luxury-card ${
-                    isRecommended
-                      ? 'border-[#c5a880] bg-white dark:bg-[#14151a] shadow-[0_0_35px_-8px_rgba(197,168,128,0.25)]'
-                      : 'border-neutral-200/90 dark:border-white/[0.08] bg-white/70 dark:bg-[#101114]/80'
-                  }`}
-                >
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      {isRecommended && (
-                        <span className="px-3 py-1 rounded-full bg-[#c5a880] text-neutral-950 text-[9px] font-heading font-black uppercase tracking-widest inline-block mb-1">
-                          Formule Privilège Recommandée
-                        </span>
-                      )}
-                      <h3 className="text-2xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                        {p.nom}
-                      </h3>
-                      <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">
-                        {p.description}
-                      </p>
-                    </div>
-
-                    <div className="flex items-baseline gap-1.5 whitespace-nowrap">
-                      <span className="text-4xl sm:text-5xl font-heading font-black tracking-tight text-neutral-950 dark:text-white">
-                        {p.prix}
-                      </span>
-                      <span className="text-sm font-heading font-bold uppercase text-[#c5a880]">TND</span>
-                      <span className="text-xs text-neutral-400 font-light ml-1">/ {p.dureeMois} mois</span>
-                    </div>
-
-                    <div className="space-y-3 pt-5 border-t border-neutral-100 dark:border-white/[0.08] text-xs">
-                      <div className="flex items-center gap-2.5 text-neutral-700 dark:text-neutral-300">
-                        <Check className="w-4 h-4 text-[#c5a880] flex-shrink-0" />
-                        <span>Accès illimité force & cardio 7j/7</span>
-                      </div>
-                      <div className="flex items-center gap-2.5 text-neutral-700 dark:text-neutral-300">
-                        <Check className="w-4 h-4 text-[#c5a880] flex-shrink-0" />
-                        <span>Vestiaires individuels & casiers RFID</span>
-                      </div>
-                      <div className="flex items-center gap-2.5 text-neutral-700 dark:text-neutral-300">
-                        <Check className="w-4 h-4 text-[#c5a880] flex-shrink-0" />
-                        <span>Bilan corporel InBody à 8 électrodes</span>
-                      </div>
-                      {p.accesCoursIllimite && (
-                        <div className="flex items-center gap-2.5 font-bold text-neutral-950 dark:text-white">
-                          <Check className="w-4 h-4 text-[#758a7b] dark:text-[#a3b8a9] flex-shrink-0" />
-                          <span>Tous cours collectifs illimités</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="pt-8">
-                    <button
-                      onClick={onOpenLogin}
-                      className={`w-full py-3.5 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all cursor-pointer active:scale-95 ${
-                        isRecommended
-                          ? 'bg-[#c5a880] text-neutral-950 hover:bg-[#b0936b]'
-                          : 'bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white'
-                      }`}
-                    >
-                      {currentUser ? 'Renouveler ma formule (Espace Membre)' : 'Souscrire (Réservé aux Membres)'}
-                    </button>
-                    <p className="text-[10px] text-neutral-400 text-center mt-2 font-mono">
-                      {currentUser ? 'Débit immédiat sur votre compte' : 'Connexion adhérent requise'}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. The Carthage Standards (Pure Air, Acoustic, Recovery) */}
-      <section id="standards" className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-              Une Attention Inégalée aux Détails.
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light">
-              L'environnement physique conditionne directement la qualité de votre entraînement et de votre récupération.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            <div className="p-7 sm:p-8 rounded-3xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/80 backdrop-blur-md space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#c5a880]/15 border border-[#c5a880]/30 flex items-center justify-center text-[#c5a880]">
-                <Wind className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                Renouvellement d’Air Continu
-              </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed font-light">
-                Centrale de traitement d’air avec filtres HEPA H14. Renouvellement intégral du volume toutes les 8 minutes pour maintenir un taux d’oxygène optimal.
-              </p>
-            </div>
-
-            <div className="p-7 sm:p-8 rounded-3xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/80 backdrop-blur-md space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#758a7b]/15 border border-[#758a7b]/30 flex items-center justify-center text-[#758a7b]">
-                <Droplets className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                Eau Purifiée & Serviettes
-              </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed font-light">
-                Fontaines d’eau filtrée par osmose inverse en libre accès. Service de grandes serviettes d'entraînement et de douche en coton biologique.
-              </p>
-            </div>
-
-            <div className="p-7 sm:p-8 rounded-3xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/80 backdrop-blur-md space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#c87a32]/15 border border-[#c87a32]/30 flex items-center justify-center text-[#c87a32]">
-                <Layers className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                Insonorisation Phonique
-              </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed font-light">
-                Planchers désolidarisés absorbant les vibrations du dropping des barres lourdes, assurant le calme absolu dans le sanctuaire de yoga.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. FAQ Accordion (No Icon Collisions) */}
-      <section className="py-16 sm:py-20 border-b border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center space-y-2">
-            <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-              Questions Fréquentes
-            </h2>
-          </div>
-
-          <div className="space-y-3.5">
-            {faqs.map((faq, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#111215]/80 backdrop-blur-md overflow-hidden"
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full px-6 py-4.5 text-left flex items-center justify-between gap-4 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider text-neutral-950 dark:text-white cursor-pointer"
-                >
-                  <span className="flex-1 pr-2">{faq.q}</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-[#c5a880] flex-shrink-0 transition-transform duration-200 ${
-                      openFaq === idx ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                <AnimatePresence>
-                  {openFaq === idx && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="px-6 pb-4.5 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed font-light border-t border-neutral-100 dark:border-white/[0.05] pt-3.5"
-                    >
-                      {faq.a}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 9. Minimal Luxury Footer */}
-      <footer className="py-16 bg-white/90 dark:bg-[#08090b]/90 text-neutral-500 text-xs border-t border-neutral-200/80 dark:border-white/[0.08]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-neutral-200/80 dark:border-white/[0.08]">
-            <HadidLogo size="md" />
-
-            <button
-              onClick={() => setIsTourModalOpen(true)}
-              className="px-7 py-3 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-xs font-heading font-bold uppercase tracking-widest hover:bg-[#c5a880] dark:hover:bg-[#c5a880] dark:hover:text-black transition-all cursor-pointer"
-            >
-              Réserver ma visite privée
-            </button>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-neutral-400">
-            <div>
-              © 2026 HADID BYRSA • SANCTUAIRE ATHLÉTIQUE PRIVÉ
-            </div>
-            <div>
-              BYRSA : <span className="text-neutral-900 dark:text-white font-bold">36.8528° N, 10.3233° E</span>
-            </div>
-            <div>
-              ÉQUIPEMENTS CERTIFIÉS IWF • OUVERT 7J/7
+          {/* Bottom Copyright */}
+          <div className="pt-8 border-t border-[#1F1F1F] flex flex-col sm:flex-row items-center justify-between gap-4 font-inter text-xs text-[#A8A9AD]">
+            <div>© 2026 HADID. All rights reserved.</div>
+            <div className="flex items-center gap-6">
+              <span className="text-[11px] font-space tracking-wider uppercase">Built on Strength. Powered by Connection.</span>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* 10. Guest Pass / Private Tour Modal (Responsive, Anti-Collision, A11y) */}
-      <AnimatePresence>
-        {isTourModalOpen && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-tour-title"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setIsTourModalOpen(false);
-            }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.94, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.94, opacity: 0 }}
-              className="w-full max-w-lg rounded-3xl bg-white dark:bg-[#121317] border border-neutral-200 dark:border-white/[0.1] p-7 sm:p-9 shadow-2xl space-y-6 relative"
-            >
-              <button
-                onClick={() => setIsTourModalOpen(false)}
-                aria-label="Fermer la visite privée"
-                className="absolute top-6 right-6 p-2 rounded-xl text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {!tourBooked ? (
-                <>
-                  <div className="space-y-1.5">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#c5a880]">
-                      Pass Découverte 24H • Byrsa
-                    </span>
-                    <h3 id="modal-tour-title" className="text-2xl sm:text-3xl font-heading font-black uppercase tracking-tight text-neutral-950 dark:text-white">
-                      Visite Privée du Club
-                    </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">
-                      Découvrez nos 4 studios et bénéficiez d'une séance d'orientation sportive offerte.
-                    </p>
-                  </div>
-
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      setTourBooked(true);
-                    }}
-                    className="space-y-4 pt-1"
-                  >
-                    <div>
-                      <label className="block text-xs font-heading font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                        Nom & Prénom *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Ex : Selim Trabelsi"
-                        value={guestName}
-                        onChange={(e) => setGuestName(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white text-xs focus:outline-none focus:border-[#c5a880]"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-heading font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                          Téléphone Portable *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="+216 98 000 000"
-                          value={guestPhone}
-                          onChange={(e) => setGuestPhone(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white text-xs focus:outline-none focus:border-[#c5a880]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-heading font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                          Studio d'Intérêt
-                        </label>
-                        <select
-                          value={preferredSpace}
-                          onChange={(e) => setPreferredSpace(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white text-xs focus:outline-none focus:border-[#c5a880]"
-                        >
-                          <option value="Plateau Force & Haltérophilie">Plateau Force & Haltérophilie</option>
-                          <option value="Dojo & Ring de Boxe">Dojo & Ring de Boxe</option>
-                          <option value="Yoga & Récupération">Yoga & Récupération</option>
-                          <option value="Suite Cardio RPM">Suite Cardio RPM</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="pt-3">
-                      <ShinyButton
-                        type="submit"
-                        variant="primary"
-                        className="w-full py-3.5 text-xs justify-center"
-                      >
-                        <span>Générer Mon Pass Découverte</span>
-                      </ShinyButton>
-                    </div>
-                  </form>
-                </>
-              ) : (
-                <div className="text-center space-y-6 py-4 animate-in zoom-in-95">
-                  <div className="w-16 h-16 rounded-full bg-[#c5a880]/15 border border-[#c5a880]/30 flex items-center justify-center mx-auto text-[#c5a880]">
-                    <Check className="w-8 h-8" />
-                  </div>
-
-                  <div className="space-y-1">
-                    <h3 className="text-2xl font-heading font-black uppercase text-neutral-950 dark:text-white">
-                      Pass Découverte Confirmé
-                    </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light">
-                      Bienvenue <strong>{guestName || 'Athlète'}</strong>. Votre accès exclusif pour <strong>{preferredSpace}</strong> est actif.
-                    </p>
-                  </div>
-
-                  {/* Clean Digital Pass Mockup with HADID Logo */}
-                  <div className="p-6 rounded-2xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 text-left space-y-4 font-mono text-xs">
-                    <div className="flex justify-between items-center text-[10px] text-neutral-400 uppercase">
-                      <div className="flex items-center gap-2">
-                        <HadidLogo size="sm" showSubtitle={false} />
-                      </div>
-                      <span className="text-[#c5a880] font-bold">PASS 24H ACTIF</span>
-                    </div>
-
-                    <div className="flex items-center gap-4 pt-2 border-t border-neutral-200 dark:border-white/[0.08]">
-                      <QrCode className="w-12 h-12 text-neutral-950 dark:text-white flex-shrink-0" />
-                      <div>
-                        <p className="font-bold text-neutral-950 dark:text-white text-sm">RÉF : HADID-BYRSA-2026</p>
-                        <p className="text-[10px] text-neutral-400">Présentez ce QR code aux bornes d'accueil</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setIsTourModalOpen(false)}
-                    className="w-full py-3.5 rounded-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white font-heading font-bold text-xs hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors cursor-pointer uppercase tracking-wider"
-                  >
-                    Fermer la fenêtre
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-    </GridBackground>
+    </div>
   );
 };

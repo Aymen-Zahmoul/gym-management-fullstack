@@ -19,11 +19,6 @@ export interface Member {
   activePlanName?: string;
   paymentStatut?: 'PAYE' | 'EN_ATTENTE' | 'NON_PAYE' | 'AUCUN' | string;
   lastPaymentAmount?: number;
-  specialite?: string;
-  ville?: string;
-  tarifHoraire?: number;
-  bio?: string;
-  disponibilite?: string;
 }
 
 export interface Coach {

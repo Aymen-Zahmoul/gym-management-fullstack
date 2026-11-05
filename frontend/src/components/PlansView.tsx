@@ -3,12 +3,10 @@ import {
   Award,
   Search,
   CheckCircle2,
-  Clock,
   Banknote,
   ShieldCheck,
   Sparkles,
   UserCheck,
-  ChevronRight,
 } from 'lucide-react';
 import type { MembershipPlan, Member } from '../types';
 import { SpotlightCard } from './ui/SpotlightCard';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Search, CheckCircle2, ShieldCheck, UserCheck } from 'lucide-react';
+import { X, Search, CheckCircle2, UserCheck } from 'lucide-react';
 import { Member } from '../../types';
 import { ShinyButton } from './ShinyButton';
 

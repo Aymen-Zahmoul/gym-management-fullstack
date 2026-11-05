@@ -84,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 bg-[#fbfbfa]/95 dark:bg-[#0c0d10]/95 backdrop-blur-xl border-b border-neutral-200/90 dark:border-white/[0.08] transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3 h-20">
           {/* 1. Left: Main Brand Logo with Protected Fixed Width */}
           <div className="flex items-center flex-shrink-0 min-w-max">
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onClick={() => setActiveTab(tab.id)}
                     className={`relative flex items-center rounded-xl transition-all cursor-pointer whitespace-nowrap ${
                       isAdmin
-                        ? 'px-2 xl:px-2.5 py-1.5 text-[11px] xl:text-xs font-bold uppercase tracking-wider'
+                        ? 'px-1.5 2xl:px-2.5 py-1.5 text-[11px] 2xl:text-xs font-bold uppercase tracking-wider'
                         : 'px-3.5 py-2 text-xs font-bold uppercase tracking-wider'
                     } ${
                       isActive
@@ -126,11 +126,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     )}
                     <span className="relative z-10 flex items-center gap-1.5">
                       <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span className="hidden xl:inline">{tab.label}</span>
-                      <span className="xl:hidden">{tab.label.split(' ')[0]}</span>
+                      <span className="hidden 2xl:inline">{tab.label}</span>
+                      <span className="2xl:hidden">{tab.label.split(' ')[0]}</span>
                       {badge > 0 && (
                         <span
-                          className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-black ${
+                          className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[11px] font-mono font-black ${
                             isActive
                               ? 'bg-amber-400 text-neutral-950'
                               : 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30'
@@ -180,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <span className="text-xs font-bold text-neutral-900 dark:text-white uppercase leading-tight truncate max-w-[90px] xl:max-w-[120px]">
                     {currentUser.nomComplet.split(' ')[0]}
                   </span>
-                  <span className="text-[9px] font-mono tracking-wider uppercase text-bronze font-semibold">
+                  <span className="text-[11px] font-mono tracking-wider uppercase text-bronze font-semibold">
                     {currentUser.role}
                   </span>
                 </div>
@@ -203,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Sub-Nav for Tablets & Mobile (< 1024px) */}
-      <div className="lg:hidden flex items-center overflow-x-auto border-t border-neutral-200/90 dark:border-white/[0.08] px-4 py-2 gap-2 bg-[#fbfbfa] dark:bg-[#0c0d10] no-scrollbar">
+      <div className="xl:hidden flex items-center overflow-x-auto border-t border-neutral-200/90 dark:border-white/[0.08] px-4 py-2 gap-2 bg-[#fbfbfa] dark:bg-[#0c0d10] no-scrollbar">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -222,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Icon className="w-3.5 h-3.5" />
               <span>{tab.label}</span>
               {badge > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-amber-500 text-neutral-950">
+                <span className="px-1.5 py-0.2 rounded-full text-[11px] font-mono font-bold bg-amber-500 text-neutral-950">
                   {badge}
                 </span>
               )}

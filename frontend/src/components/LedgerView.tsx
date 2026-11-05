@@ -4,7 +4,6 @@ import {
   CreditCard,
   Banknote,
   Landmark,
-  CheckCircle2,
   Download,
   Search,
   ShieldCheck,
@@ -18,6 +17,29 @@ import { useAnimeEntrance } from '../utils/animeAnimations';
 interface LedgerViewProps {
   payments: Payment[];
 }
+
+const exportPaymentsToCSV = (payments: Payment[]) => {
+  const headers = ['Reference', 'Adherent', 'Date Reglement', 'Mode de Paiement', 'Montant (TND)', 'Statut'];
+  const rows = payments.map((p) => [
+    `"${p.reference}"`,
+    `"${p.userName || ''}"`,
+    `"${p.datePaiement || ''}"`,
+    p.modePaiement,
+    Number(p.montant).toFixed(2),
+    p.statut,
+  ]);
+
+  const csvContent =
+    'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  const today = new Date().toISOString().slice(0, 10);
+  link.setAttribute('download', `journal_caisse_carthage_fitness_${today}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
 export const LedgerView: React.FC<LedgerViewProps> = ({ payments }) => {
   const containerRef = useAnimeEntrance<HTMLDivElement>('.anime-item', [payments.length]);
@@ -36,25 +58,7 @@ export const LedgerView: React.FC<LedgerViewProps> = ({ payments }) => {
   const avgAmount = filteredPayments.length > 0 ? totalRevenue / filteredPayments.length : 0;
 
   const exportCSV = () => {
-    const headers = ['Reference', 'Adherent', 'Date Reglement', 'Mode de Paiement', 'Montant (TND)', 'Statut'];
-    const rows = filteredPayments.map((p) => [
-      `"${p.reference}"`,
-      `"${p.userName || ''}"`,
-      `"${p.datePaiement || ''}"`,
-      p.modePaiement,
-      Number(p.montant).toFixed(2),
-      p.statut,
-    ]);
-
-    const csvContent =
-      'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `journal_caisse_carthage_fitness_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    exportPaymentsToCSV(filteredPayments);
   };
 
   const getMethodBadge = (m: string) => {

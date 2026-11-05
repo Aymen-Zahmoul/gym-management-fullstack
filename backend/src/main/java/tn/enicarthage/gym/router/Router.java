@@ -415,7 +415,16 @@ public class Router {
                 return new Reponse(200, gson.toJson(schedulingRequestController.obtenir(id)));
             }
         } else if (len == 3) {
-            int id = entier(segments[offset + 1]);
+            String seg1 = segments[offset + 1];
+            // Route: GET /api/scheduling-requests/coach/{coachId}
+            if ("coach".equalsIgnoreCase(seg1)) {
+                int coachId = entier(segments[offset + 2]);
+                if ("GET".equalsIgnoreCase(methode)) {
+                    return new Reponse(200, gson.toJson(schedulingRequestController.listerParCoach(coachId)));
+                }
+            }
+            // Routes: /api/scheduling-requests/{id}/conflicts | approve | reject
+            int id = entier(seg1);
             String action = segments[offset + 2].toLowerCase();
             if ("GET".equalsIgnoreCase(methode) && "conflicts".equals(action)) {
                 return new Reponse(200, gson.toJson(schedulingRequestController.verifierConflits(id)));

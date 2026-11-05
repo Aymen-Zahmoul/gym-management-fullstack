@@ -15,10 +15,6 @@ import {
   Crown,
   Send,
   CheckCircle2,
-  Phone,
-  Briefcase,
-  MapPin,
-  Sparkles,
 } from 'lucide-react';
 import { Member } from '../types';
 import { api } from '../services/api';

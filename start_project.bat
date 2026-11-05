@@ -19,7 +19,7 @@ if "%ERRORLEVEL%"=="0" (
 
 :: 2. Demarrage du Backend Java
 echo.
-echo [2/3] Demarrage du Serveur Java Backend (Port 8081)...
+echo [2/3] Demarrage du Serveur Java Backend (Port 8080)...
 cd /d "%~dp0backend"
 start "Java Backend Server" "C:\Program Files\Java\jdk-21.0.12.1\bin\java.exe" -jar "target\gym-management-1.0-SNAPSHOT.jar"
 timeout /t 2 /nobreak >nul
@@ -36,7 +36,7 @@ echo.
 echo ========================================================
 echo Application lancee avec succes !
 echo - Frontend : http://localhost:3000
-echo - API Java : http://localhost:8081/api
+echo - API Java : http://localhost:8080/api
 echo ========================================================
 start http://localhost:3000
 pause

@@ -11,6 +11,10 @@ import tn.enicarthage.gym.model.MembershipPlan;
 import tn.enicarthage.gym.model.Payment;
 import tn.enicarthage.gym.model.User;
 
+import tn.enicarthage.gym.config.DatabaseConnection;
+
+import java.math.BigDecimal;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -48,26 +52,52 @@ public class MembershipService {
         LocalDate debut = LocalDate.now();
         LocalDate fin = debut.plusMonths(plan.getDureeMois());
 
-        Membership m = new Membership();
-        m.setUserId(userId);
-        m.setPlanId(planId);
-        m.setDateDebut(debut);
-        m.setDateFin(fin);
-        m.setStatut("ACTIVE");
+        // Transaction atomique : adhesion + paiement (rollback si l'un echoue)
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                // 1. Creer l'adhesion
+                String sqlMembership = "INSERT INTO membership (user_id, plan_id, date_debut, date_fin, statut) VALUES (?, ?, ?, ?, ?)";
+                int membershipId;
+                try (PreparedStatement stmt = conn.prepareStatement(sqlMembership, Statement.RETURN_GENERATED_KEYS)) {
+                    stmt.setInt(1, userId);
+                    stmt.setInt(2, planId);
+                    stmt.setDate(3, Date.valueOf(debut));
+                    stmt.setDate(4, Date.valueOf(fin));
+                    stmt.setString(5, "ACTIVE");
+                    stmt.executeUpdate();
+                    try (ResultSet gk = stmt.getGeneratedKeys()) {
+                        if (gk.next()) {
+                            membershipId = gk.getInt(1);
+                        } else {
+                            throw new SQLException("Echec de creation de l'adhesion, aucune cle generee.");
+                        }
+                    }
+                }
 
-        Membership created = membershipDAO.create(m);
+                // 2. Creer le paiement comptable
+                String reference = "SUB-" + membershipId + "-" + System.currentTimeMillis() % 10000;
+                String mode = modePaiement != null ? modePaiement : "CARTE_BANCAIRE";
+                String sqlPayment = "INSERT INTO payment (user_id, membership_id, montant, mode_paiement, date_paiement, statut, reference) VALUES (?, ?, ?, ?, NOW(), ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sqlPayment)) {
+                    stmt.setInt(1, userId);
+                    stmt.setInt(2, membershipId);
+                    stmt.setBigDecimal(3, plan.getPrix());
+                    stmt.setString(4, mode);
+                    stmt.setString(5, "PAYE");
+                    stmt.setString(6, reference);
+                    stmt.executeUpdate();
+                }
 
-        // Enregistrement automatique du reglement comptable
-        Payment p = new Payment();
-        p.setUserId(userId);
-        p.setMembershipId(created.getId());
-        p.setMontant(plan.getPrix());
-        p.setModePaiement(modePaiement != null ? modePaiement : "CARTE_BANCAIRE");
-        p.setStatut("PAYE");
-        p.setReference("SUB-" + created.getId() + "-" + System.currentTimeMillis() % 10000);
-        paymentDAO.create(p);
-
-        return created;
+                conn.commit();
+                return membershipDAO.findById(membershipId);
+            } catch (Exception e) {
+                conn.rollback();
+                throw new RuntimeException("Echec de la souscription (rollback effectue) : " + e.getMessage(), e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur de connexion lors de la souscription : " + e.getMessage(), e);
+        }
     }
 
     public void cancelMembership(int id) {

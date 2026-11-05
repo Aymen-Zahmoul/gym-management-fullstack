@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  ClipboardList,
   UserCheck,
   Calendar,
   CheckCircle2,
@@ -8,18 +7,13 @@ import {
   AlertTriangle,
   Clock,
   MapPin,
-  Award,
   Search,
-  Filter,
   ShieldCheck,
   Phone,
   Mail,
-  User,
-  Sparkles,
 } from 'lucide-react';
 import type { CoachCollaborationRequest, SchedulingRequest, ClassSession } from '../types';
 import { SpotlightCard } from './ui/SpotlightCard';
-import { ShinyButton } from './ui/ShinyButton';
 import { useAnimeEntrance } from '../utils/animeAnimations';
 
 interface RequestsManagementViewProps {

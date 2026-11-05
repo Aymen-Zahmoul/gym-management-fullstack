@@ -72,7 +72,7 @@ export const animateCounter = (
         onUpdate(state.value);
       },
     });
-  } catch (err) {
+  } catch {
     onUpdate(to);
   }
 };
@@ -110,6 +110,7 @@ export const useAnimeEntrance = <T extends HTMLElement = HTMLDivElement>(
         ease: 'outExpo',
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   return containerRef;

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
-import { GridBackground } from './components/ui/GridBackground';
 import { QuickCheckInModal } from './components/ui/QuickCheckInModal';
 import { api } from './services/api';
 import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Payment, Coach, SchedulingRequest, CoachCollaborationRequest } from './types';
@@ -148,19 +147,24 @@ export function App() {
     }).catch(() => {});
 
     if (currentUser) {
-      loadAllData();
-      const defaultTab = getDefaultTabForRole(currentUser);
-      if (
-        currentUser.role === 'MEMBER' &&
-        (activeTab === 'dashboard' || activeTab === 'ledger' || activeTab === 'plans' || activeTab === 'members')
-      ) {
-        setActiveTab('my-space');
-      } else if (
-        currentUser.role === 'COACH' &&
-        (activeTab === 'dashboard' || activeTab === 'ledger' || activeTab === 'plans')
-      ) {
-        setActiveTab('schedule');
-      }
+      queueMicrotask(() => {
+        loadAllData();
+        setActiveTab((prev) => {
+        if (
+          currentUser.role === 'MEMBER' &&
+          (prev === 'dashboard' || prev === 'ledger' || prev === 'plans' || prev === 'members')
+        ) {
+          return 'my-space';
+        }
+        if (
+          currentUser.role === 'COACH' &&
+          (prev === 'dashboard' || prev === 'ledger' || prev === 'plans')
+        ) {
+          return 'schedule';
+        }
+        return prev;
+        });
+      });
     }
   }, [currentUser]);
 
@@ -286,7 +290,7 @@ export function App() {
   };
 
   return (
-    <GridBackground className="min-h-screen bg-[#fbfbfa] dark:bg-[#0c0d10] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-[#fbfbfa] dark:bg-[#0c0d10] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-300">
       {/* Toast Notification */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom duration-300">
@@ -378,7 +382,6 @@ export function App() {
                         stats={stats}
                         sessions={sessions}
                         members={members}
-                        plans={plans}
                         onNavigate={setActiveTab}
                         onOpenBookingModal={(s) => setSelectedSessionForBooking(s)}
                         onOpenQuickCheckIn={() => setIsQuickCheckInOpen(true)}
@@ -491,7 +494,7 @@ export function App() {
           </footer>
         </>
       )}
-    </GridBackground>
+    </div>
   );
 }
 

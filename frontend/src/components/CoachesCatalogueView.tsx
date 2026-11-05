@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Users,
   MapPin,
   Clock,
-  Banknote,
   Search,
   Award,
-  Sparkles,
-  Phone,
-  Mail,
   Calendar,
   Check,
   X,
-  Filter,
 } from 'lucide-react';
 import type { Coach, Member } from '../types';
 import { SpotlightCard } from './ui/SpotlightCard';
@@ -27,8 +21,8 @@ interface CoachesCatalogueViewProps {
 
 export const CoachesCatalogueView: React.FC<CoachesCatalogueViewProps> = ({
   coaches,
-  currentUser,
-  onNavigateToSchedule,
+  currentUser: _currentUser,
+  onNavigateToSchedule: _onNavigateToSchedule,
 }) => {
   const [selectedCity, setSelectedCity] = useState<string>('ALL');
   const [selectedSport, setSelectedSport] = useState<string>('ALL');

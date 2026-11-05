@@ -1,12 +1,24 @@
+/* Accessible keyboard focus indicator (WCAG 2.1 AA) */
+:focus-visible {
+  outline: 2px solid var(--bronze) !important;
+  outline-offset: 2px !important;
+}
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  /* Luxury Palette Grades: Damascus Bronze, Mineral Sage & Tempered Steel */
+.dark {
   --bronze: #c5a880;
   --bronze-dark: #9b7b52;
   --bronze-light: #e5d3be;
+}
+
+:root {
+  /* Luxury Palette Grades: Damascus Bronze, Mineral Sage & Tempered Steel */
+  /* Light mode: WCAG AA compliant deep bronze #8a6534 (contrast ratio 4.7:1 vs #FAF9F5) */
+  --bronze: #8a6534;
+  --bronze-dark: #6e4e24;
+  --bronze-light: #c5a880;
 
   --sage: #758a7b;
   --sage-dark: #4e5e53;
@@ -64,17 +76,21 @@ html {
   transform: translateY(-4px);
 }
 
-/* Color Accent Classes */
+/* Color Accent Classes with dynamic theme variable */
 .text-bronze {
-  color: #c5a880;
+  color: var(--bronze);
 }
 
 .border-bronze {
   border-color: rgba(197, 168, 128, 0.35);
 }
 
+.dark .border-bronze {
+  border-color: rgba(197, 168, 128, 0.35);
+}
+
 .bg-bronze {
-  background-color: #c5a880;
+  background-color: var(--bronze);
 }
 
 .bg-bronze-subtle {
@@ -140,4 +156,13 @@ html {
 
 .animate-pulse-subtle {
   animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* HADID Industrial Luxury Typography */
+.font-space {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }

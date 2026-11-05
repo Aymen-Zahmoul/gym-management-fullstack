@@ -1,35 +1,69 @@
 import { DashboardStats, Member, MembershipPlan, FitnessClass, ClassSession, Booking, Payment, Coach, CoachCollaborationRequest, SchedulingRequest } from '../types';
 
-const API_BASE = (import.meta.env.VITE_API_URL as string) || 'http://localhost:8081/api';
+let activeBase = (import.meta.env.VITE_API_URL as string) || 'http://localhost:8080/api';
+const API_BASE = activeBase;
 
 async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      ...options?.headers,
-    },
-  });
+  const currentUrl = url.replace(/localhost:(8080|8081)\/api/, activeBase.replace(/^https?:\/\//, ''));
+  const finalUrl = currentUrl.startsWith('http') ? currentUrl : `http://${currentUrl}`;
 
-  if (!res.ok) {
-    let errMsg = `Erreur HTTP ${res.status}`;
-    try {
-      const errData = await res.json();
-      if (errData && errData.erreur) {
-        errMsg = errData.erreur;
+  try {
+    const res = await fetch(finalUrl, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        ...options?.headers,
+      },
+    });
+
+    if (!res.ok) {
+      let errMsg = `Erreur HTTP ${res.status}`;
+      try {
+        const errData = await res.json();
+        if (errData && errData.erreur) {
+          errMsg = errData.erreur;
+        }
+      } catch {
+        // Ignorer si pas du JSON
       }
-    } catch {
-      // Ignorer si pas du JSON
+      throw new Error(errMsg);
     }
-    throw new Error(errMsg);
-  }
 
-  if (res.status === 204) {
-    return {} as T;
-  }
+    if (res.status === 204) {
+      return {} as T;
+    }
 
-  return res.json();
+    return res.json();
+  } catch (err: any) {
+    // Port failover: if connection failed, seamlessly try alternate port (8080 <-> 8081)
+    if (err?.name === 'TypeError' || err?.message?.toLowerCase().includes('fetch')) {
+      const altBase = activeBase.includes('8080')
+        ? activeBase.replace('8080', '8081')
+        : activeBase.replace('8081', '8080');
+      const altReplaced = url.replace(/localhost:(8080|8081)\/api/, altBase.replace(/^https?:\/\//, ''));
+      const altFinalUrl = altReplaced.startsWith('http') ? altReplaced : `http://${altReplaced}`;
+
+      try {
+        const altRes = await fetch(altFinalUrl, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            ...options?.headers,
+          },
+        });
+        if (altRes.ok) {
+          activeBase = altBase;
+          if (altRes.status === 204) return {} as T;
+          return altRes.json();
+        }
+      } catch {
+        // Keep original error
+      }
+    }
+    throw err;
+  }
 }
 
 export const api = {
