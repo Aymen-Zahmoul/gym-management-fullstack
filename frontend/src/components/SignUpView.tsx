@@ -133,7 +133,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between relative bg-[#FAF9F5] dark:bg-[#0E0F12] text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
+    <div className="min-h-screen flex flex-col justify-between relative bg-transparent text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
       <AthleteVideoGridBackground />
       {/* Centered subtle ambient bronze illumination */}
       <div className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B07845]/25 via-transparent to-transparent" />
@@ -148,7 +148,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
           {onBackToLanding && (
             <button
               onClick={onBackToLanding}
-              className="px-3.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#141518]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 text-xs font-medium hover:text-neutral-900 dark:hover:text-white hover:border-[#B07845] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+              className="px-3.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/70 dark:bg-black/50 backdrop-blur-md border-white/30 dark:border-white/15 text-neutral-700 dark:text-neutral-300 text-xs font-medium hover:text-neutral-900 dark:hover:text-white hover:border-[#B07845] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-[#B07845]" />
               <span className="hidden sm:inline">Site Vitrine</span>
@@ -169,7 +169,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
       {/* 2. Main Registration Card */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-6 z-10 w-full min-h-0">
         <div className="w-full max-w-lg mx-auto">
-          <SpotlightCard className="p-6 sm:p-8 shadow-2xl rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/95 dark:bg-[#141518]/95 backdrop-blur-xl">
+          <SpotlightCard className="p-6 sm:p-8 shadow-2xl rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/65 dark:bg-[#121316]/65 backdrop-blur-md border-white/40 dark:border-white/15 shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
             {/* Header Badge & Title */}
             <div className="text-center space-y-1.5 mb-5">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#B07845]/30 bg-[#B07845]/10 text-[10px] font-space font-bold tracking-[0.2em] uppercase text-[#B07845]">
@@ -188,7 +188,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
             </div>
 
             {/* Direct 2-Option Account Selector */}
-            <div className="grid grid-cols-2 p-1 rounded-2xl bg-neutral-100 dark:bg-white/[0.04] border border-neutral-200/90 dark:border-white/[0.08] mb-5">
+            <div className="grid grid-cols-2 p-1 rounded-2xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] mb-5">
               <button
                 type="button"
                 onClick={() => {
@@ -245,7 +245,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                       placeholder="Ex: Yassine Khemir"
                       value={memberForm.nomComplet}
                       onChange={(e) => setMemberForm({ ...memberForm, nomComplet: e.target.value })}
-                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
                     />
                   </div>
                 </div>
@@ -263,7 +263,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                         placeholder="nom@exemple.tn"
                         value={memberForm.email}
                         onChange={(e) => setMemberForm({ ...memberForm, email: e.target.value })}
-                        className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                        className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
                       />
                     </div>
                   </div>
@@ -280,7 +280,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                         placeholder="+216 98 000 000"
                         value={memberForm.telephone}
                         onChange={(e) => setMemberForm({ ...memberForm, telephone: e.target.value })}
-                        className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                        className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
                       />
                     </div>
                   </div>
@@ -298,7 +298,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                       placeholder="Minimum 6 caractères"
                       value={memberForm.motDePasse}
                       onChange={(e) => setMemberForm({ ...memberForm, motDePasse: e.target.value })}
-                      className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
                     />
                     <button
                       type="button"
@@ -365,7 +365,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                         placeholder="Ex: Hassen Trabelsi"
                         value={coachForm.nomComplet}
                         onChange={(e) => setCoachForm({ ...coachForm, nomComplet: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845]"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845]"
                       />
                     </div>
 
@@ -380,7 +380,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                           placeholder="coach@hadidfitness.tn"
                           value={coachForm.email}
                           onChange={(e) => setCoachForm({ ...coachForm, email: e.target.value })}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:border-[#B07845]"
                         />
                       </div>
                       <div>
@@ -392,7 +392,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                           required
                           value={coachForm.telephone}
                           onChange={(e) => setCoachForm({ ...coachForm, telephone: e.target.value })}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
                         />
                       </div>
                     </div>
@@ -408,7 +408,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                           placeholder="••••••••"
                           value={coachForm.motDePasse}
                           onChange={(e) => setCoachForm({ ...coachForm, motDePasse: e.target.value })}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
                         />
                       </div>
                       <div>
@@ -421,7 +421,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                           max="40"
                           value={coachForm.anneesExperience}
                           onChange={(e) => setCoachForm({ ...coachForm, anneesExperience: Number(e.target.value) })}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
                         />
                       </div>
                     </div>
@@ -436,7 +436,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                         placeholder="Ex: Boxe Anglaise, Cross-Training, Yoga Vinyasa..."
                         value={coachForm.specialites}
                         onChange={(e) => setCoachForm({ ...coachForm, specialites: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
                       />
                     </div>
 
@@ -449,7 +449,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                         placeholder="Certifications internationales, palmarès sportif..."
                         value={coachForm.bio}
                         onChange={(e) => setCoachForm({ ...coachForm, bio: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white focus:outline-none focus:border-[#B07845]"
                       />
                     </div>
 

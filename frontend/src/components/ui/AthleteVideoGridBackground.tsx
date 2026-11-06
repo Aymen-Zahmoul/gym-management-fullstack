@@ -99,11 +99,11 @@ export const AthleteVideoGridBackground: React.FC = () => {
                 e.currentTarget.currentTime = 0;
                 e.currentTarget.play().catch(() => {});
               }}
-              className="w-full h-full object-cover filter brightness-[0.82] contrast-125 transition-transform duration-1000 scale-[1.02]"
+              className="w-full h-full object-cover filter brightness-[1.15] contrast-[1.10] transition-transform duration-1000 scale-[1.02]"
             />
 
             {/* Individual Tile Depth Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/60 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/25 pointer-events-none" />
 
             {/* Corner Badge with Athlete Discipline info */}
             <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/65 backdrop-blur-md border border-white/10 text-[9px] font-mono tracking-wider text-neutral-300 shadow-sm">
@@ -122,8 +122,8 @@ export const AthleteVideoGridBackground: React.FC = () => {
       </div>
 
       {/* 2. Global Vignette & Scrim: guarantees that the central Login/SignUp Card has 100% legibility */}
-      <div className="absolute inset-0 bg-black/55 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(12,13,16,0.6)_0%,_rgba(12,13,16,0.92)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(12,13,16,0.15)_0%,_rgba(12,13,16,0.55)_100%)] pointer-events-none" />
 
       {/* 3. Subtle Warm Bronze Light in the Center behind the Card */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(176,120,69,0.14)_0%,_transparent_60%)] pointer-events-none" />
