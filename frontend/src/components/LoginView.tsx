@@ -13,97 +13,51 @@ import {
   UserCheck,
   Dumbbell,
   Crown,
-  Send,
-  CheckCircle2,
+  UserPlus,
 } from 'lucide-react';
 import { Member } from '../types';
 import { api } from '../services/api';
-import { ShinyButton } from './ui/ShinyButton';
 import { SpotlightCard } from './ui/SpotlightCard';
-import { useAnimeEntrance } from '../utils/animeAnimations';
 import { HadidLogo } from './ui/HadidLogo';
 import { getErrorMessage } from '../utils/errorUtils';
 
 interface LoginViewProps {
   onLoginSuccess: (user: Member) => void;
+  onNavigateToSignUp?: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
   onBackToLanding?: () => void;
-  initialCoachRegisterMode?: boolean;
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({
   onLoginSuccess,
+  onNavigateToSignUp,
   isDark,
   onToggleTheme,
   onBackToLanding,
-  initialCoachRegisterMode = false,
 }) => {
-  const containerRef = useAnimeEntrance<HTMLDivElement>('.anime-item', []);
-  const [authMode, setAuthMode] = useState<'login' | 'coach-register'>(
-    initialCoachRegisterMode ? 'coach-register' : 'login'
-  );
-
-  // Login State
   const [email, setEmail] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Coach Register State
-  const [coachForm, setCoachForm] = useState({
-    nomComplet: '',
-    email: '',
-    motDePasse: '',
-    telephone: '+216 ',
-    specialites: 'Boxe Anglaise & Sparring',
-    anneesExperience: 3,
-    bio: '',
-    gymId: 1,
-  });
-  const [coachRegisterSuccess, setCoachRegisterSuccess] = useState(false);
-  const [coachRegisterLoading, setCoachRegisterLoading] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !motDePasse) {
-      setError('Veuillez renseigner votre email et mot de passe.');
+    if (!email.trim() || !motDePasse) {
+      setError('Veuillez renseigner votre email et votre mot de passe.');
       return;
     }
 
     try {
       setLoading(true);
-      const user = await api.login(email, motDePasse);
+      const user = await api.login(email.trim(), motDePasse);
       onLoginSuccess(user);
     } catch (err: unknown) {
       setError(getErrorMessage(err, 'Identifiants incorrects.'));
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleCoachRegisterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    try {
-      setCoachRegisterLoading(true);
-      await api.registerCoach({
-        nomComplet: coachForm.nomComplet,
-        email: coachForm.email,
-        motDePasse: coachForm.motDePasse,
-        telephone: coachForm.telephone,
-        specialites: coachForm.specialites,
-        anneesExperience: Number(coachForm.anneesExperience),
-        bio: coachForm.bio,
-        gymId: coachForm.gymId,
-      });
-      setCoachRegisterSuccess(true);
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Erreur lors de la soumission de candidature.'));
-    } finally {
-      setCoachRegisterLoading(false);
     }
   };
 
@@ -114,16 +68,13 @@ export const LoginView: React.FC<LoginViewProps> = ({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen flex flex-col justify-between relative bg-[#FAF9F5] dark:bg-[#0B0C0E] transition-colors select-none"
-    >
-      {/* Centered subtle ambient illumination */}
-      <div className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#c5a880]/30 via-transparent to-transparent" />
+    <div className="min-h-screen flex flex-col justify-between relative bg-[#FAF9F5] dark:bg-[#0E0F12] text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
+      {/* Centered subtle ambient bronze illumination */}
+      <div className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B07845]/25 via-transparent to-transparent" />
 
-      {/* 1. Header (Compact, Zero Overflow, Fits Any Screen) */}
-      <header className="anime-item w-full max-w-7xl mx-auto px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between z-10 shrink-0">
-        <div className="flex items-center flex-shrink-0 pl-1 sm:pl-2">
+      {/* 1. Header: Brand Wordmark + Back to Landing + Theme Toggle */}
+      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between z-10 shrink-0">
+        <div className="flex items-center flex-shrink-0">
           <HadidLogo size="md" onClick={onBackToLanding} />
         </div>
 
@@ -131,9 +82,9 @@ export const LoginView: React.FC<LoginViewProps> = ({
           {onBackToLanding && (
             <button
               onClick={onBackToLanding}
-              className="px-3.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#121316]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 text-xs font-semibold hover:text-neutral-900 dark:hover:text-white hover:border-bronze flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+              className="px-3.5 py-1.5 sm:py-2 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#141518]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 text-xs font-medium hover:text-neutral-900 dark:hover:text-white hover:border-[#B07845] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-3.5 h-3.5 text-[#B07845]" />
               <span className="hidden sm:inline">Site Vitrine</span>
               <span className="sm:hidden">Retour</span>
             </button>
@@ -142,353 +93,175 @@ export const LoginView: React.FC<LoginViewProps> = ({
           <button
             onClick={onToggleTheme}
             aria-label="Changer de thème"
-            className="p-2 sm:p-2.5 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#121316]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 cursor-pointer transition-all hover:border-bronze active:scale-95 shadow-sm"
+            className="p-2 sm:p-2.5 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#141518]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 cursor-pointer transition-all hover:border-[#B07845] active:scale-95 shadow-sm"
           >
-            {isDark ? <Sun className="w-4 h-4 text-bronze" /> : <Moon className="w-4 h-4 text-neutral-700" />}
+            {isDark ? <Sun className="w-4 h-4 text-[#B07845]" /> : <Moon className="w-4 h-4 text-neutral-700" />}
           </button>
         </div>
       </header>
 
-      {/* 2. Main Center Stage */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 z-10 w-full min-h-0">
+      {/* 2. Main Login Card */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-6 z-10 w-full min-h-0">
         <div className="w-full max-w-md mx-auto">
-          <SpotlightCard className="p-5 sm:p-7 shadow-2xl rounded-3xl border border-neutral-200/90 dark:border-white/[0.1] bg-white/95 dark:bg-[#121316]/95 backdrop-blur-xl">
-            {/* Header Identity */}
-            <div className="anime-item text-center space-y-1 sm:space-y-1.5 mb-3 sm:mb-4">
-              <div className="w-10 h-10 rounded-2xl bg-bronze/10 border border-bronze/30 flex items-center justify-center mx-auto text-bronze font-black tracking-widest text-xs shadow-inner">
-                HD
+          <SpotlightCard className="p-6 sm:p-8 shadow-2xl rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/95 dark:bg-[#141518]/95 backdrop-blur-xl">
+            {/* Identity Badge & Title */}
+            <div className="text-center space-y-1.5 mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#B07845]/30 bg-[#B07845]/10 text-[10px] font-space font-bold tracking-[0.2em] uppercase text-[#B07845]">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#B07845]" />
+                <span>Portail Sécurisé</span>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-neutral-200 dark:border-white/10 bg-neutral-100/80 dark:bg-white/[0.04] text-[9px] font-bold tracking-[0.2em] uppercase text-neutral-700 dark:text-neutral-300">
-                <ShieldCheck className="w-3 h-3 text-bronze" />
-                <span>Portail Réservé</span>
-              </div>
-
-              <h1 className="text-xl sm:text-2xl font-black text-neutral-950 dark:text-white uppercase tracking-tight">
-                {authMode === 'login' ? 'Connexion' : 'Candidature Coach'}
-              </h1>
-              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-light">
-                {authMode === 'login'
-                  ? "HADID Byrsa Sanctuary • Club Privé d'Élite"
-                  : 'Demande officielle de collaboration & affiliation'}
-              </p>
-            </div>
-
-            {/* Mode Switcher Tabs */}
-            <div className="anime-item flex items-center p-1 rounded-2xl bg-neutral-100 dark:bg-white/[0.04] border border-neutral-200/90 dark:border-white/[0.08] mb-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode('login');
-                  setError(null);
-                }}
-                className={`flex-1 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                  authMode === 'login'
-                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-sm'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
-                }`}
-              >
+              <h1 className="text-2xl sm:text-3xl font-space font-black text-neutral-950 dark:text-white uppercase tracking-tight">
                 Connexion
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode('coach-register');
-                  setError(null);
-                }}
-                className={`flex-1 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                  authMode === 'coach-register'
-                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-sm'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
-                }`}
-              >
-                Devenir Coach
-              </button>
+              </h1>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light">
+                HADID Byrsa Sanctuary • Club Privé d'Élite
+              </p>
             </div>
 
             {/* Error Banner */}
             {error && (
-              <div className="mb-3 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-medium flex items-start gap-2.5">
+              <div className="mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-medium flex items-start gap-2.5 animate-in fade-in duration-200">
                 <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
-            {/* MODE 1: Standard Login Form */}
-            {authMode === 'login' && (
-              <>
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <div className="anime-item">
-                    <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400 mb-1">
-                      Identifiant / Email
-                    </label>
-                    <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
-                      <input
-                        type="email"
-                        required
-                        placeholder="nom@hadidfitness.tn"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs sm:text-sm focus:outline-none focus:border-bronze focus:ring-1 focus:ring-bronze/50 transition-all shadow-inner"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="anime-item">
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400">
-                        Mot de Passe
-                      </label>
-                      <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-wider">
-                        256-bit
-                      </span>
-                    </div>
-                    <div className="relative">
-                      <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        required
-                        placeholder="••••••••••••"
-                        value={motDePasse}
-                        onChange={(e) => setMotDePasse(e.target.value)}
-                        className="w-full pl-10 pr-10 py-2 sm:py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs sm:text-sm focus:outline-none focus:border-bronze focus:ring-1 focus:ring-bronze/50 transition-all shadow-inner"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer"
-                      >
-                        {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="anime-item pt-1">
-                    <ShinyButton
-                      type="submit"
-                      disabled={loading}
-                      variant="primary"
-                      className="w-full justify-center py-2.5 sm:py-3 text-xs tracking-widest uppercase font-bold rounded-xl"
-                    >
-                      {loading ? (
-                        <span>Vérification...</span>
-                      ) : (
-                        <>
-                          <span>Ouvrir Ma Session</span>
-                          <ArrowRight className="w-3.5 h-3.5 ml-1.5 text-bronze" />
-                        </>
-                      )}
-                    </ShinyButton>
-                  </div>
-                </form>
-
-                {/* 1-Click Passports (Direct Single-Click Login Preview) */}
-                <div className="anime-item mt-4 pt-3 border-t border-neutral-100 dark:border-white/[0.08] space-y-2">
-                  <div className="flex items-center justify-between text-[9px] font-bold text-neutral-400 uppercase tracking-wider">
-                    <span>Démonstration (1 Clic)</span>
-                    <span className="font-mono text-bronze text-[9px]">Accès Immédiat</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleQuickFill('admin@carthagefitness.tn', 'admin123')}
-                      className="p-2 rounded-xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/90 dark:border-white/[0.08] hover:border-bronze text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
-                    >
-                      <Crown className="w-3 h-3 mx-auto text-bronze mb-0.5" />
-                      <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-bronze transition-colors">
-                        ADMIN
-                      </div>
-                      <div className="text-[8px] text-neutral-400 font-mono">Directeur</div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleQuickFill('karim.coach@carthagefitness.tn', 'coach123')}
-                      className="p-2 rounded-xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/90 dark:border-white/[0.08] hover:border-sage text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
-                    >
-                      <Dumbbell className="w-3 h-3 mx-auto text-sage mb-0.5" />
-                      <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-sage transition-colors">
-                        COACH
-                      </div>
-                      <div className="text-[8px] text-neutral-400 font-mono">Entraîneur</div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleQuickFill('yassine.khemir@gmail.com', 'pass123')}
-                      className="p-2 rounded-xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/90 dark:border-white/[0.08] hover:border-ochre text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
-                    >
-                      <UserCheck className="w-3 h-3 mx-auto text-ochre mb-0.5" />
-                      <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-ochre transition-colors">
-                        MEMBER
-                      </div>
-                      <div className="text-[8px] text-neutral-400 font-mono">Adhérent</div>
-                    </button>
-                  </div>
+            {/* Login Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400 mb-1">
+                  Identifiant / Email
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="nom@hadidfitness.tn"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs sm:text-sm focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                  />
                 </div>
-              </>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400">
+                    Mot de Passe
+                  </label>
+                  <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-wider">
+                    Chiffré SHA-256
+                  </span>
+                </div>
+                <div className="relative">
+                  <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="••••••••••••"
+                    value={motDePasse}
+                    onChange={(e) => setMotDePasse(e.target.value)}
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs sm:text-sm focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 rounded-xl bg-[#B07845] hover:bg-[#966436] text-white font-space font-black text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-lg shadow-[#B07845]/20 hover:shadow-[#B07845]/35 transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
+                >
+                  {loading ? (
+                    <span>Authentification...</span>
+                  ) : (
+                    <>
+                      <span>Se Connecter</span>
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* Direct Toggle Button: Switch to Sign Up (Simple et Direct) */}
+            {onNavigateToSignUp && (
+              <div className="pt-5 mt-5 border-t border-neutral-200/80 dark:border-white/10 text-center">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-2.5 font-light">
+                  Pas encore membre de notre club ?
+                </p>
+                <button
+                  type="button"
+                  onClick={onNavigateToSignUp}
+                  className="w-full py-2.5 px-4 rounded-xl border border-[#B07845]/40 hover:border-[#B07845] bg-[#B07845]/5 hover:bg-[#B07845]/15 text-[#B07845] hover:text-[#966436] dark:hover:text-white text-xs font-space font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer group active:scale-[0.99]"
+                >
+                  <UserPlus className="w-4 h-4 text-[#B07845] group-hover:scale-110 transition-transform" />
+                  <span>Créer un compte / S'inscrire</span>
+                </button>
+              </div>
             )}
 
-            {/* MODE 2: Coach Collaboration Registration */}
-            {authMode === 'coach-register' && (
-              <>
-                {coachRegisterSuccess ? (
-                  <div className="py-6 text-center space-y-3">
-                    <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
-                    <h3 className="font-heading font-black text-lg text-neutral-900 dark:text-white uppercase tracking-tight">
-                      Candidature Transmise !
-                    </h3>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                      Votre dossier d'affiliation coach a été soumis à l'administrateur du club HADID. Votre compte reste inactif jusqu'à sa validation officielle.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCoachRegisterSuccess(false);
-                        setAuthMode('login');
-                      }}
-                      className="mt-4 px-4 py-2 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold uppercase tracking-wider text-xs"
-                    >
-                      Retourner à la Connexion
-                    </button>
+            {/* 1-Click Fast Passports (Instant Demo for Defense) */}
+            <div className="mt-5 pt-4 border-t border-neutral-200/60 dark:border-white/[0.06] space-y-2">
+              <div className="flex items-center justify-between text-[9px] font-bold text-neutral-400 uppercase tracking-wider font-space">
+                <span>Démonstration (1 Clic)</span>
+                <span className="font-mono text-[#B07845] text-[9px]">Accès Rapide</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('admin@carthagefitness.tn', 'admin123')}
+                  className="p-2 rounded-xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#B07845] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
+                >
+                  <Crown className="w-3.5 h-3.5 mx-auto text-[#B07845] mb-0.5" />
+                  <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-[#B07845] transition-colors font-space">
+                    ADMIN
                   </div>
-                ) : (
-                  <form onSubmit={handleCoachRegisterSubmit} className="space-y-3 text-xs">
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                        Nom Complet
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Ex: Hassen Trabelsi"
-                        value={coachForm.nomComplet}
-                        onChange={(e) => setCoachForm({ ...coachForm, nomComplet: e.target.value })}
-                        className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                      />
-                    </div>
+                  <div className="text-[8px] text-neutral-400 font-mono">Directeur</div>
+                </button>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          placeholder="coach@email.com"
-                          value={coachForm.email}
-                          onChange={(e) => setCoachForm({ ...coachForm, email: e.target.value })}
-                          className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                          Téléphone
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          value={coachForm.telephone}
-                          onChange={(e) => setCoachForm({ ...coachForm, telephone: e.target.value })}
-                          className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                        />
-                      </div>
-                    </div>
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('karim.coach@carthagefitness.tn', 'coach123')}
+                  className="p-2 rounded-xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#758a7b] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
+                >
+                  <Dumbbell className="w-3.5 h-3.5 mx-auto text-[#758a7b] mb-0.5" />
+                  <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-[#758a7b] transition-colors font-space">
+                    COACH
+                  </div>
+                  <div className="text-[8px] text-neutral-400 font-mono">Entraîneur</div>
+                </button>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                          Mot de Passe
-                        </label>
-                        <input
-                          type="password"
-                          required
-                          placeholder="••••••••"
-                          value={coachForm.motDePasse}
-                          onChange={(e) => setCoachForm({ ...coachForm, motDePasse: e.target.value })}
-                          className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                          Expérience (années)
-                        </label>
-                        <input
-                          type="number"
-                          min="1"
-                          max="40"
-                          value={coachForm.anneesExperience}
-                          onChange={(e) => setCoachForm({ ...coachForm, anneesExperience: Number(e.target.value) })}
-                          className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                        Spécialités Sportives
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Ex: Boxe Anglaise, Muay Thaï, Yoga Vinyasa..."
-                        value={coachForm.specialites}
-                        onChange={(e) => setCoachForm({ ...coachForm, specialites: e.target.value })}
-                        className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                        Diplômes & Présentation
-                      </label>
-                      <textarea
-                        rows={2}
-                        placeholder="Diplômes d'État, palmarès sportif, certifications..."
-                        value={coachForm.bio}
-                        onChange={(e) => setCoachForm({ ...coachForm, bio: e.target.value })}
-                        className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
-                        Club Partenaire Sollicité
-                      </label>
-                      <select
-                        value={coachForm.gymId}
-                        onChange={(e) => setCoachForm({ ...coachForm, gymId: Number(e.target.value) })}
-                        className="w-full p-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white font-medium"
-                      >
-                        <option value={1}>Carthage Fitness Club (HADID Byrsa Sanctuary)</option>
-                      </select>
-                    </div>
-
-                    <div className="pt-2">
-                      <button
-                        type="submit"
-                        disabled={coachRegisterLoading}
-                        className="w-full py-3 rounded-xl bg-bronze hover:bg-bronze-light text-neutral-950 font-heading font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all"
-                      >
-                        <Send className="w-4 h-4 text-neutral-950" />
-                        <span>{coachRegisterLoading ? 'Transmission...' : 'Déposer ma Candidature'}</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </>
-            )}
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('yassine.khemir@gmail.com', 'pass123')}
+                  className="p-2 rounded-xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#c87a32] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
+                >
+                  <UserCheck className="w-3.5 h-3.5 mx-auto text-[#c87a32] mb-0.5" />
+                  <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-[#c87a32] transition-colors font-space">
+                    MEMBER
+                  </div>
+                  <div className="text-[8px] text-neutral-400 font-mono">Adhérent</div>
+                </button>
+              </div>
+            </div>
           </SpotlightCard>
         </div>
       </main>
 
       {/* 3. Footer */}
-      <footer className="anime-item w-full max-w-7xl mx-auto px-4 sm:px-8 py-2.5 sm:py-3 flex items-center justify-between text-[10px] text-neutral-400 dark:text-neutral-500 font-light border-t border-neutral-200/60 dark:border-white/[0.06] shrink-0">
-        <div className="font-medium tracking-wide text-neutral-600 dark:text-neutral-400">
+      <footer className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between text-[10px] text-neutral-400 dark:text-neutral-500 font-light border-t border-neutral-200/60 dark:border-white/[0.06] shrink-0">
+        <div className="font-medium tracking-wide text-neutral-600 dark:text-neutral-400 font-space">
           HADID Byrsa Sanctuary
         </div>
         <div className="hidden sm:block text-[9px] font-mono">

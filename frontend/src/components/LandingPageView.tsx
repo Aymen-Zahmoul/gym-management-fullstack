@@ -23,6 +23,7 @@ import type { MembershipPlan, ClassSession, Member } from '../types';
 
 interface LandingPageViewProps {
   onOpenLogin: () => void;
+  onOpenSignUp?: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
   plans: MembershipPlan[];
@@ -33,12 +34,14 @@ interface LandingPageViewProps {
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({
   onOpenLogin,
+  onOpenSignUp,
   currentUser,
   onLogout,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
+  const handleSignUpClick = onOpenSignUp || onOpenLogin;
 
   // Track scroll position for sticky navbar background transition and scrollspy
   useEffect(() => {
@@ -166,7 +169,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
                     Login
                   </button>
                   <button
-                    onClick={onOpenLogin}
+                    onClick={handleSignUpClick}
                     className="px-5 py-2.5 bg-[#B07845] hover:bg-[#966436] text-white text-xs font-space font-bold uppercase tracking-[0.15em] rounded-lg transition-all duration-200 shadow-lg shadow-[#B07845]/15 hover:shadow-[#B07845]/30 cursor-pointer active:scale-95"
                   >
                     Get Started
@@ -212,7 +215,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      onOpenLogin();
+                      handleSignUpClick();
                     }}
                     className="w-full text-center py-2.5 font-space text-xs font-semibold uppercase tracking-wider text-white border border-[#262626] rounded-lg"
                   >
@@ -298,7 +301,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
           >
             <button
-              onClick={onOpenLogin}
+              onClick={handleSignUpClick}
               className="w-full sm:w-auto px-8 py-4 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-200 shadow-xl shadow-[#B07845]/20 hover:shadow-[#B07845]/40 cursor-pointer active:scale-95 flex items-center justify-center gap-2 group"
             >
               <span>Get Started</span>
@@ -728,7 +731,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
               </div>
 
               <button
-                onClick={onOpenLogin}
+                onClick={handleSignUpClick}
                 className="px-8 py-4 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs uppercase tracking-[0.2em] rounded-lg transition-all duration-200 shadow-xl shadow-[#B07845]/20 hover:shadow-[#B07845]/40 cursor-pointer active:scale-95"
               >
                 Join as a Coach
@@ -1018,7 +1021,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            onClick={onOpenLogin}
+            onClick={handleSignUpClick}
             className="px-10 py-5 bg-[#B07845] hover:bg-[#966436] text-white font-space font-bold text-xs sm:text-sm uppercase tracking-[0.25em] rounded-lg transition-all duration-200 shadow-2xl shadow-[#B07845]/30 hover:shadow-[#B07845]/50 cursor-pointer active:scale-95"
           >
             JOIN THE HADID ECOSYSTEM
@@ -1099,7 +1102,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
                 </li>
                 <li>
                   <button
-                    onClick={onOpenLogin}
+                    onClick={handleSignUpClick}
                     className="text-[#A8A9AD] hover:text-[#B07845] transition-colors cursor-pointer"
                   >
                     Register

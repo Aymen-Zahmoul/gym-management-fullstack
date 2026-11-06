@@ -107,7 +107,7 @@ export const api = {
   // 2. Members & Coaches
   getMembers: () => fetchJSON<Member[]>(`${API_BASE}/members`),
   getCoaches: () => fetchJSON<Coach[]>(`${API_BASE}/coaches`),
-  createMember: (data: { nomComplet: string; email: string; telephone?: string; initialPlanId?: number }) =>
+  createMember: (data: { nomComplet: string; email: string; telephone?: string; initialPlanId?: number; motDePasse?: string; role?: string; statut?: string }) =>
     fetchJSON<Member>(`${API_BASE}/members`, {
       method: 'POST',
       body: JSON.stringify(data),

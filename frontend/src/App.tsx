@@ -11,6 +11,7 @@ import { getErrorMessage } from './utils/errorUtils';
 // Core public views directly imported for instant zero-flash render
 import { LandingPageView } from './components/LandingPageView';
 import { LoginView } from './components/LoginView';
+import { SignUpView } from './components/SignUpView';
 
 // Back-office views code-split with React.lazy
 const DashboardView = lazy(() => import('./components/DashboardView').then(m => ({ default: m.DashboardView })));
@@ -66,7 +67,7 @@ export function App() {
   });
 
   // View mode: ALWAYS starts on 'landing' when opening the site
-  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'app'>('landing');
+  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'signup' | 'app'>('landing');
 
   const getDefaultTabForRole = (user: Member | null): string => {
     if (!user) return 'dashboard';
@@ -321,6 +322,13 @@ export function App() {
                 setViewMode('login');
               }
             }}
+            onOpenSignUp={() => {
+              if (currentUser) {
+                setViewMode('app');
+              } else {
+                setViewMode('signup');
+              }
+            }}
             isDark={isDark}
             onToggleTheme={() => setIsDark((prev) => !prev)}
             plans={plans}
@@ -330,13 +338,26 @@ export function App() {
           />
       )}
 
-      {/* VIEW 2: Dedicated Authentication View (Single Page, 0 Scroll) */}
+      {/* VIEW 2: Dedicated Login View (Simple & Direct) */}
       {viewMode === 'login' && !currentUser && (
         <LoginView
             onLoginSuccess={handleLoginSuccess}
+            onNavigateToSignUp={() => setViewMode('signup')}
             isDark={isDark}
             onToggleTheme={() => setIsDark((prev) => !prev)}
             onBackToLanding={() => setViewMode('landing')}
+          />
+      )}
+
+      {/* VIEW 2b: Dedicated Sign Up View (Simple & Direct) */}
+      {viewMode === 'signup' && !currentUser && (
+        <SignUpView
+            onLoginSuccess={handleLoginSuccess}
+            onNavigateToLogin={() => setViewMode('login')}
+            isDark={isDark}
+            onToggleTheme={() => setIsDark((prev) => !prev)}
+            onBackToLanding={() => setViewMode('landing')}
+            plans={plans}
           />
       )}
 
