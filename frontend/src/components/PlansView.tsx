@@ -64,13 +64,13 @@ export const PlansView: React.FC<PlansViewProps> = ({ plans, members = [], onAss
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
               <Award className="w-3.5 h-3.5 text-bronze" />
-              Catalogue Officiel des Formules • HADID Byrsa
+              Catalogue Officiel des Formules • HADID
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Gestion des Abonnements
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Formules d'Abonnement
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Supervision de la grille tarifaire, conditions d'accès aux studios (Force, Boxe, Yoga, Cardio) et durées de cotisation en Dinars Tunisiens (TND).
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Catalogue des offres, tarifs et durées des forfaits du club.
             </p>
           </div>
 

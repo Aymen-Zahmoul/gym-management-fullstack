@@ -73,7 +73,7 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
 
         {showText && showSubtitle && (
           <span className={`text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.25em] uppercase mt-2 ${current.sub}`}>
-            Byrsa Sanctuary • Tunis
+            Club Privé • Tunis
           </span>
         )}
       </div>
@@ -117,7 +117,7 @@ export const HadidLogo: React.FC<HadidLogoProps> = ({
           </div>
           {showSubtitle && (
             <span className={`hidden xl:inline text-neutral-500 dark:text-neutral-400 font-mono tracking-[0.22em] uppercase mt-0.5 ${current.sub}`}>
-              Byrsa Sanctuary • Tunis
+              Club Privé • Tunis
             </span>
           )}
         </div>

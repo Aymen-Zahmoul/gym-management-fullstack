@@ -66,8 +66,11 @@ export function App() {
     return null;
   });
 
-  // View mode: ALWAYS starts on 'landing' when opening the site
-  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'signup' | 'app'>('landing');
+  // View mode: Persist in 'app' if user is logged in, preventing push-out on refresh
+  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'signup' | 'app'>(() => {
+    const saved = localStorage.getItem('gym_auth_user');
+    return saved ? 'app' : 'landing';
+  });
 
   const getDefaultTabForRole = (user: Member | null): string => {
     if (!user) return 'dashboard';
@@ -82,7 +85,20 @@ export function App() {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<string>(() => getDefaultTabForRole(currentUser));
+  // Active tab with persistence in localStorage across refreshes
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    const savedTab = localStorage.getItem('gym_active_tab');
+    if (savedTab) return savedTab;
+    return getDefaultTabForRole(currentUser);
+  });
+
+  const setActiveTab = (tabOrUpdater: string | ((prev: string) => string)) => {
+    setActiveTabState((prev) => {
+      const nextTab = typeof tabOrUpdater === 'function' ? tabOrUpdater(prev) : tabOrUpdater;
+      localStorage.setItem('gym_active_tab', nextTab);
+      return nextTab;
+    });
+  };
   const [loading, setLoading] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
@@ -180,6 +196,7 @@ export function App() {
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('gym_auth_user');
+    localStorage.removeItem('gym_active_tab');
     setViewMode('landing');
     setActiveTab('dashboard');
     showToast('Vous avez été déconnecté avec succès.', 'success');
@@ -506,7 +523,7 @@ export function App() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <HadidLogo size="sm" />
               <div className="font-heading font-bold text-[11px] uppercase tracking-wider text-neutral-400">
-                HADID Byrsa Sanctuary • Club Privé d'Élite • 36.8528° N, 10.3233° E
+                HADID GYM CLUB • Club Privé d'Élite • 36.8528° N, 10.3233° E
               </div>
               <div className="text-neutral-400 font-mono text-[10px]">
                 © 2026 HADID GYM CLUB. TOUS DROITS RÉSERVÉS.

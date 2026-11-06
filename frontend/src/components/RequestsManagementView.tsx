@@ -145,13 +145,13 @@ export const RequestsManagementView: React.FC<RequestsManagementViewProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-800 dark:text-neutral-200">
               <ShieldCheck className="w-3.5 h-3.5 text-bronze" />
-              Direction & Validations Administratives • HADID Byrsa
+              Direction & Validations Administratives • HADID
             </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Gestion des Demandes
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Demandes & Validations
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Examen officiel des demandes de créneaux déposées par les coachs et validation des dossiers de collaboration pour affiliation au club.
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Validation des créneaux de séances et des candidatures de coachs.
             </p>
           </div>
 
@@ -508,7 +508,7 @@ export const RequestsManagementView: React.FC<RequestsManagementViewProps> = ({
                           Club Cible
                         </span>
                         <span className="font-bold text-neutral-900 dark:text-white">
-                          {req.gymNom || 'HADID Byrsa'}
+                          {req.gymNom || 'HADID'}
                         </span>
                         <span className="text-neutral-500 block text-[11px]">
                           Date : {req.createdAt?.substring(0, 10)}

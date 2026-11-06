@@ -1,5 +1,5 @@
 # 🏛️ Guide Complet pour la Soutenance & Manuel d'Architecture
-## Projet Fédérateur : Plateforme Fullstack de Gestion de Salle de Sport — HADID Byrsa
+## Projet Fédérateur : Plateforme Fullstack de Gestion de Salle de Sport — HADID
 **École Nationale d'Ingénieurs de Carthage (ENICarthage)**  
 *Binôme : Aymen Zahmoul (Lead Architect ~65%) & Aziz (Domain & Features Developer ~35%)*
 
@@ -111,7 +111,7 @@ Voici la procédure rigoureuse pour lancer le projet lors de la présentation. *
 Ouvrez votre navigateur web (Google Chrome, Edge ou Firefox) et naviguez sur :
 👉 **`http://localhost:3000`**
 
-L'écran d'accueil **HADID Byrsa Sanctuary** s'affiche immédiatement.
+L'écran d'accueil **HADID GYM CLUB** s'affiche immédiatement.
 
 ---
 
@@ -462,7 +462,7 @@ Toutes les relations sont protégées par des contraintes d'intégrité référe
 
 ```
 +-------------------+
-|        gym        | (Salle de sport racine : ID 1 = Carthage Fitness / Byrsa)
+|        gym        | (Salle de sport racine : ID 1 = Carthage Fitness )
 +---------+---------+
           | 1
           |

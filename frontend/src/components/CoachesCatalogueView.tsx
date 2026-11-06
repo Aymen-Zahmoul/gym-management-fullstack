@@ -87,13 +87,13 @@ export const CoachesCatalogueView: React.FC<CoachesCatalogueViewProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
               <Award className="w-3.5 h-3.5 text-bronze" />
-              Corps Enseignant • HADID Byrsa & Grand Tunis
+              Corps Enseignant • HADID & Grand Tunis
             </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Catalogue des Coachs Partenaires
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Annuaire des Coachs
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Consultez les profils certifiés, leurs spécialités sportives, leurs tarifs horaires en Dinars Tunisiens (TND) et réservez votre accompagnement personnalisé par ville.
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Liste des entraîneurs officiels du club, spécialités et tarifs.
             </p>
           </div>
 
@@ -169,11 +169,11 @@ export const CoachesCatalogueView: React.FC<CoachesCatalogueViewProps> = ({
             <div className="space-y-5">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-[#c5a880]/15 border border-[#c5a880]/30 flex items-center justify-center font-heading font-black text-base text-[#c5a880] tracking-wider shadow-inner">
+                  <div className="w-14 h-14 rounded-2xl bg-[#c5a880]/15 border border-[#c5a880]/30 flex items-center justify-center font-space font-bold text-base text-[#c5a880] tracking-wider shadow-inner">
                     {coach.nomComplet.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="font-heading font-black text-neutral-900 dark:text-white text-lg uppercase tracking-tight">
+                    <h3 className="font-space font-bold text-neutral-900 dark:text-white text-lg tracking-wide">
                       {coach.nomComplet}
                     </h3>
                     <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-light mt-1">

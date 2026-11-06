@@ -237,13 +237,13 @@ export const MembersView: React.FC<MembersViewProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
               <Users className="w-3.5 h-3.5 text-bronze" />
-              Registre Officiel • HADID Byrsa
+              Registre Officiel • HADID
             </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Fichier des Adhérents
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Gestion des Adhérents
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Consultez le statut comptable des membres, la validité de leurs forfaits et régularisez les cotisations en temps réel.
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Annuaire complet des membres, statuts des abonnements et règlements.
             </p>
           </div>
 
@@ -386,7 +386,7 @@ export const MembersView: React.FC<MembersViewProps> = ({
                       </div>
 
                       <div className="space-y-0.5">
-                        <div className="font-heading font-black text-neutral-900 dark:text-white text-base uppercase tracking-tight">
+                        <div className="font-space font-bold text-neutral-900 dark:text-white text-base tracking-wide">
                           {m.nomComplet}
                         </div>
                         <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 flex items-center gap-2">

@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "HADID Byrsa - Gym Management API (Java Pur Native)",
+    "name": "HADID - Gym Management API (Java Pur Native)",
     "_postman_id": "hadid-gym-api-v2",
     "description": "Collection de tests Postman officielle et exhaustive pour le projet fédérateur Java Web (ENICarthage).\nArchitecture N-Tiers sans Spring Boot : HttpServer natif Java 21 + JDBC + MySQL.\nBinôme : Aymen Zahmoul (Lead Architect ~65%) & Aziz (Domain Developer ~35%).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -111,7 +111,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["gym"]
             },
-            "description": "Retourne les coordonnées officielles de la salle de sport (Carthage Fitness Club / Byrsa)."
+            "description": "Retourne les coordonnées officielles de la salle de sport (Carthage Fitness Club )."
           }
         }
       ]

@@ -5,7 +5,6 @@ import {
   User,
   Phone,
   Dumbbell,
-  Award,
   CheckCircle2,
   AlertCircle,
   ArrowRight,
@@ -22,6 +21,7 @@ import { Member, MembershipPlan } from '../types';
 import { api } from '../services/api';
 import { SpotlightCard } from './ui/SpotlightCard';
 import { HadidLogo } from './ui/HadidLogo';
+import { LiveBackground } from './ui/LiveBackground';
 import { getErrorMessage } from '../utils/errorUtils';
 
 interface SignUpViewProps {
@@ -30,7 +30,7 @@ interface SignUpViewProps {
   isDark: boolean;
   onToggleTheme: () => void;
   onBackToLanding?: () => void;
-  plans: MembershipPlan[];
+  plans?: MembershipPlan[];
 }
 
 export const SignUpView: React.FC<SignUpViewProps> = ({
@@ -39,7 +39,6 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
   isDark,
   onToggleTheme,
   onBackToLanding,
-  plans,
 }) => {
   const [accountType, setAccountType] = useState<'member' | 'coach'>('member');
   const [showPassword, setShowPassword] = useState(false);
@@ -52,7 +51,6 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
     email: '',
     telephone: '+216 ',
     motDePasse: '',
-    initialPlanId: plans.length > 0 ? plans[0].id : 1,
   });
 
   // Coach Registration State
@@ -85,7 +83,6 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
         email: memberForm.email.trim(),
         telephone: memberForm.telephone.trim(),
         motDePasse: memberForm.motDePasse,
-        initialPlanId: Number(memberForm.initialPlanId),
         role: 'MEMBER',
         statut: 'ACTIF',
       });
@@ -137,6 +134,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col justify-between relative bg-[#FAF9F5] dark:bg-[#0E0F12] text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
+      <LiveBackground />
       {/* Centered subtle ambient bronze illumination */}
       <div className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B07845]/25 via-transparent to-transparent" />
 
@@ -312,28 +310,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400 mb-1">
-                    Formule Souhaitée
-                  </label>
-                  <div className="relative">
-                    <Award className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
-                    <select
-                      value={memberForm.initialPlanId}
-                      onChange={(e) => setMemberForm({ ...memberForm, initialPlanId: Number(e.target.value) })}
-                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-[#1A1C20] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white font-medium focus:outline-none focus:border-[#B07845]"
-                    >
-                      {plans.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.nom} — {Number(p.prix).toFixed(0)} TND ({p.dureeMois} mois)
-                        </option>
-                      ))}
-                      {plans.length === 0 && (
-                        <option value={1}>Starter Pass — 120 TND (1 mois)</option>
-                      )}
-                    </select>
-                  </div>
-                </div>
+                
 
                 <div className="pt-2">
                   <button
@@ -512,7 +489,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
       {/* 3. Footer */}
       <footer className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between text-[10px] text-neutral-400 dark:text-neutral-500 font-light border-t border-neutral-200/60 dark:border-white/[0.06] shrink-0">
         <div className="font-medium tracking-wide text-neutral-600 dark:text-neutral-400 font-space">
-          HADID Byrsa Sanctuary
+          HADID GYM CLUB
         </div>
         <div className="hidden sm:block text-[9px] font-mono">
           36.8528° N, 10.3233° E • Carthage

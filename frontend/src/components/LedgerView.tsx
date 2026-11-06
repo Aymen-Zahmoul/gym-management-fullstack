@@ -94,13 +94,13 @@ export const LedgerView: React.FC<LedgerViewProps> = ({ payments }) => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
               <Receipt className="w-3.5 h-3.5 text-bronze" />
-              Journal Financier • HADID Byrsa
+              Journal Financier • HADID
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Livre de Caisse & Règlements
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Journal de Caisse
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Traçabilité comptable et audit des encaissements par carte bancaire, espèces et virements en Dinars Tunisiens (TND).
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Livre comptable officiel de tous les encaissements avec export CSV.
             </p>
           </div>
 
@@ -219,8 +219,8 @@ export const LedgerView: React.FC<LedgerViewProps> = ({ payments }) => {
                   <td className="py-3.5 px-6 font-mono font-bold text-neutral-900 dark:text-white">
                     {p.reference}
                   </td>
-                  <td className="py-3.5 px-4 font-medium uppercase">
-                    {p.userName || 'Adhérent CFT'}
+                  <td className="py-3.5 px-4 font-space font-bold uppercase text-neutral-900 dark:text-white">
+                    {p.userName || 'Adhérent HADID'}
                   </td>
                   <td className="py-3.5 px-4 font-mono text-[11px] text-neutral-500">
                     {p.datePaiement ? p.datePaiement.replace('T', ' à ') : '2026-11-01'}

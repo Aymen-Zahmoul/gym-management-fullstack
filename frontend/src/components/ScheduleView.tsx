@@ -333,13 +333,13 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[10px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-800 dark:text-neutral-200">
               <CalendarIcon className="w-3.5 h-3.5 text-bronze" />
-              Système de Planification Officiel • HADID Byrsa
+              Système de Planification Officiel • HADID
             </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Calendrier & Créneaux
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Planning des Séances
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Consultez les créneaux supervisés, les studios occupés et les plages disponibles. Les coachs peuvent soumettre des demandes récurrentes soumises à validation administrative.
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Emploi du temps des cours collectifs et gestion des réservations de studios.
             </p>
           </div>
 

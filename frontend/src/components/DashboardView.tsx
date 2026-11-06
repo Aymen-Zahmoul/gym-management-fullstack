@@ -88,13 +88,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full border border-bronze bg-bronze-subtle text-[11px] font-heading font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-white">
               <span className="w-1.5 h-1.5 rounded-full bg-[#c5a880] animate-ping" />
-              Supervision Opérationnelle • HADID Byrsa
+              Supervision Opérationnelle • HADID
             </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-black text-neutral-900 dark:text-white tracking-tight uppercase">
-              Tableau de Bord Exécutif
+            <h1 className="text-2xl sm:text-3xl font-bold font-sans text-neutral-900 dark:text-white tracking-tight">
+              Tableau de Bord
             </h1>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-light leading-relaxed">
-              Supervision en direct de la fréquentation des 4 studios, du journal d'encaissements MySQL et du suivi rigoureux des cotisations adhérents.
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-2xl font-normal leading-relaxed">
+              Vue d'ensemble en temps réel des performances et activités du club.
             </p>
           </div>
 
@@ -155,10 +155,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#c5a880]/30 shadow-[0_4px_20px_-4px_rgba(197,168,128,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#c5a880]">
+              <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#c5a880]">
                 Membres Actifs
               </span>
-              <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
+              <div className="mt-2 text-3xl font-sans font-bold text-neutral-900 dark:text-white tracking-tight">
                 {stats ? <AnimatedCounter value={stats.totalMembers} /> : '—'}
               </div>
               <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400 font-light">
@@ -170,7 +170,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
           <div className="mt-5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
-            <span>HADID Byrsa</span>
+            <span>HADID</span>
             <span className="flex items-center gap-1.5 font-medium text-[#c5a880]">
               <ShieldCheck className="w-3.5 h-3.5" /> Synchronisé MySQL
             </span>
@@ -181,7 +181,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#758a7b]/35 shadow-[0_4px_20px_-4px_rgba(117,138,123,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#758a7b] dark:text-[#a3b8a9]">
+              <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#758a7b] dark:text-[#a3b8a9]">
                 Recettes Réglées
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -207,7 +207,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#f43f5e]/35 shadow-[0_4px_20px_-4px_rgba(244,63,94,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#f43f5e]">
+              <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#f43f5e]">
                 Impayés & Attente
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -236,7 +236,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <SpotlightCard className="anime-item luxury-card p-6 border-[#c87a32]/35 shadow-[0_4px_20px_-4px_rgba(200,122,50,0.12)]">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[11px] font-heading font-bold uppercase tracking-[0.18em] text-[#c87a32]">
+              <span className="text-[11px] font-sans font-semibold uppercase tracking-wider text-[#c87a32]">
                 Créneaux & Studios
               </span>
               <div className="mt-2 text-3xl font-heading font-black text-neutral-900 dark:text-white tracking-tight">
@@ -365,7 +365,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <Clock className="w-3 h-3 text-[#c5a880]" />
                         {s.dateHeureDebut ? s.dateHeureDebut.replace('T', ' à ') : 'Date non définie'}
                       </span>
-                      <span>Coach : <strong className="text-neutral-700 dark:text-neutral-300 font-normal">{s.coachName}</strong></span>
+                      <span>Coach : <strong className="font-space font-semibold text-neutral-900 dark:text-white">{s.coachName}</strong></span>
                     </div>
                   </div>
 
@@ -432,7 +432,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-white/[0.02] border border-neutral-200/80 dark:border-white/[0.06] flex items-center justify-between hover:border-[#c5a880]/40 transition-colors"
                 >
                   <div className="space-y-0.5">
-                    <div className="font-heading font-bold text-neutral-900 dark:text-white text-xs uppercase tracking-tight">
+                    <div className="font-space font-bold text-neutral-900 dark:text-white text-xs tracking-wide">
                       {m.nomComplet}
                     </div>
                     <div className="text-[11px] text-neutral-500 font-light truncate max-w-[140px]">{m.email}</div>
