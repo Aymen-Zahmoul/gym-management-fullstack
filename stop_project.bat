@@ -1,7 +1,7 @@
 @echo off
-title Carthage Fitness Club - Arret des Services
+title HADID GYM CLUB - Arret des Services
 echo ========================================================
-echo   Arret des services Carthage Fitness Club
+echo   Arret des services HADID GYM CLUB
 echo ========================================================
 echo.
 
