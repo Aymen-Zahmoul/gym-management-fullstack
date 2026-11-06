@@ -1,13 +1,25 @@
 package tn.enicarthage.gym.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class MemberRequest {
+    @SerializedName(value = "nomComplet", alternate = {"nom", "name", "fullName", "nom_complet"})
     private String nomComplet;
+
+    @SerializedName(value = "email", alternate = {"username", "mail"})
     private String email;
+
+    @SerializedName(value = "motDePasse", alternate = {"password", "mot_de_passe", "pass"})
     private String motDePasse;
+
+    @SerializedName(value = "telephone", alternate = {"tel", "phone"})
     private String telephone;
+
     private String role;
     private String statut;
-    private Integer initialPlanId; // Optionnel : souscrire immédiatement
+
+    @SerializedName(value = "initialPlanId", alternate = {"planId", "plan_id", "initial_plan_id"})
+    private Integer initialPlanId;
 
     public MemberRequest() {
     }

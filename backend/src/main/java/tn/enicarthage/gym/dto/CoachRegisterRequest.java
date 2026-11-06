@@ -1,13 +1,29 @@
 package tn.enicarthage.gym.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class CoachRegisterRequest {
+    @SerializedName(value = "nomComplet", alternate = {"nom", "name", "fullName", "nom_complet"})
     private String nomComplet;
+
+    @SerializedName(value = "email", alternate = {"username", "mail"})
     private String email;
+
+    @SerializedName(value = "motDePasse", alternate = {"password", "mot_de_passe", "pass"})
     private String motDePasse;
+
+    @SerializedName(value = "telephone", alternate = {"tel", "phone"})
     private String telephone;
+
+    @SerializedName(value = "specialites", alternate = {"specialite", "speciality", "specialty"})
     private String specialites;
+
     private String bio;
+
+    @SerializedName(value = "anneesExperience", alternate = {"experience", "yearsExperience", "annees_experience"})
     private int anneesExperience = 1;
+
+    @SerializedName(value = "gymId", alternate = {"gym_id"})
     private int gymId = 1;
 
     public CoachRegisterRequest() {

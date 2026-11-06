@@ -1,7 +1,12 @@
 package tn.enicarthage.gym.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LoginRequest {
+    @SerializedName(value = "email", alternate = {"username", "identifiant", "login"})
     private String email;
+
+    @SerializedName(value = "motDePasse", alternate = {"password", "mot_de_passe", "pass"})
     private String motDePasse;
 
     public LoginRequest() {}

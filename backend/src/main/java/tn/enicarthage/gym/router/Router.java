@@ -326,11 +326,25 @@ public class Router {
             if (json.isEmpty()) {
                 throw new ValidationException("Le corps JSON de la requete ne peut pas etre vide.");
             }
-            T obj = gson.fromJson(json, clazz);
-            if (obj == null) {
-                throw new ValidationException("Format JSON invalide.");
+            // Auto-reparation si le JSON a ete enveloppe de guillemets (ex: Postman envoi d'une chaine JSON doublement encodee)
+            if (json.startsWith("\"") && json.endsWith("\"") && json.length() >= 2) {
+                try {
+                    String unescaped = gson.fromJson(json, String.class);
+                    if (unescaped != null && unescaped.trim().startsWith("{")) {
+                        json = unescaped.trim();
+                    }
+                } catch (Exception ignored) {
+                }
             }
-            return obj;
+            try {
+                T obj = gson.fromJson(json, clazz);
+                if (obj == null) {
+                    throw new ValidationException("Format JSON invalide : objet vide ou nul.");
+                }
+                return obj;
+            } catch (com.google.gson.JsonSyntaxException | IllegalStateException e) {
+                throw new ValidationException("Format JSON invalide : un objet JSON { ... } est attendu (verifiez dans Postman que 'Body' > 'raw' est bien regle sur 'JSON' et non 'Text' ou entoure de guillemets). Cause : " + e.getMessage());
+            }
         }
     }
 
@@ -446,6 +460,15 @@ public class Router {
         try (InputStream is = exchange.getRequestBody()) {
             String json = new String(is.readAllBytes(), StandardCharsets.UTF_8).trim();
             if (json.isEmpty()) return null;
+            if (json.startsWith("\"") && json.endsWith("\"") && json.length() >= 2) {
+                try {
+                    String unescaped = gson.fromJson(json, String.class);
+                    if (unescaped != null && unescaped.trim().startsWith("{")) {
+                        json = unescaped.trim();
+                    }
+                } catch (Exception ignored) {
+                }
+            }
             return gson.fromJson(json, clazz);
         } catch (Exception e) {
             return null;

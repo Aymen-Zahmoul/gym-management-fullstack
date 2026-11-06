@@ -1,7 +1,12 @@
 package tn.enicarthage.gym.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class BookingRequest {
+    @SerializedName(value = "sessionId", alternate = {"session_id"})
     private int sessionId;
+
+    @SerializedName(value = "memberId", alternate = {"member_id", "userId", "user_id"})
     private int memberId;
 
     public BookingRequest() {
