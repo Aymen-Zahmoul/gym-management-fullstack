@@ -21,7 +21,7 @@ import { Member, MembershipPlan } from '../types';
 import { api } from '../services/api';
 import { SpotlightCard } from './ui/SpotlightCard';
 import { HadidLogo } from './ui/HadidLogo';
-import { LiveBackground } from './ui/LiveBackground';
+import { AthleteVideoGridBackground } from './ui/AthleteVideoGridBackground';
 import { getErrorMessage } from '../utils/errorUtils';
 
 interface SignUpViewProps {
@@ -134,7 +134,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col justify-between relative bg-[#FAF9F5] dark:bg-[#0E0F12] text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
-      <LiveBackground />
+      <AthleteVideoGridBackground />
       {/* Centered subtle ambient bronze illumination */}
       <div className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B07845]/25 via-transparent to-transparent" />
 
