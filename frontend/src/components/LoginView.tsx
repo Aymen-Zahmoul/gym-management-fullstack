@@ -69,13 +69,13 @@ export const LoginView: React.FC<LoginViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between relative bg-transparent text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
+    <div className="h-screen max-h-screen overflow-hidden flex flex-col justify-between relative bg-transparent text-neutral-900 dark:text-neutral-100 transition-colors select-none font-sans">
       <AthleteVideoGridBackground />
       {/* Centered subtle ambient bronze illumination */}
       <div className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B07845]/25 via-transparent to-transparent" />
 
       {/* 1. Header: Brand Wordmark + Back to Landing + Theme Toggle */}
-      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3.5 sm:py-5 flex items-center justify-between z-10 shrink-0">
+      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-2.5 sm:py-3.5 flex items-center justify-between z-10 shrink-0">
         <div className="flex items-center flex-shrink-0">
           <HadidLogo size="md" onClick={onBackToLanding} />
         </div>
@@ -95,7 +95,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
           <button
             onClick={onToggleTheme}
             aria-label="Changer de thème"
-            className="p-2 sm:p-2.5 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#141518]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 cursor-pointer transition-all hover:border-[#B07845] active:scale-95 shadow-sm"
+            className="p-2 sm:p-2 rounded-xl border border-neutral-200/90 dark:border-white/10 bg-white/80 dark:bg-[#141518]/80 backdrop-blur-md text-neutral-700 dark:text-neutral-300 cursor-pointer transition-all hover:border-[#B07845] active:scale-95 shadow-sm"
           >
             {isDark ? <Sun className="w-4 h-4 text-[#B07845]" /> : <Moon className="w-4 h-4 text-neutral-700" />}
           </button>
@@ -103,34 +103,34 @@ export const LoginView: React.FC<LoginViewProps> = ({
       </header>
 
       {/* 2. Main Login Card */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-6 z-10 w-full min-h-0">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-1 sm:py-2 z-10 w-full min-h-0">
         <div className="w-full max-w-md mx-auto">
-          <SpotlightCard className="p-6 sm:p-8 shadow-2xl rounded-3xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/65 dark:bg-[#121316]/65 backdrop-blur-md border-white/40 dark:border-white/15 shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
+          <SpotlightCard className="p-5 sm:p-6 shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-3xl border border-white/40 dark:border-white/15 bg-white/65 dark:bg-[#121316]/65 backdrop-blur-md">
             {/* Identity Badge & Title */}
-            <div className="text-center space-y-1.5 mb-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#B07845]/30 bg-[#B07845]/10 text-[10px] font-space font-bold tracking-[0.2em] uppercase text-[#B07845]">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#B07845]" />
+            <div className="text-center space-y-1 mb-4">
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-[#B07845]/30 bg-[#B07845]/10 text-[9px] font-space font-bold tracking-[0.2em] uppercase text-[#B07845]">
+                <ShieldCheck className="w-3 h-3 text-[#B07845]" />
                 <span>Portail Sécurisé</span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-space font-black text-neutral-950 dark:text-white uppercase tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-space font-black text-neutral-950 dark:text-white uppercase tracking-tight">
                 Connexion
               </h1>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light">
+              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-light">
                 HADID GYM CLUB • Club Privé d'Élite
               </p>
             </div>
 
             {/* Error Banner */}
             {error && (
-              <div className="mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-medium flex items-start gap-2.5 animate-in fade-in duration-200">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <div className="mb-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-medium flex items-start gap-2 animate-in fade-in duration-200">
+                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
             {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400 mb-1">
                   Identifiant / Email
@@ -143,7 +143,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                     placeholder="nom@hadidfitness.tn"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs sm:text-sm focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                    className="w-full pl-10 pr-3 py-2 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
                   />
                 </div>
               </div>
@@ -153,7 +153,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                   <label className="block text-[10px] uppercase font-bold tracking-wider text-neutral-600 dark:text-neutral-400">
                     Mot de Passe
                   </label>
-                  <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-wider">
+                  <span className="text-[8px] font-mono text-neutral-400 uppercase tracking-wider">
                     Chiffré SHA-256
                   </span>
                 </div>
@@ -165,7 +165,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
                     placeholder="••••••••••••"
                     value={motDePasse}
                     onChange={(e) => setMotDePasse(e.target.value)}
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs sm:text-sm focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
+                    className="w-full pl-10 pr-10 py-2 rounded-xl bg-white/75 dark:bg-[#1A1C20]/75 backdrop-blur-sm border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white placeholder-neutral-400 text-xs focus:outline-none focus:border-[#B07845] focus:ring-1 focus:ring-[#B07845]/50 transition-all shadow-inner"
                   />
                   <button
                     type="button"
@@ -177,11 +177,11 @@ export const LoginView: React.FC<LoginViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-[#B07845] hover:bg-[#966436] text-white font-space font-black text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-lg shadow-[#B07845]/20 hover:shadow-[#B07845]/35 transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
+                  className="w-full py-2.5 rounded-xl bg-[#B07845] hover:bg-[#966436] text-white font-space font-black text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-lg shadow-[#B07845]/20 hover:shadow-[#B07845]/35 transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
                 >
                   {loading ? (
                     <span>Authentification...</span>
@@ -197,63 +197,63 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
             {/* Direct Toggle Button: Switch to Sign Up (Simple et Direct) */}
             {onNavigateToSignUp && (
-              <div className="pt-5 mt-5 border-t border-neutral-200/80 dark:border-white/10 text-center">
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-2.5 font-light">
+              <div className="pt-3.5 mt-3.5 border-t border-neutral-200/80 dark:border-white/10 text-center">
+                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mb-1.5 font-light">
                   Pas encore membre de notre club ?
                 </p>
                 <button
                   type="button"
                   onClick={onNavigateToSignUp}
-                  className="w-full py-2.5 px-4 rounded-xl border border-[#B07845]/40 hover:border-[#B07845] bg-[#B07845]/5 hover:bg-[#B07845]/15 text-[#B07845] hover:text-[#966436] dark:hover:text-white text-xs font-space font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer group active:scale-[0.99]"
+                  className="w-full py-2 px-3 rounded-xl border border-[#B07845]/40 hover:border-[#B07845] bg-[#B07845]/5 hover:bg-[#B07845]/15 text-[#B07845] hover:text-[#966436] dark:hover:text-white text-xs font-space font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer group active:scale-[0.99]"
                 >
-                  <UserPlus className="w-4 h-4 text-[#B07845] group-hover:scale-110 transition-transform" />
+                  <UserPlus className="w-3.5 h-3.5 text-[#B07845] group-hover:scale-110 transition-transform" />
                   <span>Créer un compte / S'inscrire</span>
                 </button>
               </div>
             )}
 
             {/* 1-Click Fast Passports (Instant Demo for Defense) */}
-            <div className="mt-5 pt-4 border-t border-neutral-200/60 dark:border-white/[0.06] space-y-2">
-              <div className="flex items-center justify-between text-[9px] font-bold text-neutral-400 uppercase tracking-wider font-space">
+            <div className="mt-3 pt-2.5 border-t border-neutral-200/60 dark:border-white/[0.06] space-y-1.5">
+              <div className="flex items-center justify-between text-[8px] font-bold text-neutral-400 uppercase tracking-wider font-space">
                 <span>Démonstration (1 Clic)</span>
-                <span className="font-mono text-[#B07845] text-[9px]">Accès Rapide</span>
+                <span className="font-mono text-[#B07845] text-[8px]">Accès Rapide</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 <button
                   type="button"
                   onClick={() => handleQuickFill('admin@carthagefitness.tn', 'admin123')}
-                  className="p-2 rounded-xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#B07845] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
+                  className="p-1.5 rounded-xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#B07845] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
                 >
-                  <Crown className="w-3.5 h-3.5 mx-auto text-[#B07845] mb-0.5" />
-                  <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-[#B07845] transition-colors font-space">
+                  <Crown className="w-3 h-3 mx-auto text-[#B07845] mb-0.5" />
+                  <div className="text-[9px] font-bold text-neutral-900 dark:text-white group-hover:text-[#B07845] transition-colors font-space">
                     ADMIN
                   </div>
-                  <div className="text-[8px] text-neutral-400 font-mono">Directeur</div>
+                  <div className="text-[7.5px] text-neutral-400 font-mono">Directeur</div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleQuickFill('karim.coach@carthagefitness.tn', 'coach123')}
-                  className="p-2 rounded-xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#758a7b] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
+                  className="p-1.5 rounded-xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#758a7b] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
                 >
-                  <Dumbbell className="w-3.5 h-3.5 mx-auto text-[#758a7b] mb-0.5" />
-                  <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-[#758a7b] transition-colors font-space">
+                  <Dumbbell className="w-3 h-3 mx-auto text-[#758a7b] mb-0.5" />
+                  <div className="text-[9px] font-bold text-neutral-900 dark:text-white group-hover:text-[#758a7b] transition-colors font-space">
                     COACH
                   </div>
-                  <div className="text-[8px] text-neutral-400 font-mono">Entraîneur</div>
+                  <div className="text-[7.5px] text-neutral-400 font-mono">Entraîneur</div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleQuickFill('yassine.khemir@gmail.com', 'pass123')}
-                  className="p-2 rounded-xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#c87a32] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
+                  className="p-1.5 rounded-xl bg-white/60 dark:bg-white/[0.06] backdrop-blur-sm border border-neutral-200/90 dark:border-white/[0.08] hover:border-[#c87a32] text-center transition-all cursor-pointer group active:scale-95 shadow-sm"
                 >
-                  <UserCheck className="w-3.5 h-3.5 mx-auto text-[#c87a32] mb-0.5" />
-                  <div className="text-[10px] font-bold text-neutral-900 dark:text-white group-hover:text-[#c87a32] transition-colors font-space">
+                  <UserCheck className="w-3 h-3 mx-auto text-[#c87a32] mb-0.5" />
+                  <div className="text-[9px] font-bold text-neutral-900 dark:text-white group-hover:text-[#c87a32] transition-colors font-space">
                     MEMBER
                   </div>
-                  <div className="text-[8px] text-neutral-400 font-mono">Adhérent</div>
+                  <div className="text-[7.5px] text-neutral-400 font-mono">Adhérent</div>
                 </button>
               </div>
             </div>
@@ -262,8 +262,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
       </main>
 
       {/* 3. Footer */}
-      <footer className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between text-[10px] text-neutral-400 dark:text-neutral-500 font-light border-t border-neutral-200/60 dark:border-white/[0.06] shrink-0">
-        <div className="font-medium tracking-wide text-neutral-600 dark:text-neutral-400 font-space">
+      <footer className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-2 sm:py-2.5 flex items-center justify-between text-[9px] sm:text-[10px] text-neutral-400 dark:text-neutral-500 font-light border-t border-neutral-200/60 dark:border-white/[0.06] shrink-0">
+        <div className="font-medium tracking-wide text-neutral-300 dark:text-neutral-400 font-space">
           HADID GYM CLUB
         </div>
         <div className="hidden sm:block text-[9px] font-mono">
