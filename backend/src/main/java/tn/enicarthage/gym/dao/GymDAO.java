@@ -40,6 +40,59 @@ public class GymDAO {
         return list;
     }
 
+
+    public Gym create(Gym g) {
+        String sql = "INSERT INTO gym (nom, adresse, telephone, email, site_web) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, g.getNom());
+            stmt.setString(2, g.getAdresse());
+            stmt.setString(3, g.getTelephone());
+            stmt.setString(4, g.getEmail());
+            stmt.setString(5, g.getSiteWeb());
+            stmt.executeUpdate();
+            try (ResultSet gk = stmt.getGeneratedKeys()) {
+                if (gk.next()) {
+                    g.setId(gk.getInt(1));
+                }
+            }
+            return findById(g.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur DAO Gym.create : " + e.getMessage(), e);
+        }
+    }
+
+    public Gym update(Gym g) {
+        String sql = "UPDATE gym SET nom = ?, adresse = ?, telephone = ?, email = ?, site_web = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, g.getNom());
+            stmt.setString(2, g.getAdresse());
+            stmt.setString(3, g.getTelephone());
+            stmt.setString(4, g.getEmail());
+            stmt.setString(5, g.getSiteWeb());
+            stmt.setInt(6, g.getId());
+            stmt.executeUpdate();
+            return findById(g.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur DAO Gym.update : " + e.getMessage(), e);
+        }
+    }
+
+    public boolean delete(int id) {
+        String sql = "DELETE FROM gym WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur DAO Gym.delete : " + e.getMessage(), e);
+        }
+    }
+
     private Gym mapRow(ResultSet rs) throws SQLException {
         Gym g = new Gym();
         g.setId(rs.getInt("id"));
