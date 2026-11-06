@@ -1,7 +1,6 @@
 package tn.enicarthage.gym;
 
 import tn.enicarthage.gym.config.DatabaseConnection;
-import tn.enicarthage.gym.server.ApiServer;
 
 import java.io.IOException;
 import java.sql.Connection;

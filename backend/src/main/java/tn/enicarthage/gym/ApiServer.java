@@ -1,4 +1,4 @@
-package tn.enicarthage.gym.server;
+package tn.enicarthage.gym;
 
 import com.sun.net.httpserver.HttpServer;
 import tn.enicarthage.gym.router.Router;
