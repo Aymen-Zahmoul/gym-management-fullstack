@@ -1,7 +1,7 @@
 {
-  "name": "carthage-fitness-fullstack",
+  "name": "hadid-gym-fullstack",
   "version": "1.0.0",
-  "description": "Projet Federateur Carthage Fitness Club (ENICarthage)",
+  "description": "Projet Federateur HADID GYM CLUB (ENICarthage)",
   "scripts": {
     "dev": "npm run dev --prefix frontend",
     "frontend": "npm run dev --prefix frontend",
